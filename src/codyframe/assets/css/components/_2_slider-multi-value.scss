@@ -1,0 +1,102 @@
+/* -------------------------------- 
+
+File#: _2_slider-multi-value
+Title: Multi Value Slider
+Descr: Slider element for choosing a minimum and maximum value in a specified range
+Usage: codyhouse.co/license
+
+-------------------------------- */ 
+@mixin sliderMultiValueTrackStyle { // track style
+  pointer-events: none;
+  // this is used to set the background color of the slider: --color-primary for the fill and --color-contrast-low for the deafult color
+  // --slider-fill-value-start and --slider-fill-value-end are percentage values defined inside the .slider__range class
+  background-image: linear-gradient(to right, var(--color-contrast-low) var(--slider-fill-value-start), var(--color-primary) var(--slider-fill-value-start), var(--color-primary) var(--slider-fill-value-end), var(--color-contrast-low) var(--slider-fill-value-end));
+}
+
+@mixin sliderMultiValueThumbStyle { // thumb style
+  position: relative;
+  z-index: 2;
+  pointer-events: auto;
+}
+
+.slider--multi-value {
+  position: relative;
+
+  .slider__range {
+    pointer-events: none;
+  }
+}
+
+.slider--multi-value .slider__range:nth-of-type(1) {
+  // CSS variables updated in JS - change the background color of the slider
+  --slider-fill-value-start: 0%;
+  --slider-fill-value-end: 100%;
+}
+
+.slider--multi-value .slider__range:nth-of-type(2) {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.slider--multi-value {
+  // thumb style
+  .slider__input::-webkit-slider-thumb {
+    @include sliderMultiValueThumbStyle;
+  }
+
+  .slider__input::-moz-range-thumb {
+    @include sliderMultiValueThumbStyle;
+  }
+  
+  // track style
+  .slider__input::-webkit-slider-runnable-track {
+    @include sliderMultiValueTrackStyle;
+  }
+
+  .slider__input::-moz-range-track {
+    @include sliderMultiValueTrackStyle;
+  }
+
+  .slider__range:nth-of-type(2) .slider__input::-moz-range-track {
+    background-image: none;
+  }
+}
+
+// IE and Edge (<=18) Fallback
+:not(*)::-ms-track,
+.slider--multi-value.slider--ms-fallback {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+:not(*)::-ms-track,
+.slider--multi-value.slider--ms-fallback .slider__range {
+  pointer-events: auto;
+  width: 48%;
+}
+
+:not(*)::-ms-track,
+.slider--multi-value.slider--ms-fallback .slider__range:nth-of-type(2) {
+  position: relative;
+}
+
+.slider__separator {
+  margin: auto var(--space-xs);
+}
+
+// no js + browsers not supporting range input
+.slider--multi-value.slider--range-not-supported .slider__range {
+  display: inline-block;
+  width: 45%;
+
+  &:nth-of-type(2) {
+    position: relative;
+  }
+}
+
+.slider--range-not-supported .slider__separator,
+html:not(.js) .slider__separator {
+  display: none;
+}

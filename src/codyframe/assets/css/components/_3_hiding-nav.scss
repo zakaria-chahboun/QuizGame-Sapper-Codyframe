@@ -1,0 +1,29 @@
+/* -------------------------------- 
+
+File#: _3_hiding-nav
+Title: Auto Hiding Navigation
+Descr: A Navigation that auto-hides when the user scrolls down, and is revealed when they scrolls back up
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.hide-nav {
+  position: sticky;
+  width: 100%;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  transition: transform 0.3s, background-color 0.3s;
+}
+
+.hide-nav--fixed {
+  background-color: transparent;
+}
+
+.hide-nav--has-bg {
+  background-color: var(--color-bg);
+}
+
+.hide-nav--off-canvas { // main header is off-canvas
+  // add off-canvas custom style (if any)
+}

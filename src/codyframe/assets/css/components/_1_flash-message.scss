@@ -1,0 +1,35 @@
+/* -------------------------------- 
+
+File#: _1_flash-message
+Title: Flash message
+Descr: Modeless, non-interactive message to alert the user of a status change
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.flash-message {
+  position: fixed;
+  bottom: var(--space-md);
+  left: var(--space-md);
+  z-index: var(--zindex-fixed-element);
+
+  background-color: var(--color-bg);
+  padding: var(--space-sm);
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md);
+  color: var(--color-contrast-high);
+  font-size: var(--text-sm);
+
+  transition: .2s;
+  transform: translateY(16px);
+  transform-origin: bottom left;
+  // hide element
+  opacity: 0;
+  visibility: hidden;
+}
+
+.flash-message--is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

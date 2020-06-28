@@ -1,0 +1,183 @@
+/* -------------------------------- 
+
+File#: _1_responsive-sidebar
+Title: Responsive Sidebar
+Descr: Responsive sidebar container
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+// mobile version only (--default) 👇
+.sidebar:not(.sidebar--static) {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: var(--zindex-fixed-element);
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+  transition: visibility 0s .3s;
+
+  &::after { // overlay layer
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: alpha(var(--color-black), 0);
+    transition: background-color .3s;
+    z-index: 1;
+  }
+
+  .sidebar__panel { // content
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    max-width: 380px;
+    height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    background-color: var(--color-bg);
+    transform: translateX(-100%);
+    transition: .3s;
+  }
+
+  &.sidebar--right-on-mobile {
+    .sidebar__panel {
+      left: auto;
+      right: 0;
+      transform: translateX(100%);
+    }
+  }
+
+  &.sidebar--is-visible {
+    visibility: visible;
+    transition: none;
+    
+    &::after {
+      background-color: alpha(var(--color-black), 0.85);
+    }
+
+    .sidebar__panel {
+      transform: translateX(0);
+      box-shadow: var(--shadow-md);
+    }
+  }
+}
+// end mobile version
+
+.sidebar__header {
+  background-color: var(--color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-sm) var(--space-md);
+  border-bottom: 2px solid var(--color-contrast-lower);
+  position: sticky;
+  top: 0;
+}
+
+.sidebar__close-btn {
+  width: 2em;
+  height: 2em;
+  display: flex;
+  border-radius: 50%;
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-sm);
+  transition: .2s;
+  flex-shrink: 0;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .icon {
+    display: block;
+    color: var(--color-contrast-high);
+    margin: auto;
+  }
+}
+
+// desktop version only (--static) 👇
+.sidebar--static, html:not(.js) .sidebar {
+  flex-shrink: 0;
+  flex-grow: 1;
+
+  .sidebar__header {
+    display: none;
+  }
+}
+
+.sidebar--sticky-on-desktop {
+  position: sticky;
+  top: var(--space-sm);
+  max-height: calc(100vh - var(--space-sm));
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+// end desktop version
+
+.js {
+  .sidebar {
+    opacity: 0; // hide sidebar while it is initialized in JS
+  }
+
+  .sidebar--loaded {
+    opacity: 1;
+  }
+}
+
+// no-js
+html:not(.js) .sidebar {
+  position: static;
+}
+
+// detect when the sidebar needs to switch from the mobile layout to a static one - used in JS
+[class*="sidebar--static"]::before {
+  display: none;
+}
+
+@each $breakpoint, $value in $breakpoints {
+  .sidebar--static\@#{$breakpoint}::before {
+    content: 'mobile';
+    @include breakpoint(#{$breakpoint}) {
+      content: 'static';
+    }
+  }
+}
+// Custom Styles
+.sidebar__panel{
+  width: 400px;
+}
+  .progress-cell{
+      cursor: pointer;
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      background-color: var(--color-contrast-lower);
+      margin: 1px;
+      position: relative;
+      border-radius: 3em;
+  }
+      .progress-cell p{
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%) translateY(50%);
+      }
+
+  .progress-cell.current-cell{
+    background-color: var(--color-secondary);
+    color: var(--color-primary-light);
+  }
+  .progress-cell.correct-cell{
+    // background-color: rgba(var(--color-success), $alpha: 0.25);
+    background-color: rgba($color: #2ECC70, $alpha: 0.25);
+    color: var(--color-success);
+  }
+  .progress-cell.uncorrect-cell{
+    background-color: rgba($color: #E74D3C, $alpha: 0.25);
+    color: var(--color-error);
+  }

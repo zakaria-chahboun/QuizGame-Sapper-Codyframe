@@ -1,0 +1,157 @@
+/* --------------------------------
+
+File#: _1_sub-navigation
+Title: Sub Navigation
+Descr: Secondary navigation template
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.subnav {}
+
+.subnav__nav {
+  position: relative;
+  display: flex;
+
+  &::after { // shadow overlay indicating scrolling
+    content: '';
+    width: 1em;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: linear-gradient(to right, alpha(var(--color-contrast-lower), 0), alpha(var(--color-contrast-lower), 1));
+    pointer-events: none;
+  }
+}
+
+.subnav__list {
+  display: flex;
+  overflow: auto;
+}
+
+.subnav__item {
+  display: inline-block; // fallback
+  flex-shrink: 0;
+}
+
+.subnav__link {
+  display: block;
+  font-size: var(--text-sm);
+  padding: var(--space-md);
+  text-decoration: none;
+  color: alpha(var(--color-contrast-high), 0.65);
+  border: 3px solid transparent; // border-width
+  border-right-width: 0;
+  border-left-width: 0;
+
+  &:hover {
+    color: var(--color-contrast-high);
+  }
+
+  &[aria-current="page"] {
+    border-bottom-color: var(--color-primary); // border color
+    color: var(--color-contrast-high);
+  }
+}
+
+// --collapsed
+.subnav:not(.subnav--collapsed) {
+  .subnav__control, .subnav__close-btn {
+    display: none; // hide buttons if nav = expanded
+  }
+}
+
+.subnav--collapsed {
+  display: inline-block;
+
+  .subnav__wrapper {
+    position: fixed;
+    display: block;
+    z-index: var(--zindex-overlay);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: alpha(var(--color-contrast-higher), 0.9);
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  .subnav__wrapper--is-visible {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity .3s;
+
+    .subnav__nav {
+      transform: translateY(0);
+      transition: transform .3s;
+    }
+  }
+
+  .subnav__nav {
+    display: block;
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-md);
+    max-height: 100%;
+    overflow: auto;
+    transform: translateY(-1em);
+
+    &::after {
+      display: none;
+    }
+  }
+
+  .subnav__list {
+    flex-direction: column;
+    overflow: visible;
+    padding: 0 var(--space-md) var(--space-md);
+  }
+
+  .subnav__link {
+    border-width: 0;
+    font-size: var(--text-md);
+    padding: var(--space-xs) 0;
+
+    &[aria-current="page"] {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.subnav__close-btn {
+  display: flex;
+  margin: var(--space-xs) var(--space-xs) 0 auto;
+  width: 2em;
+  height: 2em;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  background-color: var(--color-bg);
+  box-shadow: var(--shadow-sm);
+  transition: .2s;
+
+  &:hover {
+    background-color: var(--color-bg);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .icon {
+    display: block;
+    color: var(--color-contrast-high);
+  }
+}
+
+// used in JS - detect when the subnav needs to switch from an expanded layout to a collapsed one
+[class*="subnav--expanded"]::before {
+  display: none;
+  content: 'collapsed';
+}
+
+@each $breakpoint, $value in $breakpoints {
+  @include breakpoint(#{$breakpoint}) {
+    .subnav--expanded\@#{$breakpoint}::before {
+      content: 'expanded';
+    }
+  }
+}

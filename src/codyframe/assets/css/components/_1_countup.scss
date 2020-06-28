@@ -1,0 +1,22 @@
+/* -------------------------------- 
+
+File#: _1_countup
+Title: CountUp
+Descr: A widget to animate a numerical value by counting to it
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.countup {
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+}
+
+.js .countup { // if js is enabled - hide countup before it is initialized
+  opacity: 0;
+}
+
+.js .countup--is-visible { // show countup once it has been initialized
+  opacity: 1;
+}
+

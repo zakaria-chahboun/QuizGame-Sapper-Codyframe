@@ -1,0 +1,111 @@
+/* -------------------------------- 
+
+File#: _1_circular-progress-bar
+Title: Circular Progress Bar
+Descr: Display the current progress of a task using a circular SVG shape
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+:root {
+  --c-progress-bar-width: 3em;
+}
+
+.c-progress-bar { 
+  width: var(--c-progress-bar-width);
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateX(-25%) translateY(-50%);
+}
+    .c-progress-bar__icon{  
+      background: url(../images/unlocked.svg) center no-repeat;
+      background-size: 62%;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+      .c-progress-bar__icon.locked{
+        background-image: url(../images/locked.svg);
+      }
+      .c-progress-bar__icon.unlocked{
+        background-image: url(../images/unlocked.svg);
+      }
+      .c-progress-bar__icon.completed{
+        background-image: url(../images/completed.svg);
+      }
+
+
+html:not(.js) .c-progress-bar__shape { 
+  // if js is disabled, hide the svg circle -> show only the percentage value
+  display: none;
+}
+
+.c-progress-bar__shape {
+  width: 100%;
+  position: relative;
+
+  svg {
+    display: block;
+    width: var(--c-progress-bar-width);
+    height: var(--c-progress-bar-width); // make sure the svg has the correct height on Edge/IE
+  }
+}
+
+.c-progress-bar__bg { // circle bg color
+  stroke: currentColor; 
+  opacity: 0.2;
+}
+
+.c-progress-bar__fill { // circle fill/active color
+  stroke: currentColor;
+}
+
+.c-progress-bar__value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  font-size: var(--text-xl);
+
+  i { // %
+    font-size: var(--text-xs);
+  }
+}
+
+.js .c-progress-bar:not(.c-progress-bar--init){
+  .c-progress-bar__fill, .c-progress-bar__value { 
+    // hide fill and value until the js has been initialized
+    visibility: hidden;
+  }
+}
+
+// --color-update
+// define color thresholds
+.c-progress-bar--color-update {
+  --c-progress-bar-color-1: 30; // if percentage is <= to this value, the color of the bar will the one defined in the  .c-progress-bar--fill-color-1 class
+  --c-progress-bar-color-2: 65; // if percentage is <= to this value, the color of the bar will the one defined in the  .c-progress-bar--fill-color-2 class
+  --c-progress-bar-color-3: 100; // if percentage is <= to this value, the color of the bar will the one defined in the  .c-progress-bar--fill-color-3 class
+
+  &.c-progress-bar--init .c-progress-bar__fill {
+    transition: stroke .2s;
+  }
+}
+
+.c-progress-bar--fill-color-1  {
+  .c-progress-bar__fill {
+    stroke: var(--color-error);
+  }
+}
+
+.c-progress-bar--fill-color-2 {
+  .c-progress-bar__fill {
+    stroke: var(--color-warning);
+  }
+}
+
+.c-progress-bar--fill-color-3 {
+  .c-progress-bar__fill {
+    stroke: var(--color-success);
+  }
+}

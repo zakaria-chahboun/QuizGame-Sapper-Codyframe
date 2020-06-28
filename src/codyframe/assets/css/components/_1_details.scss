@@ -1,0 +1,56 @@
+/* -------------------------------- 
+
+File#: _1_details
+Title: Details
+Descr: A button that toggles the visibility of additional information
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.details {}
+
+.details__summary {
+  display: inline-block;
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+
+  &:focus {
+    outline: 2px solid alpha(var(--color-primary), 0.2);
+    outline-offset: 4px;
+  }
+
+  .icon {
+    transition: transform .2s;
+    flex-shrink: 0;
+  }
+}
+
+// if JS = enabled
+.js {
+  .details__summary {
+    list-style: none; // remove summary default icon
+  }
+
+  .details__summary::-webkit-details-marker {
+    display: none; // remove default icon in webkit browsers
+  }
+
+  .details__summary[aria-expanded="true"] .icon {
+    transform: rotate(90deg); // rotate icon when content is visible
+  }
+
+  .details__content[aria-hidden="true"] {
+    display: none;
+  }
+}
+
+// if JS = disabled
+html:not(.js) .details__summary {
+  .icon {
+    display: none;
+  }
+}

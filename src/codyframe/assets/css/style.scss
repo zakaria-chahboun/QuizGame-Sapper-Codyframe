@@ -7,8 +7,21 @@
 //   xl: 90rem
 // );
 
-// 👇 optional -> import specific _base.scss partials
-// $cody-base-partials: 'accessibility', 'breakpoints', 'buttons', 'colors', 'forms', 'grid-layout', 'icons', 'mixins', 'reset', 'shared-styles', 'spacing', 'typography', 'util', 'visibility', 'z-index';
-
-@import 'base';
+@import '../../../../node_modules/codyhouse-framework/main//assets/css/base';
 @import 'custom-style';
+//@import 'components/**/*.scss'; // it's not working with sveltepreprocess
+@import 'components'; // this is my _components.scss file
+
+.ad-Banner{
+    height: 90px;
+    width: 728px;
+    text-align: center;
+    background-color: var(--color-contrast-lower);
+}
+
+.ad-Large-Rectangle{
+    height: 280px;
+    width: 336px;
+    text-align: center;
+    background-color: var(--color-contrast-lower);
+}

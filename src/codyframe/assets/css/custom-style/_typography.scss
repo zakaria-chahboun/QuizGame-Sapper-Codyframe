@@ -6,10 +6,10 @@
 
 :root {
   // font family
-  --font-primary: sans-serif;
+  --font-primary: Source Sans Pro, sans-serif;
 
   // body font size
-  --text-base-size: 1em;
+  --text-base-size: 1.2em;
   
   // type scale
   --text-scale-ratio: 1.2;
@@ -38,6 +38,25 @@
     }
   }
 }
+
+body {
+  font-family: var(--font-primary);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+}
+
+// font family
+.font-primary { font-family: var(--font-primary);}
+
+// color
+.color-secondary-darker { color: alpha(var(--color-secondary-darker), var(--color-o, 1)); }
+.color-secondary-dark { color: alpha(var(--color-secondary-dark), var(--color-o, 1)); }
+.color-secondary { color: alpha(var(--color-secondary), var(--color-o, 1)); }
+.color-secondary-light { color: alpha(var(--color-secondary-light), var(--color-o, 1)); }
+.color-secondary-lighter { color: alpha(var(--color-secondary-lighter), var(--color-o, 1)); }
 
 // --------------------------------
 

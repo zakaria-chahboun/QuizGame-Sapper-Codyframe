@@ -1,0 +1,69 @@
+/* -------------------------------- 
+
+File#: _1_auto-sized-grid
+Title: Auto Sized Grid
+Descr: A grid layout based on CSS Grid where the columns are automatically created according to a min-width value
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.grid-auto-xs, .grid-auto-sm, .grid-auto-md, .grid-auto-lg, .grid-auto-xl {
+  display: grid;
+  grid-gap: var(--gap, 0);
+  grid-template-columns: repeat(auto-fit, minmax(var(--col-min-width), 1fr)); // auto add new cols
+}
+
+.grid-auto-xs { --col-min-width: 8rem; }
+.grid-auto-sm { --col-min-width: 10rem; }
+.grid-auto-md { --col-min-width: 15rem; }
+.grid-auto-lg { --col-min-width: 20rem; }
+.grid-auto-xl { --col-min-width: 25rem; }
+
+@include breakpoint(xs) {
+  .grid-auto-xs\@xs { --col-min-width: 8rem; }
+  .grid-auto-sm\@xs { --col-min-width: 10rem; }
+  .grid-auto-md\@xs { --col-min-width: 15rem; }
+  .grid-auto-lg\@xs { --col-min-width: 20rem; }
+  .grid-auto-xl\@xs { --col-min-width: 25rem; }
+}
+
+@include breakpoint(sm) {
+  .grid-auto-xs\@sm { --col-min-width: 8rem; }
+  .grid-auto-sm\@sm { --col-min-width: 10rem; }
+  .grid-auto-md\@sm { --col-min-width: 15rem; }
+  .grid-auto-lg\@sm { --col-min-width: 20rem; }
+  .grid-auto-xl\@sm { --col-min-width: 25rem; }
+}
+
+@include breakpoint(md) {
+  .grid-auto-xs\@md { --col-min-width: 8rem; }
+  .grid-auto-sm\@md { --col-min-width: 10rem; }
+  .grid-auto-md\@md { --col-min-width: 15rem; }
+  .grid-auto-lg\@md { --col-min-width: 20rem; }
+  .grid-auto-xl\@md { --col-min-width: 25rem; }
+}
+
+@include breakpoint(lg) {
+  .grid-auto-xs\@lg { --col-min-width: 8rem; }
+  .grid-auto-sm\@lg { --col-min-width: 10rem; }
+  .grid-auto-md\@lg { --col-min-width: 15rem; }
+  .grid-auto-lg\@lg { --col-min-width: 20rem; }
+  .grid-auto-xl\@lg { --col-min-width: 25rem; }
+}
+
+@include breakpoint(xl) {
+  .grid-auto-xs\@xl { --col-min-width: 8rem; }
+  .grid-auto-sm\@xl { --col-min-width: 10rem; }
+  .grid-auto-md\@xl { --col-min-width: 15rem; }
+  .grid-auto-lg\@xl { --col-min-width: 20rem; }
+  .grid-auto-xl\@xl { --col-min-width: 25rem; }
+}
+
+// make gaps compatible with CodyFrame grid system
+[class*="grid-auto-"][class*="gap-xxxxs"], [class*="grid-auto-"][class*="gap-xxxs"], [class*="grid-auto-"][class*="gap-xxs"], [class*="grid-auto-"][class*="gap-xs"], [class*="grid-auto-"][class*="gap-sm"], [class*="grid-auto-"][class*="gap-md"], [class*="grid-auto-"][class*="gap-lg"], [class*="grid-auto-"][class*="gap-xl"], [class*="grid-auto-"][class*="gap-xxl"], [class*="grid-auto-"][class*="gap-xxxl"], [class*="grid-auto-"][class*="gap-xxxxl"], [class*="grid-auto-"][class*="grid-gap-"], [class*="grid-auto-"][class*="flex-gap-"] {
+  margin: 0;
+
+  > * {
+    margin: 0;
+  }
+}

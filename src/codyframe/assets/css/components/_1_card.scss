@@ -1,0 +1,14 @@
+.card{
+    position: relative;
+    background-color: var(--color-contrast-lower);
+    border-radius: 15px;
+}
+.card a {
+    color: var(--color-contrast-high);
+    text-decoration: none;
+}
+
+.card a:hover{
+    color: var(--color-primary);
+    text-decoration: underline;
+}

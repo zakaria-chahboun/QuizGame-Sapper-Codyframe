@@ -1,0 +1,89 @@
+/* -------------------------------- 
+
+File#: _1_countdown
+Title: CountDown
+Descr: Widget to display a timer
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.countdown {
+  display: flex;
+  align-items: baseline;
+}
+
+.countdown__timer {
+  display: inline-block;
+}
+
+.countdown__item { // time value + label - dynamically created using JS
+  display: inline-block;
+
+  &:nth-of-type(2)::after, &:nth-of-type(3)::after { // ':' separator -> H:M:S 
+    content: ':';
+  }
+}
+
+.countdown__value {
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+}
+
+// --has-labels
+.countdown--has-labels {
+  .countdown__item {
+    margin-right: var(--space-xs);
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  .countdown__item::after {
+    content: '';
+  }
+
+  .countdown__label { // time label
+    font-size: 0.45em;
+  }
+}
+
+// --grid
+.countdown--grid {
+  .countdown__timer {
+    display: grid;
+    grid-template-columns: repeat(4, 1.6em);
+    grid-gap: var(--space-xxxs);
+  }
+
+  .countdown__item {
+    text-align: center;
+    padding: var(--space-xxxxs) 0;
+    background-color: var(--color-bg);
+  }
+
+  .countdown__item::after {
+    content: '';
+  }
+
+  .countdown__label {
+    display: block;
+    text-transform: uppercase;
+    font-size: 0.2em;
+    letter-spacing: 0.1em;
+    color: var(--color-contrast-medium);
+  }
+}
+
+.js {
+  .countdown__fallback { // if JS = enabled -> show description only to assistive technologies
+    position: absolute;
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+  }
+}
+
+// if JS = disabled
+html:not(.js) .countdown__info {
+  display: none;
+}

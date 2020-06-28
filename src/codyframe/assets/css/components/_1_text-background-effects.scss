@@ -1,0 +1,49 @@
+/* -------------------------------- 
+
+File#: _1_text-background-effects
+Title: Text Background Effects
+Descr: A collection of text backgrounds animated on hover
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.text-bg-fx {
+  background-repeat: no-repeat;
+  will-change: background-size;
+  transition: background-size .3s var(--ease-in-out);
+
+  &:hover {
+    background-size: 100% 100%;
+  }
+}
+
+.text-bg-fx--scale-x {
+  padding: var(--space-xxxxs) 0;
+  background-image: linear-gradient(alpha(var(--color-primary), 0.2), alpha(var(--color-primary), 0.2));
+  background-size: 0% 100%;
+}
+
+.text-bg-fx--scale-y {
+  text-decoration: none;
+  background-image: linear-gradient(alpha(var(--color-primary), 0.2), alpha(var(--color-primary), 0.2));
+  background-size: 100% 2px;
+  background-position: center bottom;
+}
+
+.text-bg-fx--underline,
+.text-bg-fx--underline-bold {
+  text-decoration: none;
+  background-size: 0% 100%;
+}
+
+.text-bg-fx--underline { // text underline size = 1px
+  background-image: linear-gradient(transparent calc(100% - 3px), currentColor calc(100% - 3px), currentColor calc(100% - 2px), transparent 2px);
+}
+
+.text-bg-fx--underline-bold {
+  background-image: linear-gradient(transparent 50%, alpha(var(--color-primary), 0.2) 50%);
+}
+
+.text-bg-fx--text-shadow { // you can use this with the .text-bg-fx--underline effect
+  text-shadow: 1.5px 0 var(--color-bg), -1.5px 0 var(--color-bg);
+}

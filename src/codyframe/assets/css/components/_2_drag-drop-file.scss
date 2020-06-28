@@ -1,0 +1,242 @@
+/* -------------------------------- 
+
+File#: _2_drag-drop-file
+Title: Drag and Drop File
+Descr: Drag files over a droppable area to upload them
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.ddf {}
+
+.ddf__area {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--color-contrast-low);
+  background-color: var(--color-contrast-lower);
+  transition: .3s;
+
+  &:hover {
+    border-color: var(--color-contrast-medium);
+  }
+}
+
+.ddf__label {
+  cursor: pointer;
+
+  &::before { // this element triggers (onClick) dialog to select files
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    cursor: inherit;
+  }
+}
+
+.ddf__icon-cloud {
+  *:nth-child(2) {
+    transition: fill .3s;
+    fill: var(--color-contrast-lower);
+  }
+}
+
+.ddf__label-end { // message visible when files have been dropped
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.ddf__label-inner, .ddf__label-end-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity .3s, transform .3s var(--ease-out);
+}
+
+.ddf__label-end-inner {
+  opacity: 0;
+  transform: translateY(25px);
+}
+
+.ddf__icon-file { // file icon
+  *:nth-child(1), *:nth-child(2) { // file icons in the back
+    transform-origin: 32px 50px;
+    opacity: 0;
+    transition: opacity .3s, transform .5s var(--ease-out);
+  }
+
+  *:nth-child(1) { // file - left
+    transform: rotate(15deg);
+  }
+
+  *:nth-child(2) { // file - right
+    transform: rotate(-15deg);
+  }
+}
+
+// files over drop area
+.ddf__area--file-hover, .ddf__area:focus-within { 
+  border-color: var(--color-primary);
+  background-color: var(--color-bg);
+
+  .ddf__icon-cloud {
+    color: var(--color-primary);
+
+    *:nth-child(2) {
+      fill: var(--color-bg);
+    }
+  }
+}
+
+.ddf__area--file-hover {
+  .ddf__icon-cloud {
+    *:nth-child(2) {
+      animation: ddf-icon-cloud 1s infinite;
+      transform-origin: 32px 32px;
+    }
+  }
+}
+
+// files dropped
+.ddf__area--file-dropped { // files have been selected
+  .ddf__label-inner {
+    opacity: 0;
+    transform: translateY(-25px);
+  }
+
+  .ddf__label-end-inner {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+
+  .ddf__icon-file {
+    *:nth-child(1), *:nth-child(2) { // file icons in the back
+      opacity: 0.7;
+      transform: rotate(0deg);
+    }
+  }
+}
+
+// files list
+.ddf__item {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-xs);
+
+  &:not(:last-child) {
+    margin-bottom: var(--space-xs);
+  }
+}
+
+.ddf__file-name {
+  font-size: var(--text-sm);
+  margin-right: var(--space-xs);
+}
+
+.ddf__remove-btn {
+  background-color: var(--color-contrast-lower);
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background .2s;
+  margin-left: auto;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: lightness(var(--color-contrast-lower), 0.95);
+  }
+
+  &:focus {
+    outline: 2px solid alpha(var(--color-primary), 0.25);
+    outline-offset: 2px;
+  }
+}
+
+// circle progress animation
+.ddf__progress {
+  --c-progress-bar-width: 24px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.ddf__progress-circle-mask {
+  fill: var(--color-bg);
+  stroke: none;
+  transform-origin: 12px 12px;
+}
+
+.ddf__progress-circle {
+  opacity: 0;
+  fill: currentColor;
+}
+
+.ddf__progress-check {
+  opacity: 0;
+  stroke: var(--color-bg);
+  stroke-dashoffset: 16;
+  stroke-dasharray: 17;
+}
+
+.ddf__progress--complete { // added in JS when progress = 100%
+  .c-progress-bar__bg,
+  .c-progress-bar__fill {
+    opacity: 0;
+  }
+
+  .ddf__progress-circle {
+    opacity: 1;
+  }
+
+  .ddf__progress-circle-mask {
+    transform: scale(0);
+    transition: transform 0.4s;
+  }
+
+  .ddf__progress-check {
+    opacity: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset 0.3s 0.4s, opacity 0s 0.4s;
+  }
+}
+
+// circle progress animation - files list not visible
+.ddf__area {
+  .ddf__progress {
+    --c-progress-bar-width: 32px;
+  }
+
+  .ddf__progress-circle-mask {
+    fill: var(--color-contrast-lower);
+  }
+}
+
+.js {
+  .ddf__label-end {
+    display: flex;
+  }
+}
+
+@keyframes ddf-icon-cloud {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}

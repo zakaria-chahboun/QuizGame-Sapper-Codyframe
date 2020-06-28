@@ -1,0 +1,25 @@
+/* -------------------------------- 
+
+File#: _1_read-more
+Title: Read More
+Descr: A truncated paragraph with the option of reading more content
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.js {
+  .read-more {
+    opacity: 0; // hide read-more while it is initialized in JS
+  }
+
+  .read-more--loaded {
+    opacity: 1;
+  }
+}
+
+.read-more__btn {
+  @include reset;
+  cursor: pointer;
+  color: var(--color-primary);
+  text-decoration: underline;
+}

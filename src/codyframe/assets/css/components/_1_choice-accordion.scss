@@ -1,0 +1,139 @@
+/* -------------------------------- 
+
+File#: _1_choice-accordion
+Title: Choice Accordion
+Descr: A group of radio/checkbox buttons controlling expandable content
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+:root {
+  --choice-accordion-border-width: 2px; // accordion border width
+  --choice-accordion-border-radius: var(--radius-md); // accordion border radius
+
+  // custom input
+  --choice-accordion-input-size: 20px; // custom input size
+  --choice-accordion-input-icon-size: 16px; // icon size
+  --choice-accordion-input-icon-color: var(--color-white); // icon color
+  --choice-accordion-input-border-width: 2px; // custom input border width
+  --choice-accordion-input-margin-right: var(--space-xxs); // gap between custom input and label
+}
+
+.choice-accordion {
+  border-width: var(--choice-accordion-border-width);
+  border-color: var(--color-contrast-low);
+  border-style: solid;
+  border-radius: var(--choice-accordion-border-radius);
+  overflow: hidden;
+}
+
+.choice-accordion__btn {
+  display: none; // hide button if JS = disabled
+
+  .js & {
+    display: block; // fallback
+    display: grid;
+    grid-template-columns: var(--choice-accordion-input-size) 1fr;
+    grid-gap: var(--choice-accordion-input-margin-right);
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--color-bg);
+    border-top-width: var(--choice-accordion-border-width);
+    border-style: solid;
+    border-color: var(--color-contrast-low);
+  }
+}
+
+.js .choice-accordion__item:first-child .choice-accordion__btn {
+  border-top: none;
+}
+
+.choice-accordion__panel {
+  position: relative;
+  background-color: var(--color-contrast-lower);
+  overflow: hidden;
+  will-change: height;
+  transform: translateZ(0px);
+
+  &::before { // panel top border
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--choice-accordion-border-width);
+    background-color: var(--color-contrast-low);
+    pointer-events: none;
+  }
+}
+
+// custom input
+.choice-accordion__input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-bg);
+  width: var(--choice-accordion-input-size);
+  height: var(--choice-accordion-input-size);
+  border-width: var(--choice-accordion-input-border-width);
+  border-style: solid;
+  border-color: var(--color-contrast-low);
+
+  .icon {
+    color: var(--choice-accordion-input-icon-color);
+    font-size: var(--choice-accordion-input-icon-size);
+  }
+
+  .choice-accordion__btn:hover & {
+    border-color: var(--color-contrast-medium);
+  }
+
+  .choice-accordion__btn--checked &,
+  .choice-accordion__btn--focus &,
+  .choice-accordion__btn--checked:hover &,
+  .choice-accordion__btn--focus:hover & {
+    border-color: var(--color-primary);
+  }
+
+  .choice-accordion__btn--checked & {
+    background-color: var(--color-primary);
+  }
+
+  .choice-accordion__btn--focus & {
+    box-shadow: 0 0 0 3px alpha(var(--color-primary), 0.2);
+  }
+}
+
+.choice-accordion__input--checkbox {
+  border-radius: var(--radius-sm);
+
+  .icon > * {
+    transition: stroke-dashoffset .3s;
+    stroke-dashoffset: 16;
+    stroke-dasharray: 17;
+  }
+
+  .choice-accordion__btn--checked & .icon > * {
+    stroke-dashoffset: 0;
+    stroke-dasharray: 17;
+  }
+}
+
+.choice-accordion__input--radio {
+  border-radius: 50%;
+
+  .icon {
+    transition: transform .3s var(--bounce);
+    transform: scale(0);
+  }
+
+  .choice-accordion__btn--checked & .icon {
+    transform: scale(1);
+  }
+}
+
+.js {
+  .choice-accordion__fallback {
+    @include srHide; // visible only to screen readers
+  }
+}

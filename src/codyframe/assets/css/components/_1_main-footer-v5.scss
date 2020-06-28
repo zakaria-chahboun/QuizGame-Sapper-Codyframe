@@ -1,0 +1,62 @@
+/* -------------------------------- 
+
+File#: _1_main-footer-v5
+Title: Main Footer v5
+Descr: Footer navigation template
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.footer-v5 {
+  position: relative;
+  z-index: 1;
+}
+
+.footer-v5__popular-link {
+  display: inline-block;
+  padding: var(--space-xxs);
+  background-color: var(--color-contrast-lower);
+  border-radius: var(--radius-md);
+  color: var(--color-contrast-medium);
+  transition: .2s;
+
+  &:hover {
+    color: var(--color-contrast-high);
+    background-color: var(--color-contrast-low);
+  }
+}
+
+.footer-v5__back-to-top {
+  color: var(--color-contrast-medium);
+  transition: color .2s;
+
+  &:hover {
+    color: var(--color-contrast-high);
+  }
+}
+
+.footer-v5__link {
+  color: var(--color-contrast-medium);
+  text-decoration: none;
+  transition: color .2s;
+
+  &:hover {
+    color: var(--color-contrast-high);
+    text-decoration: underline;
+  }
+}
+
+.footer-v5__social-btn {
+  display: block;
+  text-decoration: none;
+  color: var(--color-contrast-medium);
+  transition: color .2s;
+
+  .icon {
+    display: block;
+  }
+
+  &:hover {
+    color: var(--color-contrast-high);
+  }
+}

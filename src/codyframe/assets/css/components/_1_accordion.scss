@@ -1,0 +1,160 @@
+/* -------------------------------- 
+
+File#: _1_accordion
+Title: Accordion
+Descr: Create stacked sections of content and allow the user to expand/collapse them
+Usage: codyhouse.co/license
+
+-------------------------------- */ 
+
+:root {
+  // general
+  --accordion-border-width: 1px;
+  --accordion-border-color: var(--color-contrast-low);
+  // icon
+  --accordion-icon-size: 1em;
+  --accordion-icon-stroke-width: 1.5px;
+}
+
+.accordion {}
+
+.accordion__item {
+  border-style: solid;
+  border-color: var(--accordion-border-color);
+  border-bottom-width: var(--accordion-border-width);
+
+  &:first-child {
+    border-top-width: var(--accordion-border-width);
+  }
+}
+
+.accordion__header { // button
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  cursor: pointer;
+
+  .icon {
+    font-size: var(--accordion-icon-size);
+
+    .icon__group {
+      stroke-width: var(--accordion-icon-stroke-width);
+    }
+  }
+}
+
+.accordion__icon-arrow,
+.accordion__icon-arrow-v2,
+.accordion__icon-plus {
+  .icon__group {
+    will-change: transform;
+    transform-origin: 8px 8px;
+
+    > * {
+      transform-origin: 8px 8px;
+    }
+  }
+}
+
+.accordion__icon-arrow,
+.accordion__icon-arrow-v2 {
+  .icon__group {
+    > * {
+      stroke-dasharray: 17;
+      transform: translateY(3px);
+    }
+
+    > *:first-child {
+      stroke-dashoffset: 8.5;
+    }
+
+    > *:last-child {
+      stroke-dashoffset: 8.5;
+    }
+  }
+}
+
+.accordion__icon-plus {
+  .icon__group {
+    transform: rotate(-90deg);
+
+    > *:first-child {
+      transform: rotate(-90deg);
+    }
+  }
+}
+
+.accordion__item--is-open > .accordion__header {
+  > .accordion__icon-arrow .icon__group { // animated arrow icon
+    > *:first-child {
+      transform: translateY(-3px) rotate(-90deg);
+    }
+
+    > *:last-child {
+      transform: translateY(-3px) rotate(90deg);
+    }
+  }
+
+  > .accordion__icon-arrow-v2 .icon__group { // animated arrow icon v2
+    transform: rotate(-90deg);
+
+    > *:first-child, *:last-child {
+      stroke-dashoffset: 0;
+      transform: translateY(0px);
+    }
+  }
+
+  > .accordion__icon-plus .icon__group { // animated plus icon
+    transform: rotate(0);
+
+    > *:first-child {
+      transform: rotate(0);
+    }
+  }
+}
+
+.js {
+  .accordion__panel {
+    display: none;
+    will-change: height;
+    transform: translateZ(0px);
+  }
+
+  .accordion__item--is-open > .accordion__panel {
+    display: block;
+  }
+}
+
+// animations
+.accordion[data-animation="on"] {
+  .accordion__item--is-open .accordion__panel > * {
+    animation: accordion-entry-animation .4s var(--ease-out);
+  }
+
+  .accordion__icon-arrow,
+  .accordion__icon-arrow-v2,
+  .accordion__icon-plus {
+    .icon__group {
+      transition: transform .3s var(--ease-out);
+
+      > * {
+        transition: transform .3s, stroke-dashoffset .3s;
+        transition-timing-function: var(--ease-out);
+      }
+    }
+  }
+}
+
+@keyframes accordion-entry-animation {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}

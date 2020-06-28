@@ -1,0 +1,13 @@
+/* -------------------------------- 
+
+File#: _1_smooth-scrolling
+Title: Smooth Scrolling
+Descr: Replace the default browser behaviour (jump) with a smooth scrolling transition
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+html {
+  // you can apply this to the container of your scrolling section
+  scroll-behavior: smooth;
+}

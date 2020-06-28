@@ -1,0 +1,154 @@
+/* -------------------------------- 
+
+File#: _1_slider
+Title: Slider
+Descr: Slider element for choosing numbers between a min and a max value
+Usage: codyhouse.co/license
+
+-------------------------------- */ 
+:root {
+  --slider-width: 200px;
+  --slider-track-height: 8px;
+  --slide-thumb-size: 20px;
+  // ⚠️ CSS variables cannot be used in Edge to style range pseudo-elements
+  // check slider__input::-ms-thumb 👇
+}
+
+@mixin sliderThumbStyle { // thumb style
+  width: var(--slide-thumb-size);
+  height: var(--slide-thumb-size);
+  border-radius: 50%;
+  border: none;
+  background-color: var(--color-white);
+  box-shadow: var(--shadow-md);
+  cursor: grab;
+}
+
+@mixin sliderThumbFocusStyle { // thumb focus style
+  box-shadow: 0 0 0 3px alpha(var(--color-primary), 0.2), var(--shadow-md);
+}
+
+@mixin sliderTrackStyle { // track style
+  height: var(--slider-track-height);
+  border-radius: 50em;
+  // this is used to set the background color of the slider: --color-primary for the fill and --color-contrast-low for the deafult color
+  // --slider-fill-value and --slider-empty-value are percentage values defined inside the .slider__range class
+  background-image: linear-gradient(to right, var(--color-primary) var(--slider-fill-value), var(--color-contrast-low) var(--slider-fill-value), var(--color-contrast-low) var(--slider-empty-value));
+}
+
+// slider
+.slider {
+  position: relative;
+  width: var(--slider-width);
+}
+
+.slider__range { // wrapper of the input[type="range"] element
+  width: 100%;
+  // these css variables are updated using JS - change the background color of the slider
+  --slider-fill-value: 0%;
+  --slider-empty-value: 100%;
+}
+
+.slider__input { // range input
+  display: block;
+  -webkit-appearance: none;
+  width: 100%;
+  background: transparent;
+}
+
+.slider__input:focus {
+  outline: none;
+}
+
+// thumb style
+.slider__input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  @include sliderThumbStyle;
+  margin-top: calc((var(--slider-track-height) - var(--slide-thumb-size))*0.5);
+}
+
+.slider__input:active::-webkit-slider-thumb {
+  cursor: grabbing;
+}
+
+.slider__input::-moz-range-thumb {
+  @include sliderThumbStyle;
+}
+
+.slider__input:active::-moz-range-thumb {
+  cursor: grabbing;
+}
+
+.slider__input:active::-ms-thumb {
+  cursor: grabbing;
+}
+
+// thumb focus style
+.slider__input:focus::-webkit-slider-thumb {
+  @include sliderThumbFocusStyle;
+}
+
+.slider__input:focus::-moz-range-thumb {
+  @include sliderThumbFocusStyle;
+}
+
+// track style
+.slider__input::-webkit-slider-runnable-track {
+  @include sliderTrackStyle;
+  margin-top: calc((var(--slide-thumb-size) - var(--slider-track-height))*0.5);
+}
+
+.slider__input::-moz-range-track {
+  @include sliderTrackStyle;
+}
+
+.slider__input::-moz-focus-outer { // fix bug on Firefox - remove dotted outline when input is in focus
+  border: 0;
+}
+
+.js .slider__input::-ms-tooltip { // on IE, hide default tooltip if JS is enabled
+  display: none;
+} 
+
+// ⚠️ CSS variables cannot be used in Edge to style range pseudo-elements 👇
+.slider__input::-ms-thumb {
+  @include sliderThumbStyle;
+  transform: translateY(0);
+  background-color: white !important; 
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, .1);
+  height: 20px;
+  width: 20px;
+}
+
+.slider__input:focus::-ms-thumb {
+  box-shadow: inset 0 0 0 2px hsla(220, 90%, 56%, 0.2);
+}
+
+.slider__input::-ms-track {
+  @include sliderTrackStyle;
+  background-color: hsl(240, 1%, 60%);
+  color: transparent;
+  height: 8px;
+}
+
+// --floating-value
+.slider--floating-value .slider__value {
+  position: absolute;
+  top: calc(0px - var(--space-md));
+  left: var(--slide-thumb-size); // this will be updated using js
+  transform: translateX(-50%);
+  font-size: var(--text-sm);
+}
+
+// --input
+.slider--input .form-control {
+  font-size: var(--text-sm);
+  text-align: center;
+  width: 4em;
+}
+
+// no-js + browsers not supporting range input
+.slider--range-not-supported .slider__value,
+html:not(.js) .slider__value {
+  display: none;
+}
