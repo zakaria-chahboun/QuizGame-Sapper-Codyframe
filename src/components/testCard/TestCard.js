@@ -1,7 +1,5 @@
-
-
 export let types = {
-    locked : "card--locked",
+    locked: "card--locked",
     uncompleted: "card--uncompleted",
     completed: "card--completed"
 }

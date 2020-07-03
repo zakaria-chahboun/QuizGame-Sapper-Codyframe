@@ -1,6 +1,6 @@
 <script>
-  import TestCard from "../components/TestCard.svelte";
-  import { types } from "../components/TestCard.js";
+  import TestCard from "../components/testCard/TestCard.svelte";
+  import { types } from "../components/testCard/TestCard.js";
 
 </script>
 
@@ -14,6 +14,7 @@
     <TestCard type={types.locked}/>
     <TestCard type={types.completed}/>
     <TestCard type={types.uncompleted}/>
+    <TestCard type={types.completed} title="hamza" value=25/>
   </ul>
 
 </div>
