@@ -1,5 +1,7 @@
 <script>
   import { types } from "./types.js";
+  import { mutipleChecks } from "../../components/store/mystore.js"; // for getting the chosen chekbox "answer" (in multiple choices)
+  // The $mutipleChecks += '!' assignment is equivalent to mutipleChecks.set($name + '!').
 
   // export let type = "";
   // export let answer = "Hola!";
@@ -14,9 +16,6 @@
   ];
 
   export let scoopsRadio = 0; // for getting the chosen radio "answer" (in single choice)
-  export let scoopCheck = []; // for getting the chosen chekbox "answer" (in multiple choices)
-
-  $: console.log(scoopCheck);
 </script>
 
 <!-- For Single Answer: Radio Button -->
@@ -44,7 +43,7 @@
         id="check{i + 1}"
         {disabled}
         value={i + 1}
-        bind:group={scoopCheck} />
+        bind:group={$mutipleChecks} />
       <label for="check{i + 1}">{answer}</label>
     </li>
   {/each}

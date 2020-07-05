@@ -3,6 +3,7 @@
   import Choices from "../../components/test/Choices.svelte";
   import MyLayout from "./_myLayout.svelte";
   import { types } from "../../components/test/types.js";
+  import { mutipleChecks } from "../../components/store/mystore.js";
 
   // steps data
   let table = [
@@ -30,19 +31,18 @@
   //let scoopCheck = []; // for getting the chosen chekbox "answer" (in multiple choices)
 
   let isMultiple = !false; // if multiple answers or a single one
-  $: console.log(scoopsRadio);
 
   // Choices Data: "format"
   let data = [
     {
-      type: types.correct,
+      type: types.uncorrect,
       answer: "Hi! How are you? are you fine? really? 01",
       disabled: false
     },
     {
       type: types.correct,
       answer: "Hi! How are you? are you fine? really? 02",
-      disabled: !false
+      disabled: false
     },
     {
       type: types.current,
@@ -50,11 +50,20 @@
       disabled: !false
     },
     {
-      type: types.correct,
+      type: types.current,
       answer: "Hi! How are you? are you fine? really? 04",
       disabled: false
     }
   ];
+
+  // ----- Client Logic ---------
+  $: if (scoopsRadio > 0) {
+    alert(`You chose the ${scoopsRadio} answer!`);
+  }
+
+  $: if ($mutipleChecks.length >= 2) {
+    alert(`You chose the ${$mutipleChecks} answers!`);
+  }
 </script>
 
 <MyLayout>
