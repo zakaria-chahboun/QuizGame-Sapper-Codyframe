@@ -1,0 +1,33 @@
+/* -------------------------------- 
+
+File#: _1_steps-v2
+Title: Steps v2
+Descr: Multi-step navigation with bar indicator
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+:root {
+    --steps-v2-steps-nr: 40; // number of steps
+  }
+  
+  @supports (--css: variables) {
+    .steps-v2__indicator {
+      position: relative;
+      height: 8px;
+      border-radius: 50em;
+      background-color: var(--color-contrast-lower);
+    
+      &::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: calc(100% / var(--steps-v2-steps-nr) * var(--step-v2-current-step, 1));
+        background-color: var(--color-primary);
+        border-radius: inherit;
+        transition: width .2s;
+      }
+    }
+  }

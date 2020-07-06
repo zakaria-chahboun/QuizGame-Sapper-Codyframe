@@ -68,13 +68,21 @@
       <!-- <p>Main content.</p> -->
       <!-- <h3 class="bg-contrast-low">Life in the UK Test 1</h3> -->
       <form>
+        <fieldset>
+          <div class="steps-v2 margin-bottom-md" style="--step-v2-current-step: 5;">
+            <p class="text-sm color-contrast-medium margin-bottom-xs">Step <span class="js-steps-v2__current-step">5</span> of <span class="js-steps-v2__tot-steps">10</span></p>
+
+            <div class="steps-v2__indicator" aria-hidden="true"></div>
+          </div>
+        </fieldset>
         <fieldset class="">
           <legend class="form-legend text-bold">
             Question "Lorem ipsum dolor sit amet consectetur adipisicing elit.
             Magnam, assumenda?"
           </legend>
           <!-- <h4>Question "Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam, assumenda?"</h4> -->
-
+        </fieldset>
+        <fieldset>
           <ul class="radio-list flex flex-column gap-xxxs">
             <!-- Choices slot -->
             <slot />

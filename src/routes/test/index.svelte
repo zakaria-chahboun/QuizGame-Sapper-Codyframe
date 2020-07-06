@@ -30,7 +30,7 @@
   let scoopsRadio = 0; // for getting the chosen radio "answer" (in single choice)
   //let scoopCheck = []; // for getting the chosen chekbox "answer" (in multiple choices)
 
-  let isMultiple = !false; // if multiple answers or a single one
+  let isMultiple = false; // if multiple answers or a single one
 
   // Choices Data: "format"
   let data = [
