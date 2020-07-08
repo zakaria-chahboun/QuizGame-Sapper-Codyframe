@@ -15,18 +15,8 @@
       <!-- <h3 class="bg-contrast-low">Life in the UK Test 1</h3> -->
       <form>
         <fieldset>
-          <div
-            class="steps-v2 margin-bottom-md"
-            style="--step-v2-current-step: 5;">
-            <p class="text-sm color-contrast-medium margin-bottom-xs">
-              Step
-              <span class="js-steps-v2__current-step">5</span>
-              of
-              <span class="js-steps-v2__tot-steps">10</span>
-            </p>
-
-            <div class="steps-v2__indicator" aria-hidden="true" />
-          </div>
+          <!-- Score Slot -->
+          <slot name="score" />
         </fieldset>
         <fieldset class="">
           <legend class="form-legend text-bold">
@@ -60,11 +50,7 @@
             class="details__content text-component margin-top-xs
             js-details__content">
             <!-- Hint Slot -->
-            <slot name="hint">
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facere
-              quia ipsa et voluptatem impedit, recusandae cum quaerat quidem
-              dignissimos minus.
-            </slot>
+            <slot name="hint" />
           </div>
         </details>
 

@@ -1,7 +1,8 @@
 <script>
   import Step from "../../components/test/Step.svelte";
   import Choices from "../../components/test/Choices.svelte";
-  import Sidebar from "../../components/sidebar/sidebar.svelte";
+  import Sidebar from "../../components/sidebar/Sidebar.svelte";
+  import Score from "../../components/score/Score.svelte";
   import MyLayout from "./_myLayout.svelte";
   import { types } from "../../components/test/types.js";
   import { mutipleChecks } from "../../components/store/mystore.js";
@@ -89,6 +90,11 @@
       </span>
     </Sidebar>
   </span>
+
+  <!-- Score Data -->
+  <div slot="score">
+    <Score score=40/>
+  </div>
 
   <!-- Hint Data -->
   <p slot="hint">This is a hint</p>
