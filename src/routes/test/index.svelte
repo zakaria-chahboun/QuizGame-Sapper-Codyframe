@@ -1,6 +1,7 @@
 <script>
   import Step from "../../components/test/Step.svelte";
   import Choices from "../../components/test/Choices.svelte";
+  import Sidebar from "../../components/sidebar/sidebar.svelte";
   import MyLayout from "./_myLayout.svelte";
   import { types } from "../../components/test/types.js";
   import { mutipleChecks } from "../../components/store/mystore.js";
@@ -68,23 +69,29 @@
 
 <MyLayout>
 
+  <!-- Question Data -->
+  <span slot="question">
+    Question "Lorem ipsum dolor sit amet consectetur adipisicing elit. Magnam,
+    assumenda?"
+  </span>
+
   <!-- Choices Data as: x4 let data=[{type:...,answer:...,disabled:...},{type:...,answer:...,disabled:...}]-->
   <Choices {isMultiple} bind:scoopsRadio {data} />
 
-  <!-- Steps Data -->
-  <span slot="steps">
-    {#each table as t, i}
-      <Step type={t.type} index={i + 1} url={t.url} />
-    {/each}
+  <!-- Sidebar Data -->
+  <span slot="sidebar">
+    <Sidebar>
+      <!-- Steps Data -->
+      <span slot="steps">
+        {#each table as t, i}
+          <Step type={t.type} index={i + 1} url={t.url} />
+        {/each}
+      </span>
+    </Sidebar>
   </span>
 
   <!-- Hint Data -->
   <p slot="hint">This is a hint</p>
-
-  <!-- Prev Button Data -->
-  <button slot="prevButton" class=" btn btn--default text-component">
-    Prev Question
-  </button>
 
   <!-- Next Button Data -->
   <button slot="nextButton" class="btn btn--default text-component ">
