@@ -93,7 +93,7 @@
 
   <!-- Score Data -->
   <div slot="score">
-    <Score score=40/>
+    <Score score="40" />
   </div>
 
   <!-- Hint Data -->
