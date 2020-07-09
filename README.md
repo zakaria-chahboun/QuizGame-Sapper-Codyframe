@@ -8,4 +8,4 @@ install the dependencies:
 npm install
 ``` 
 
-in `/src/private` folder add your firebase *json* configurations.
+in `/src/private` folder add your firebase *json* configurations. and name it as **firebase-config.json**
