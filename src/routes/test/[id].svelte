@@ -1,12 +1,8 @@
 <script context="module">
   import { admin } from "../../firebase.js";
-  
+
   export async function preload(page, session) {
     const { id } = page.params;
-
-    console.log(admin);
-    
-
   }
 </script>
 

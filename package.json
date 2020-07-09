@@ -14,7 +14,6 @@
   "dependencies": {
     "codyhouse-framework": "^2.7.3",
     "compression": "^1.7.1",
-    "dotenv": "^8.2.0",
     "firebase-admin": "^8.13.0",
     "polka": "next",
     "rollup": "^2.13.0",
