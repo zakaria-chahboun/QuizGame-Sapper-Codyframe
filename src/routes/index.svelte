@@ -1,12 +1,10 @@
 <script context="module">
-  import { admin } from "../firebase.js";
-
+  import { firebase } from "../firebase.js";
   export async function preload(page, session) {
-    const snapshot = await admin
+    const snapshot = await firebase
       .firestore()
       .collection("tests")
       .get();
-
     return { tests: snapshot.docs.map(doc => doc.data()) };
   }
 </script>
@@ -14,6 +12,7 @@
 <script>
   import TestCard from "../components/testCard/TestCard.svelte";
   import { types } from "../components/testCard/TestCard.js";
+
   export let tests;
 </script>
 
