@@ -1,11 +1,8 @@
 <script context="module">
-  import { firebase } from "../firebase.js";
   export async function preload(page, session) {
-    const snapshot = await firebase
-      .firestore()
-      .collection("tests")
-      .get();
-    return { tests: snapshot.docs.map(doc => doc.data()) };
+    let res = await this.fetch(`index.json`);
+    let tests = await res.json();
+    return { tests };
   }
 </script>
 
