@@ -18,3 +18,7 @@ npm install
   "databaseURL": "https://my-firebase-test.firebaseio.com"
 }
 ```
+
+### Tests Plan
+
+<img src='./testplan.svg' alert='svg tests plan'/>
