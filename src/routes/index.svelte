@@ -1,6 +1,6 @@
 <script context="module">
   export async function preload(page, session) {
-    let res = await this.fetch(`index.json`);
+    let res = await this.fetch(`api/tests`);
     let tests = await res.json();
     return { tests };
   }
@@ -9,6 +9,7 @@
 <script>
   import TestCard from "../components/testCard/TestCard.svelte";
   import { types } from "../components/testCard/TestCard.js";
+  import { goto } from "@sapper/app";
 
   export let tests;
 </script>
@@ -17,13 +18,12 @@
 <div class="container margin-top-lg justify-between@md max-width-lg">
   <ul class="grid-auto-xl gap-md">
     <!-- TestCard Elements -->
-    {#each tests as { testTitle, testSubTitle, testProgress, testStatus }}
+    {#each tests as {id, testTitle, testSubtitle, isAuth }}
       <TestCard
-        type="card--{testStatus}"
-        value={testProgress}
+        type="card--{isAuth ? 'locked' : 'uncompleted'}"
         title={testTitle}
-        subtitle={testSubTitle}
-        url="#" />
+        subtitle={testSubtitle}
+        url="/test/{id}/{0}" />
     {/each}
   </ul>
 </div>
