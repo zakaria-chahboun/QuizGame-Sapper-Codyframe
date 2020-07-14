@@ -9,9 +9,11 @@
     const questionIndex = id[1];
 
     // -- get a question reference from (index) of current test --
-    let res1 = await this.fetch(`api/question_of_test/${testID}/${questionIndex}`);
+    let res1 = await this.fetch(
+      `api/question_of_test/${testID}/${questionIndex}`
+    );
     let questionReference = await res1.json();
-    
+
     // -- get the question data from the 1st step --
     let res2 = await this.fetch(`api/question/${questionReference.reference}`);
     let questionData = await res2.json();
@@ -36,11 +38,12 @@
 
     let isMultiple = counter > 1 ? true : false;
 
-    // -- get the question data from the 1st step --
-    let res3= await this.fetch(`api/questions/test/${testID}`);
+    // -- get all question references of test --
+    let res3 = await this.fetch(`api/questions/test/${testID}`);
     let table = await res3.json();
     let i = 0;
 
+    // set the "seps" table with correct format + add referece if someone need :p
     table.map(el => {
       let step = el;
       step.type = "current";
@@ -49,7 +52,14 @@
       return step;
     });
 
-    return { question, description, isMultiple, choices, table };
+    return {
+      question,
+      description,
+      isMultiple,
+      choices,
+      table,
+      currentQuestionIndex: questionIndex
+    };
   }
 </script>
 
@@ -61,6 +71,7 @@
   import MyLayout from "./_myLayout.svelte";
   import { types } from "../../components/test/types.js";
   import { mutipleChecks } from "../../components/store/mystore.js";
+  import { goto } from "@sapper/app";
 
   //console.log($stepsStates);
 
@@ -74,32 +85,12 @@
   export let choices;
   // if multiple answers or a single one
   export let isMultiple;
+  // currect question index
+  export let currentQuestionIndex;
+
+  console.log(currentQuestionIndex);
 
   let scoopsRadio = 0; // for getting the chosen radio "answer" (in single choice)
-
-  // Choices Data: "format"
-  let data = [
-    {
-      type: types.uncorrect,
-      answer: "Hi! How are you? are you fine? really? 01",
-      disabled: false
-    },
-    {
-      type: types.correct,
-      answer: "Hi! How are you? are you fine? really? 02",
-      disabled: false
-    },
-    {
-      type: types.current,
-      answer: "Hi! How are you? are you fine? really? 03",
-      disabled: !false
-    },
-    {
-      type: types.current,
-      answer: "Hi! How are you? are you fine? really? 04",
-      disabled: false
-    }
-  ];
 
   // ----- Client Logic ---------
   $: if (scoopsRadio > 0) {
@@ -140,7 +131,7 @@
   <p slot="hint">{description}</p>
 
   <!-- Next Button Data -->
-  <button slot="nextButton" class="btn btn--default text-component ">
+  <button slot="nextButton" class="btn btn--default text-component">
     Next Question
   </button>
 
