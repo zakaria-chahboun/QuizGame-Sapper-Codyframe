@@ -36,26 +36,18 @@
 
     let isMultiple = counter > 1 ? true : false;
 
-    let table = [
-      { type: types.current, url: "google.com" },
-      { type: types.correct, url: "google.com" },
-      { type: types.uncorrect, url: "google.com" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" },
-      { type: "", url: "#" }
-    ];
+    // -- get the question data from the 1st step --
+    let res3= await this.fetch(`api/questions/test/${testID}`);
+    let table = await res3.json();
+    let i = 0;
+
+    table.map(el => {
+      let step = el;
+      step.type = "current";
+      step.url = `/test/${testID}/${i}`;
+      i++;
+      return step;
+    });
 
     return { question, description, isMultiple, choices, table };
   }

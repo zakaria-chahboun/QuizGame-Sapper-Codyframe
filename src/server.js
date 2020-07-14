@@ -61,7 +61,7 @@ polka()
 		res.setHeader('Content-Type', 'application/json');
 		res.end(JSON.stringify(questionsOfTest));
 	})
-	// -- get one question reference (by index) of test
+	// -- get one (question reference (by index)) of test
 	.get('api/question_of_test/:testID/:questionIndex', async (req, res) => {
 
 		const {
