@@ -7,6 +7,9 @@ Usage: codyhouse.co/license
 
 -------------------------------- */
 
+.sidebar{
+  max-width: 400px;
+}
 // mobile version only (--default) 👇
 .sidebar:not(.sidebar--static) {
   position: fixed;
@@ -170,7 +173,7 @@ html:not(.js) .sidebar {
 
   .progress-cell.current-cell{
     background-color: var(--color-secondary);
-    color: var(--color-primary-light);
+    color: var(--color-primary);
   }
   .progress-cell.correct-cell{
     // background-color: rgba(var(--color-success), $alpha: 0.25);

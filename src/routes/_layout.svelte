@@ -1,4 +1,5 @@
 <script>
+  export let segment;
   import Navbar from "../components/Navbar.svelte";
   import { onMount } from "svelte";
 
@@ -24,10 +25,6 @@ let codyframeScript = "";
 
 </svelte:head>
 
-
-<main>
 <!-- Navbar CodyFrame -->
-<Navbar />
+<Navbar {segment}/>
   <slot />
-</main>
-

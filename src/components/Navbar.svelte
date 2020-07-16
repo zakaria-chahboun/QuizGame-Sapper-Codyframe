@@ -1,4 +1,8 @@
-<!-- Navbar Codyframe -->
+<script>
+  export let segment;
+</script>
+
+<!-- Navbar -->
 <header
   class="f-header js-f-header bg hide-nav js-hide-nav js-hide-nav--main"
   data-mobile-trigger="js-anim-menu-btn">
@@ -20,7 +24,8 @@
     <button
       class="reset anim-menu-btn js-anim-menu-btn f-header__nav-control
       js-tab-focus"
-      aria-label="Toggle menu" id="mytestbutton">
+      aria-label="Toggle menu"
+      id="mytestbutton">
       <i
         class="anim-menu-btn__icon anim-menu-btn__icon--close"
         aria-hidden="true" />
@@ -49,12 +54,10 @@
       <!-- Nav Right Side -->
       <ul class="f-header__list flex-grow flex-basis-0 justify-end@md">
         <li class="f-header__item">
-          <a href="login" class="f-header__link">Login</a>
+          <a class={(segment === 'login') ? 'f-header__btn btn btn--primary' : (segment === 'undefined') ? 'f-header__link' : 'f-header__link'} href="login">Login</a>
         </li>
         <li class="f-header__item">
-          <a href="signup" class="f-header__btn btn btn--primary">
-            Sign Up
-          </a>
+          <a class={(segment === 'signup') ? 'f-header__btn btn btn--primary' : (segment === 'undefined') || (segment === 'login') ? 'f-header__link' : 'f-header__btn btn btn--primary'} href="signup">Sign Up</a>
         </li>
       </ul>
     </div>

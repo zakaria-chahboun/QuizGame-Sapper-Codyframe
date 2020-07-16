@@ -66,9 +66,9 @@
 <script>
   import Step from "../../components/test/Step.svelte";
   import Choices from "../../components/test/Choices.svelte";
-  import Sidebar from "../../components/sidebar/Sidebar.svelte";
+  import Sidebar from "../../components/Sidebar.svelte";
   import Score from "../../components/score/Score.svelte";
-  import MyLayout from "./_myLayout.svelte";
+  import MyLayout from "./_test.svelte";
   import { types } from "../../components/test/types.js";
   import { mutipleChecks } from "../../components/store/mystore.js";
   import { goto } from "@sapper/app";
@@ -101,26 +101,14 @@
     alert(`You chose the ${$mutipleChecks} answers!`);
   }
 </script>
-
+  
 <MyLayout>
 
   <!-- Question Data -->
-  <span slot="question">{question}</span>
+  <h4 slot="question">{question}</h4>
 
   <!-- Choices Data as: x4 let data=[{type:...,answer:...,disabled:...},{type:...,answer:...,disabled:...}]-->
   <Choices {isMultiple} bind:scoopsRadio data={choices} />
-
-  <!-- Sidebar Data -->
-  <span slot="sidebar">
-    <Sidebar>
-      <!-- Steps Data -->
-      <span slot="steps">
-        {#each table as t, i}
-          <Step type={t.type} index={i + 1} url={t.url} />
-        {/each}
-      </span>
-    </Sidebar>
-  </span>
 
   <!-- Score Data -->
   <div slot="score">

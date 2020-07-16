@@ -1,5 +1,6 @@
+<!-- Sidebar -->
 <aside
-  class="sidebar sidebar--static@md js-sidebar"
+  class="sidebar sidebar--static@md js-sidebar sidebar--static border-right sidebar--loaded"
   data-static-class="border-right"
   id="sidebar"
   aria-labelledby="sidebarTitle">
@@ -32,8 +33,6 @@
       <div class="progress__panel">
         <!-- Steps Slot -->
         <slot name="steps" />
-        <!-- This will solve a justify-between flex property 5 items in a row -->
-        <!-- <i aria-hidden="true"></i> -->
       </div>
       <div class="flex justify-between margin-top-sm">
         <div class="text-left">

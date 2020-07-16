@@ -222,4 +222,5 @@ Usage: codyhouse.co/license
 .radio--bg:checked.uncorrect + label,
 .checkbox--bg:checked.uncorrect + label {
   background-color: alpha(var(--color-error), 0.2);
+  text-decoration: line-through;
 }
