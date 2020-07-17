@@ -101,7 +101,7 @@
     alert(`You chose the ${$mutipleChecks} answers!`);
   }
 </script>
-  
+
 <MyLayout>
 
   <!-- Question Data -->
@@ -109,6 +109,16 @@
 
   <!-- Choices Data as: x4 let data=[{type:...,answer:...,disabled:...},{type:...,answer:...,disabled:...}]-->
   <Choices {isMultiple} bind:scoopsRadio data={choices} />
+
+  <!-- Side Bar -->
+  <span slot="sidebar">
+    <Sidebar>
+      <!-- Circle Steps Data -->
+      {#each table as t, i}
+        <Step type={t.type} index={i + 1} url={t.url} />
+      {/each}
+    </Sidebar>
+  </span>
 
   <!-- Score Data -->
   <div slot="score">

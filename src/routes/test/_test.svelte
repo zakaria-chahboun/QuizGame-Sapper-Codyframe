@@ -1,7 +1,3 @@
-<script>
-  import Sidebar from "../../components/Sidebar.svelte";
-</script>
-
 <div class="padding-component hide@md no-js:is-hidden">
   <button class="btn btn--primary" aria-controls="sidebar">
     Show progress
@@ -10,16 +6,7 @@
 
 <div class="flex@md margin-auto max-width-lg">
   <!-- Side Bar Slot -->
-  <Sidebar /> <!-- You should pass the Data inside the component -->
-
-  
-    <!-- Steps Data -->
-    <!-- <span slot="steps">
-      {#each table as t, i}
-        <Step type={t.type} index={i + 1} url={t.url} />
-      {/each}
-    </span>
-  </Sidebar> -->
+  <slot name="sidebar" />
 
   <!-- Test Area -->
   <main class="flex-grow">

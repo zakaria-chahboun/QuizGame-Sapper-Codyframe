@@ -1,6 +1,7 @@
 <!-- Sidebar -->
 <aside
-  class="sidebar sidebar--static@md js-sidebar sidebar--static border-right sidebar--loaded"
+  class="sidebar sidebar--static@md js-sidebar sidebar--static border-right
+  sidebar--loaded"
   data-static-class="border-right"
   id="sidebar"
   aria-labelledby="sidebarTitle">
@@ -31,8 +32,8 @@
     <div class="sidebar__content padding-md">
       <!-- start sidebar content -->
       <div class="progress__panel">
-        <!-- Steps Slot -->
-        <slot name="steps" />
+        <!-- Circle Steps Slot -->
+        <slot />
       </div>
       <div class="flex justify-between margin-top-sm">
         <div class="text-left">
