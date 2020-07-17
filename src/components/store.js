@@ -2,5 +2,8 @@ import {
     writable
 } from 'svelte/store';
 
-// to get the chosen chekbox "answer" (in multiple choices case)
-export const multiChoiceCheck = writable([]);
+/*
+ - The $saver += '!' assignment is equivalent to saver.set($name + '!').
+*/
+
+export const saver = writable([]);

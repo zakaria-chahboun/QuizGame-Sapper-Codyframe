@@ -1,10 +1,5 @@
 <script>
   import { ChoiceTypes } from "./types.js";
-  import { multiChoiceCheck } from "./store.js";
-  /*
-   - to get the chosen chekbox "answer" (in multiple choices case).
-   - The $multiChoiceCheck += '!' assignment is equivalent to multiChoiceCheck.set($name + '!').
-  */
 
   export let isMultiple = false;
 
@@ -17,7 +12,9 @@
   ];
 
   // to get the chosen radio "answer" (in single choice)
-  export let singleChoiceCheck = 0;
+  export let singleChoiceAnswer = 0;
+  // to get the chosen checks "answers" (in multi-choices)
+  export let multiChoiceAnswers = [];
 </script>
 
 <!-- For Single Answer: Radio Button -->
@@ -31,7 +28,7 @@
         name={isMultiple ? '' : 'my-group'}
         {disabled}
         value={i + 1}
-        bind:group={singleChoiceCheck} />
+        bind:group={singleChoiceAnswer} />
       <label for="radio{i + 1}">{answer}</label>
     </li>
   {/each}
@@ -45,7 +42,7 @@
         id="check{i + 1}"
         {disabled}
         value={i + 1}
-        bind:group={$multiChoiceCheck} />
+        bind:group={multiChoiceAnswers} />
       <label for="check{i + 1}">{answer}</label>
     </li>
   {/each}
