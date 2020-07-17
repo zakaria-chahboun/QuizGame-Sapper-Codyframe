@@ -32,7 +32,7 @@
     <div class="sidebar__content padding-md">
       <!-- start sidebar content -->
       <div class="progress__panel">
-        <!-- Circle Steps Slot -->
+        <!-- StepCircles Slot -->
         <slot />
       </div>
       <div class="flex justify-between margin-top-sm">

@@ -23,6 +23,7 @@
         type="card--{isAuth ? 'locked' : 'uncompleted'}"
         title={testTitle}
         subtitle={testSubtitle}
+        value=5
         url="/test/{id}/{0}" />
     {/each}
   </ul>

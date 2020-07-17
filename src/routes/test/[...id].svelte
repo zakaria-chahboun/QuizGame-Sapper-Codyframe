@@ -64,12 +64,12 @@
 </script>
 
 <script>
-  import Step from "../../components/test/Step.svelte";
-  import Choices from "../../components/test/Choices.svelte";
+  import StepCircles from "../../components/StepCircles.svelte";
+  import Choices from "../../components/Choices.svelte";
   import Sidebar from "../../components/Sidebar.svelte";
-  import StepBar from "../../components/StapBar.svelte";
+  import StepBar from "../../components/StepBar.svelte";
   import MyLayout from "./_test.svelte";
-  import { types } from "../../components/test/types.js";
+  import { types } from "../../components/types.js";
   import { mutipleChecks } from "../../components/store/mystore.js";
   import { goto } from "@sapper/app";
 
@@ -115,7 +115,7 @@
     <Sidebar>
       <!-- Circle Steps Data -->
       {#each table as t, i}
-        <Step type={t.type} index={i + 1} url={t.url} />
+        <StepCircles type={t.type} index={i + 1} url={t.url} />
       {/each}
     </Sidebar>
   </span>
