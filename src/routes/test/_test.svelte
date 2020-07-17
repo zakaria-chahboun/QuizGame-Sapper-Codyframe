@@ -12,8 +12,8 @@
   <main class="flex-grow">
     <!-- start main content -->
     <div class="text-component padding-md max-width-md">
-      <!-- Score Slot -->
-      <slot name="score" />
+      <!-- StepBat Slot -->
+      <slot name="stap-bar" />
 
       <legend class="form-legend text-bold">
         <!-- Question Slot -->

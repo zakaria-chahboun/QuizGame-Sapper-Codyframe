@@ -67,7 +67,7 @@
   import Step from "../../components/test/Step.svelte";
   import Choices from "../../components/test/Choices.svelte";
   import Sidebar from "../../components/Sidebar.svelte";
-  import Score from "../../components/score/Score.svelte";
+  import StepBar from "../../components/StapBar.svelte";
   import MyLayout from "./_test.svelte";
   import { types } from "../../components/test/types.js";
   import { mutipleChecks } from "../../components/store/mystore.js";
@@ -121,8 +121,8 @@
   </span>
 
   <!-- Score Data -->
-  <div slot="score">
-    <Score score="0" />
+  <div slot="stap-bar">
+    <StepBar index="0" />
   </div>
 
   <!-- Hint Data -->
