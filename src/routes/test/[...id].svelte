@@ -123,9 +123,9 @@
     </Sidebar>
   </span>
 
-  <!-- Score Data -->
+  <!-- Stepbar Data -->
   <div slot="stap-bar">
-    <StepBar index="0" />
+    <StepBar index="{currentQuestionIndex}" />
   </div>
 
   <!-- Hint Data -->
