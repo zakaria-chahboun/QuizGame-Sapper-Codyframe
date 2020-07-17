@@ -7,8 +7,7 @@
 </script>
 
 <script>
-  import TestCard from "../components/testCard/TestCard.svelte";
-  import { types } from "../components/testCard/TestCard.js";
+  import TestCard from "../components/TestCard.svelte";
   import { goto } from "@sapper/app";
 
   export let tests;
@@ -23,7 +22,7 @@
         type="card--{isAuth ? 'locked' : 'uncompleted'}"
         title={testTitle}
         subtitle={testSubtitle}
-        value=5
+        value=25
         url="/test/{id}/{0}" />
     {/each}
   </ul>

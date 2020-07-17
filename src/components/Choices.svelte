@@ -1,5 +1,5 @@
 <script>
-  import { types } from "./types.js";
+  import { ChoiceTypes } from "./types.js";
   import { mutipleChecks } from "./store/mystore.js"; // for getting the chosen chekbox "answer" (in multiple choices)
   // The $mutipleChecks += '!' assignment is equivalent to mutipleChecks.set($name + '!').
 
@@ -9,10 +9,10 @@
   export let isMultiple = false;
 
   export let data = [
-    { type: types.correct, answer: "Hola1 !", disabled: false },
-    { type: types.uncorrect, answer: "Hola2 !", disabled: false },
-    { type: types.current, answer: "Hola3 !", disabled: false },
-    { type: types.correct, answer: "Hola4 !", disabled: false }
+    { type: ChoiceTypes.correct, answer: "Hola1 !", disabled: false },
+    { type: ChoiceTypes.uncorrect, answer: "Hola2 !", disabled: false },
+    { type: ChoiceTypes.current, answer: "Hola3 !", disabled: false },
+    { type: ChoiceTypes.correct, answer: "Hola4 !", disabled: false }
   ];
 
   export let scoopsRadio = 0; // for getting the chosen radio "answer" (in single choice)

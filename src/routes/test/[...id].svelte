@@ -26,7 +26,7 @@
     // set choices data with the right format
     for (let e of questionData.answers) {
       choices.push({
-        type: types.current,
+        type: StepCircleTypes.current,
         answer: e.answer,
         disabled: false
       });
@@ -64,12 +64,12 @@
 </script>
 
 <script>
-  import StepCircles from "../../components/StepCircles.svelte";
   import Choices from "../../components/Choices.svelte";
   import Sidebar from "../../components/Sidebar.svelte";
   import StepBar from "../../components/StepBar.svelte";
+  import StepCircles from "../../components/StepCircles.svelte";
   import MyLayout from "./_test.svelte";
-  import { types } from "../../components/types.js";
+  import { StepCircleTypes } from "../../components/types.js";
   import { mutipleChecks } from "../../components/store/mystore.js";
   import { goto } from "@sapper/app";
 
