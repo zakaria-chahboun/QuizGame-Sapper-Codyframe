@@ -40,14 +40,15 @@
 
     // -- get all question references of test --
     let res3 = await this.fetch(`api/questions/test/${testID}`);
-    let table = await res3.json();
+    let stepCircles = await res3.json();
     let i = 0;
 
     // set the "seps" table with correct format + add referece if someone need :p
-    table.map(el => {
+    stepCircles.map(el => {
       let step = el;
       step.type = "current";
       step.url = `/test/${testID}/${i}`;
+      step.index = i;
       i++;
       return step;
     });
@@ -57,7 +58,7 @@
       description,
       isMultiple,
       choices,
-      table,
+      stepCircles,
       currentQuestionIndex: questionIndex
     };
   }
@@ -73,10 +74,8 @@
   import { mutipleChecks } from "../../components/store.js";
   import { goto } from "@sapper/app";
 
-  //console.log($stepsStates);
-
-  // steps data
-  export let table;
+  // step circles data
+  export let stepCircles;
   // question title data
   export let question;
   // quetion description data
@@ -107,16 +106,14 @@
   <!-- Question Data -->
   <h4 slot="question">{question}</h4>
 
-  <!-- Choices Data as: x4 let data=[{type:...,answer:...,disabled:...},{type:...,answer:...,disabled:...}]-->
+  <!-- Choices Data -->
   <Choices {isMultiple} bind:scoopsRadio data={choices} />
 
   <!-- Side Bar -->
   <span slot="sidebar">
     <Sidebar>
       <!-- Circle Steps Data -->
-      {#each table as t, i}
-        <StepCircles type={t.type} index={i + 1} url={t.url} />
-      {/each}
+      <StepCircles data={stepCircles} />
     </Sidebar>
   </span>
 

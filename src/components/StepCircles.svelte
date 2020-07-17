@@ -1,10 +1,17 @@
 <script>
   import { goto } from "@sapper/app";
-  export let index = 1; // default
-  export let type = ""; // default
-  export let url = "#"; // default
+
+  // data format:
+  export let data = [
+    { type: "", url: "#", index: 1 },
+    { type: "", url: "#", index: 2 },
+    { type: "", url: "#", index: 3 },
+    { type: "", url: "#", index: 4 }
+  ];
 </script>
 
-<div class="progress-cell {type}-cell" on:click={() => goto(url)}>
-  <p>{index}</p>
-</div>
+{#each data as { type, index, url }}
+  <div class="progress-cell {type}-cell" on:click={() => goto(url)}>
+    <p>{index}</p>
+  </div>
+{/each}

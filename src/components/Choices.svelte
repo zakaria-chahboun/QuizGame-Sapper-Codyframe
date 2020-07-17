@@ -1,13 +1,14 @@
 <script>
   import { ChoiceTypes } from "./types.js";
-  import { mutipleChecks } from "./store.js"; // for getting the chosen chekbox "answer" (in multiple choices)
-  // The $mutipleChecks += '!' assignment is equivalent to mutipleChecks.set($name + '!').
+  import { mutipleChecks } from "./store.js";
+  /*
+   - to get the chosen chekbox "answer" (in multiple choices case).
+   - The $mutipleChecks += '!' assignment is equivalent to mutipleChecks.set($name + '!').
+  */
 
-  // export let type = "";
-  // export let answer = "Hola!";
-  // export let disabled = false;
   export let isMultiple = false;
 
+  // data format:
   export let data = [
     { type: ChoiceTypes.correct, answer: "Hola1 !", disabled: false },
     { type: ChoiceTypes.uncorrect, answer: "Hola2 !", disabled: false },
@@ -15,7 +16,8 @@
     { type: ChoiceTypes.correct, answer: "Hola4 !", disabled: false }
   ];
 
-  export let scoopsRadio = 0; // for getting the chosen radio "answer" (in single choice)
+  // to get the chosen radio "answer" (in single choice)
+  export let scoopsRadio = 0;
 </script>
 
 <!-- For Single Answer: Radio Button -->
