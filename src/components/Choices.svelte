@@ -17,7 +17,7 @@
   ];
 
   // to get the chosen radio "answer" (in single choice)
-  export let scoopsRadio = 0;
+  export let singleChoiceCheck = 0;
 </script>
 
 <!-- For Single Answer: Radio Button -->
@@ -31,7 +31,7 @@
         name={isMultiple ? '' : 'my-group'}
         {disabled}
         value={i + 1}
-        bind:group={scoopsRadio} />
+        bind:group={singleChoiceCheck} />
       <label for="radio{i + 1}">{answer}</label>
     </li>
   {/each}

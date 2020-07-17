@@ -71,7 +71,7 @@
   import StepCircles from "../../components/StepCircles.svelte";
   import MyLayout from "./_test.svelte";
   import { StepCircleTypes } from "../../components/types.js";
-  import { mutipleChecks } from "../../components/store.js";
+  import { multiChoiceCheck } from "../../components/store.js";
   import { goto } from "@sapper/app";
 
   // step circles data
@@ -89,15 +89,16 @@
 
   console.log(currentQuestionIndex);
 
-  let scoopsRadio = 0; // for getting the chosen radio "answer" (in single choice)
+  // to get the chosen radio "answer" (in single choice case) by binding from child to parent ;)
+  let singleChoiceAnswer = 0;
 
   // ----- Client Logic ---------
-  $: if (scoopsRadio > 0) {
-    alert(`You chose the ${scoopsRadio} answer!`);
+  $: if (singleChoiceAnswer > 0) {
+    alert(`You chose the ${singleChoiceAnswer} answer!`);
   }
 
-  $: if ($mutipleChecks.length >= 2) {
-    alert(`You chose the ${$mutipleChecks} answers!`);
+  $: if ($multiChoiceCheck.length >= 2) {
+    alert(`You chose the ${$multiChoiceCheck} answers!`);
   }
 </script>
 
@@ -107,7 +108,7 @@
   <h4 slot="question">{question}</h4>
 
   <!-- Choices Data -->
-  <Choices {isMultiple} bind:scoopsRadio data={choices} />
+  <Choices {isMultiple} bind:singleChoiceAnswer data={choices} />
 
   <!-- Side Bar -->
   <span slot="sidebar">

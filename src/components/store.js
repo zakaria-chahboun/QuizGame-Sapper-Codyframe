@@ -2,5 +2,5 @@ import {
     writable
 } from 'svelte/store';
 
-// for getting the chosen chekbox "answer" (in multiple choices)
-export const mutipleChecks = writable([]);
+// to get the chosen chekbox "answer" (in multiple choices case)
+export const multiChoiceCheck = writable([]);
