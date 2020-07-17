@@ -70,7 +70,7 @@
   import StepCircles from "../../components/StepCircles.svelte";
   import MyLayout from "./_test.svelte";
   import { StepCircleTypes } from "../../components/types.js";
-  import { mutipleChecks } from "../../components/store/mystore.js";
+  import { mutipleChecks } from "../../components/store.js";
   import { goto } from "@sapper/app";
 
   //console.log($stepsStates);

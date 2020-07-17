@@ -1,6 +1,6 @@
 <script>
   import { ChoiceTypes } from "./types.js";
-  import { mutipleChecks } from "./store/mystore.js"; // for getting the chosen chekbox "answer" (in multiple choices)
+  import { mutipleChecks } from "./store.js"; // for getting the chosen chekbox "answer" (in multiple choices)
   // The $mutipleChecks += '!' assignment is equivalent to mutipleChecks.set($name + '!').
 
   // export let type = "";
