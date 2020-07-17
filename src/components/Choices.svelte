@@ -1,9 +1,9 @@
 <script>
   import { ChoiceTypes } from "./types.js";
-  import { mutipleChecks } from "./store.js";
+  import { multiChoiceCheck } from "./store.js";
   /*
    - to get the chosen chekbox "answer" (in multiple choices case).
-   - The $mutipleChecks += '!' assignment is equivalent to mutipleChecks.set($name + '!').
+   - The $multiChoiceCheck += '!' assignment is equivalent to multiChoiceCheck.set($name + '!').
   */
 
   export let isMultiple = false;
@@ -45,7 +45,7 @@
         id="check{i + 1}"
         {disabled}
         value={i + 1}
-        bind:group={$mutipleChecks} />
+        bind:group={$multiChoiceCheck} />
       <label for="check{i + 1}">{answer}</label>
     </li>
   {/each}
