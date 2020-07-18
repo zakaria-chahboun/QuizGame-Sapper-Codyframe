@@ -6,11 +6,11 @@
   // if you put the script tag in the "template.htmp" or directly in the "svelte:head" tag section: it's not work as expected! because of the stupid codyframe js coding
   // the only way to get all functionalities work, is by inject the script with onMount
   // - zaki
-  let codyframeScript = "";
   let util = "";
+  let codyframeScript = "";
   onMount(() => {
-    codyframeScript = "codyframe/scripts.js";
     util = "codyframe/util.js";
+    codyframeScript = "codyframe/scripts.js";
   });
 </script>
 
@@ -27,8 +27,6 @@
   <script defer src={codyframeScript}>
 
   </script>
-
-  <script defer src="./codyframe/components/_1_progress-bar.js"></script>
 </svelte:head>
 
 <!-- Navbar CodyFrame -->
