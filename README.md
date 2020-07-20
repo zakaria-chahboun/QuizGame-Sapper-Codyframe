@@ -11,6 +11,9 @@ npm install
 ```
 
 - In `/src/private` folder add your firebase _json_ configurations. and rename it as **firebase-config.json**.
+
+> Note: we use the firebase in the server which require a *-private key-* from firebase itself, So you have to create one [click here to read the docs](https://firebase.google.com/docs/admin/setup#initialize-sdk), if you finish this step you must have a complete json file iclude all the configurations.
+
 - Also in `/src/private` you have to create a **firebase-database-url.json** file, and put your `databaseUrl` into like that:
 
 ```json
