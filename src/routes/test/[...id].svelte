@@ -103,6 +103,12 @@
   }
 </script>
 
+<svelte:head>
+  <script defer src="codyframe/scripts.js">
+
+  </script>
+</svelte:head>
+
 <MyLayout>
 
   <!-- Question Data -->
@@ -125,7 +131,7 @@
 
   <!-- Stepbar Data -->
   <div slot="stap-bar">
-    <StepBar index="{currentQuestionIndex}" />
+    <StepBar index={currentQuestionIndex} />
   </div>
 
   <!-- Hint Data -->
