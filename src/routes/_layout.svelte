@@ -1,6 +1,6 @@
 <script>
-  export let segment;
-  import Navbar from "../components/Navbar.svelte";
+  //export let segment;
+  // import Navbar from "../components/Navbar.svelte";
   //import { onMount } from "svelte";
 
   // if you put the script tag in the "template.htmp" or directly in the "svelte:head" tag section: it's not work as expected! because of the stupid codyframe js coding
@@ -21,9 +21,8 @@
 <!-- <svelte:head>
   <script defer src={codyframeScript}>
 
-  </script>
-</svelte:head> -->
+  </script></svelte:head> -->
 
 <!-- Navbar CodyFrame -->
-<Navbar {segment} />
+<!-- <Navbar {segment} /> -->
 <slot />

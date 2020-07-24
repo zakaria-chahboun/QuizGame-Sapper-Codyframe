@@ -103,12 +103,6 @@
   }
 </script>
 
-<svelte:head>
-  <script defer src="codyframe/scripts.js">
-
-  </script>
-</svelte:head>
-
 <MyLayout>
 
   <!-- Question Data -->

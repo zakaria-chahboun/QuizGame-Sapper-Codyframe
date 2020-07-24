@@ -1,3 +1,24 @@
+<script>
+  import Navbar from "../../components/Navbar.svelte";
+  import { onMount } from "svelte";
+
+  // ------ To mount the CodyFrame scripts ------------------------
+  let codyFrameScripts = "";
+  onMount(() => {
+    codyFrameScripts = "codyframe/scripts.js";
+  });
+</script>
+
+<!-- Scripts CodyFrame (we do this here to mount the bad script on every call of route) -->
+<svelte:head>
+  <script defer src={codyFrameScripts}>
+
+  </script>
+</svelte:head>
+
+<!-- Navbar CodyFrame -->
+<Navbar />
+
 <div class="padding-component hide@md no-js:is-hidden">
   <button class="btn btn--primary" aria-controls="sidebar">
     Show progress

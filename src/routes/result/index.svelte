@@ -1,7 +1,26 @@
 <script>
+  import Navbar from "../../components/Navbar.svelte";
+  import { onMount } from "svelte";
+
   export let progress = 20;
   export let neededToPass = 80;
+
+  // ------ To mount the CodyFrame scripts ------------------------
+  let codyFrameScripts = "";
+  onMount(() => {
+    codyFrameScripts = "codyframe/scripts.js";
+  });
 </script>
+
+<!-- Scripts CodyFrame (we do this here to mount the bad script on every call of route) -->
+<svelte:head>
+  <script defer src={codyFrameScripts}>
+
+  </script>
+</svelte:head>
+
+<!-- Navbar CodyFrame -->
+<Navbar />
 
 <div class="text-component padding-md margin-auto margin-top-md max-width-md">
   <!-- Change the Style to User Score to change the color -->
