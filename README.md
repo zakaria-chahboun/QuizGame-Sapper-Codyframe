@@ -37,3 +37,9 @@ We have globally `two sections`, the first one is dedicated to the ***"Test Data
 <img src='./docs/how data stored and loaded (user).jpg' alert='how the data stored and loaded for the user image'/>
 
 > of course we have to store all the user data in database! but in the image above we are just simplifying things for the explanation reason (look at the *Users node* in the *Tests Plan* title) 🥑
+
+
+### Dashboard
+You can add/fetch data of this game by ui easily from this project [QuizGame-Svelte-Dashboard](https://github.com/zakaria-chahboun/QuizGame-Svelte-Dashboard)
+
+<img src='./docs/dashboard.png' alt='dashboard image'>
