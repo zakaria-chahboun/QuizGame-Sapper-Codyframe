@@ -62,12 +62,12 @@
       choices,
       stepCircles,
       correctAnswersIndex,
+      currentQuestionIndex: questionIndex,
       /*
        * for the initialisation: because the browserstore the css behaviour + the chosen radio/checkboxs,
        * so when you switch to another route you get the same css as the last route,
        * and we can avoid that with the pre initialisation
        */
-      currentQuestionIndex: questionIndex,
       singleChoiceAnswer: null,
       multiChoiceAnswers: [],
       descriptionShow: false,
@@ -105,9 +105,9 @@
   // to get the chosen checks "answers" (in multi-choices case) by binding from child to parent ;)
   export let multiChoiceAnswers;
 
-  // to show desccription after user chose the answers
+  // to show description after user chose the answers
   export let descriptionShow;
-  // to make description background strped animation when description is shown
+  // to make description background striped animation when description is shown
   export let descriptionStriped;
 
   // ______________________ client logic __________________________
@@ -120,6 +120,11 @@
   // Reactive Statement > Case 2: if mutiple choices
   $: if (multiChoiceAnswers.length >= 2) {
     console.log(`You chose the ${multiChoiceAnswers} answers!`);
+  }
+  
+  // Reactive Statement: select the current step circle
+  $: if (currentQuestionIndex != undefined) {
+    stepCircles[currentQuestionIndex].type = StepCircleTypes.current;
   }
 
   function handleSingleChoice({ answer, after = 2000 }) {
