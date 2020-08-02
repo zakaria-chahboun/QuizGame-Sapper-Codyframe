@@ -12,6 +12,7 @@
     "test": "run-p --race dev cy:run"
   },
   "dependencies": {
+    "@polka/send-type": "^0.5.2",
     "codyhouse-framework": "^2.7.3",
     "compression": "^1.7.1",
     "firebase-admin": "^8.13.0",

@@ -2,6 +2,7 @@ import sirv from 'sirv';
 import polka from 'polka';
 import compression from 'compression';
 import * as sapper from '@sapper/server';
+import send from "@polka/send-type";
 
 import {
 	firestore
@@ -32,19 +33,29 @@ polka()
 	})
 	// -- get questions data by id from db
 	.get('api/question/:id', async (req, res) => {
-
 		const {
 			id
 		} = req.params;
+		try {
 
-		const snapshot = await firestore
-			.collection("questions").doc(`${id}`).get();
+			
 
-		let question = snapshot.data();
-		question.realID = snapshot.id;
+			const snapshot = await firestore
+				.collection("questions").doc(`${id}`).get();
+			if (!snapshot.exists)
+				throw Error(`no data with this ID: ${id}`);
 
-		res.setHeader('Content-Type', 'application/json');
-		res.end(JSON.stringify(question));
+			let question = snapshot.data();
+			question.id = snapshot.id;
+			send(res, 200, JSON.stringify(question));
+
+		} catch (error) {
+			send(res, 200, JSON.stringify({
+				error: {
+					message: error.message
+				}
+			}));
+		}
 	})
 	// -- get all questions references of test
 	.get('api/questions/test/:testID', async (req, res) => {
