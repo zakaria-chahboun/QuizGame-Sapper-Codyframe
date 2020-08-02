@@ -12,7 +12,7 @@
   ];
 
   // to get the chosen radio "answer" (in single choice)
-  export let singleChoiceAnswer = 0;
+  export let singleChoiceAnswer;
   // to get the chosen checks "answers" (in multi-choices)
   export let multiChoiceAnswers = [];
 </script>
@@ -27,7 +27,7 @@
         id="radio{i + 1}"
         name={isMultiple ? '' : 'my-group'}
         {disabled}
-        value={i + 1}
+        value={i}
         bind:group={singleChoiceAnswer} />
       <label for="radio{i + 1}">{answer}</label>
     </li>
@@ -41,7 +41,7 @@
         type="checkbox"
         id="check{i + 1}"
         {disabled}
-        value={i + 1}
+        value={i}
         bind:group={multiChoiceAnswers} />
       <label for="check{i + 1}">{answer}</label>
     </li>

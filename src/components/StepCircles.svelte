@@ -11,7 +11,7 @@
 </script>
 
 {#each data as { type, index, url }}
-  <div class="progress-cell {type}-cell" on:click={() => goto(url)}>
-    <p>{index}</p>
+  <div class="progress-cell {type}" on:click={() => goto(url)}>
+    <p>{index + 1}</p>
   </div>
 {/each}
