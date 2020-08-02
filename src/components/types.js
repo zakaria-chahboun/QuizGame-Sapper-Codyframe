@@ -5,9 +5,9 @@ export let ChoiceTypes = {
 }
 
 export let StepCircleTypes = {
-    current: "current",
-    correct: "correct",
-    uncorrect: "uncorrect"
+    current: "current-cell",
+    correct: "correct-cell",
+    uncorrect: "uncorrect-cell"
 }
 
 export let TestCadTypes = {
