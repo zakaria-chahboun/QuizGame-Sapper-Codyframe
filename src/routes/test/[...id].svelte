@@ -14,7 +14,7 @@
     );
     let questionReference = await res1.json();
 
-    // -- get the question data from the 1st step --
+    // -- get the question data by the question reference --
     let res2 = await this.fetch(`api/question/${questionReference.reference}`);
     let questionData = await res2.json();
 
@@ -22,16 +22,18 @@
     let description = questionData.description;
     let counter = 0; // local
     let choices = [];
+    let correctAnswersIndex = [];
 
     // set choices data with the right format
-    for (let e of questionData.answers) {
+    for (let [i, e] of questionData.answers.entries()) {
       choices.push({
-        type: StepCircleTypes.current,
+        type: ChoiceTypes.current,
         answer: e.answer,
         disabled: false
       });
       // for check if multiple or single choice
       if (e.isCorrect) {
+        correctAnswersIndex.push(i); // add the correct anser by index
         counter++;
       }
     }
@@ -41,9 +43,9 @@
     // -- get all question references of test --
     let res3 = await this.fetch(`api/questions/test/${testID}`);
     let stepCircles = await res3.json();
-    let i = 0;
+    let i = 0; // local
 
-    // set the "seps" table with correct format + add referece if someone need :p
+    // set the "sep circles" table with correct format + add referece to it if someone need :p
     stepCircles.map(el => {
       let step = el;
       step.type = "current";
@@ -59,7 +61,17 @@
       isMultiple,
       choices,
       stepCircles,
-      currentQuestionIndex: questionIndex
+      correctAnswersIndex,
+      /*
+       * for the initialisation: because the browserstore the css behaviour + the chosen radio/checkboxs,
+       * so when you switch to another route you get the same css as the last route,
+       * and we can avoid that with the pre initialisation
+       */
+      currentQuestionIndex: questionIndex,
+      singleChoiceAnswer: null,
+      multiChoiceAnswers: [],
+      descriptionShow: false,
+      descriptionStriped: false
     };
   }
 </script>
@@ -70,7 +82,7 @@
   import StepBar from "../../components/StepBar.svelte";
   import StepCircles from "../../components/StepCircles.svelte";
   import MyLayout from "./_test.svelte";
-  import { StepCircleTypes } from "../../components/types.js";
+  import { StepCircleTypes, ChoiceTypes } from "../../components/types.js";
   import { goto } from "@sapper/app";
 
   // step circles data
@@ -85,25 +97,59 @@
   export let isMultiple;
   // currect question index
   export let currentQuestionIndex;
-
-  console.log(currentQuestionIndex);
+  // Array of index of correct answers
+  export let correctAnswersIndex;
 
   // to get the chosen radio "answer" (in single choice case) by binding from child to parent ;)
-  let singleChoiceAnswer = 0;
+  export let singleChoiceAnswer;
   // to get the chosen checks "answers" (in multi-choices case) by binding from child to parent ;)
-  let multiChoiceAnswers = [];
+  export let multiChoiceAnswers;
 
-  // ----- Client Logic ---------
-  $: if (singleChoiceAnswer > 0) {
-    console.log(`You chose the ${singleChoiceAnswer} answer!`);
+  // to show desccription after user chose the answers
+  export let descriptionShow;
+  // to make description background strped animation when description is shown
+  export let descriptionStriped;
+
+  // ______________________ client logic __________________________
+
+  // Reactive Statement > Case 1: if a single choice
+  $: if (singleChoiceAnswer != undefined) {
+    handleSingleChoice({ answer: singleChoiceAnswer });
   }
 
+  // Reactive Statement > Case 2: if mutiple choices
   $: if (multiChoiceAnswers.length >= 2) {
     console.log(`You chose the ${multiChoiceAnswers} answers!`);
   }
+
+  function handleSingleChoice({ answer, after = 2000 }) {
+    // loading desccription: start striped backgound style 👌
+    descriptionShow = true;
+    descriptionStriped = true;
+    const correctIndex = correctAnswersIndex[0];
+
+    // prevent events by disabling all radio buttons
+    for (const i in choices) {
+      choices[i].disabled = true;
+    }
+    // After an 'after' time do this:
+    setTimeout(() => {
+      // loading desccription: stop striped backgound style 👌
+      descriptionStriped = false;
+      // if the chosen answer is correct so highlight it with the green color
+      if (answer == correctIndex) {
+        choices[answer].type = ChoiceTypes.correct;
+      }
+      // of if uncorrect: highlight it with the red color + highlight also the correct answer with the green color
+      else {
+        choices[correctIndex].type = ChoiceTypes.correct;
+        choices[answer].type = ChoiceTypes.uncorrect;
+      }
+    }, after);
+  }
 </script>
 
-<MyLayout>
+<MyLayout bind:descriptionStriped bind:descriptionShow>
 
   <!-- Question Data -->
   <h4 slot="question">{question}</h4>
@@ -128,8 +174,10 @@
     <StepBar index={currentQuestionIndex} />
   </div>
 
-  <!-- Hint Data -->
-  <p slot="hint">{description}</p>
+  <!-- Description Data -->
+  <div slot="description" class="color-white">
+    {descriptionStriped ? '' : description}
+  </div>
 
   <!-- Next Button Data -->
   <button slot="nextButton" class="btn btn--default text-component">
