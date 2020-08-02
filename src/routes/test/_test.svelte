@@ -2,12 +2,36 @@
   import Navbar from "../../components/Navbar.svelte";
   import { onMount } from "svelte";
 
+  // to make description background strped animation when description is shown
+  export let descriptionStriped = false;
+  export let descriptionShow = false;
+
   // ------ To mount the CodyFrame scripts ------------------------
   let codyFrameScripts = "";
   onMount(() => {
     codyFrameScripts = "codyframe/scripts.js";
   });
 </script>
+
+<style>
+  .is-striped {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      #e0efff,
+      #e0efff 0.5rem,
+      #1f87ff 0.5rem,
+      #1f87ff 1rem
+    );
+    background-size: 200% 200%;
+    animation: progress 7s linear infinite;
+  }
+
+  @keyframes progress {
+    100% {
+      background-position: 100% 100%;
+    }
+  }
+</style>
 
 <!-- Scripts CodyFrame (we do this here to mount the bad script on every call of route) -->
 <svelte:head>
@@ -47,27 +71,15 @@
         <slot />
       </ul>
 
-      <details class="details js-details">
-        <summary class="details__summary js-details__summary" role="button">
-          <span class="flex items-center">
-            <svg
-              class="icon icon--xxs margin-right-xxs"
-              aria-hidden="true"
-              viewBox="0 0 12 12">
-              <path
-                d="M2.783.088A.5.5,0,0,0,2,.5v11a.5.5,0,0,0,.268.442A.49.49,0,0,0,2.5,12a.5.5,0,0,0,.283-.088l8-5.5a.5.5,0,0,0,0-.824Z" />
-            </svg>
-            <span>Hint</span>
-          </span>
-        </summary>
-
-        <div
-          class="details__content text-component margin-top-xs
-          js-details__content">
-          <!-- Hint Slot -->
-          <slot name="hint" />
-        </div>
-      </details>
+      {#if descriptionShow}
+        <section
+          class="bg radius-md overflow-hidden padding-component"
+          class:is-striped={descriptionStriped}
+          class:bg-primary-light={!descriptionStriped}>
+          <!-- Description Slot -->
+          <slot name="description" />
+        </section>
+      {/if}
 
       <div class="flex flex-wrap justify-between margin-top-sm">
         <div class="text-left">
