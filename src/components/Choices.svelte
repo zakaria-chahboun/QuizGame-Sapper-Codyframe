@@ -29,7 +29,12 @@
         {disabled}
         value={i}
         bind:group={singleChoiceAnswer} />
-      <label for="radio{i + 1}">{answer}</label>
+      <label
+        for="radio{i + 1}"
+        class:bg-success-lighter={type == ChoiceTypes.correct}
+        class:bg-error-lighter={type == ChoiceTypes.uncorrect}>
+        {answer}
+      </label>
     </li>
   {/each}
   <!-- For Multiple Answers: CheckBox -->
