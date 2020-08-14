@@ -48,7 +48,12 @@
         {disabled}
         value={i}
         bind:group={multiChoiceAnswers} />
-      <label for="check{i + 1}">{answer}</label>
+      <label
+        for="check{i + 1}"
+        class:bg-success-lighter={type == ChoiceTypes.correct}
+        class:bg-error-lighter={type == ChoiceTypes.uncorrect}>
+        {answer}
+      </label>
     </li>
   {/each}
 {/if}

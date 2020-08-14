@@ -31,9 +31,9 @@
         answer: e.answer,
         disabled: false
       });
-      // for check if multiple or single choice
+      // the 'counter' is to check if multiple or single choice!
       if (e.isCorrect) {
-        correctAnswersIndex.push(i); // add the correct anser by index
+        correctAnswersIndex.push(i); // add the correct answer(s) by index 👍
         counter++;
       }
     }
@@ -103,7 +103,7 @@
   // to get the chosen radio "answer" (in single choice case) by binding from child to parent ;)
   export let singleChoiceAnswer;
   // to get the chosen checks "answers" (in multi-choices case) by binding from child to parent ;)
-  export let multiChoiceAnswers;
+  export let multiChoiceAnswers = [];
 
   // to show description after user chose the answers
   export let descriptionShow;
@@ -118,17 +118,18 @@
   }
 
   // Reactive Statement > Case 2: if mutiple choices
-  $: if (multiChoiceAnswers.length >= 2) {
-    console.log(`You chose the ${multiChoiceAnswers} answers!`);
+  $: if (isMultiple && multiChoiceAnswers.length >= 2) {
+    handleMultiChoices({ answers: multiChoiceAnswers });
   }
-  
+
   // Reactive Statement: select the current step circle
   $: if (currentQuestionIndex != undefined) {
     stepCircles[currentQuestionIndex].type = StepCircleTypes.current;
   }
 
+  // for handling single choice: ux and db
   function handleSingleChoice({ answer, after = 2000 }) {
-    // loading desccription: start striped backgound style 👌
+    // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;
     const correctIndex = correctAnswersIndex[0];
@@ -149,6 +150,38 @@
       else {
         choices[correctIndex].type = ChoiceTypes.correct;
         choices[answer].type = ChoiceTypes.uncorrect;
+      }
+    }, after);
+  }
+
+  // for handling multi-choices: ux and db
+  function handleMultiChoices({ answers, after = 2000 }) {
+    // loading description: start striped backgound style 👌
+    descriptionShow = true;
+    descriptionStriped = true;
+
+    // prevent events by disabling all checkboxs
+    for (const i in choices) {
+      choices[i].disabled = true;
+    }
+    // After an 'after' time do this:
+    setTimeout(() => {
+      // loading desccription: stop striped backgound style 👌
+      descriptionStriped = false;
+      // if the chosen answers is correct so highlight it with the green color
+      if (answers.every((e, i) => e === correctAnswersIndex[i])) {
+        for (let i of answers) {
+          choices[i].type = ChoiceTypes.correct;
+        }
+      }
+      // of if uncorrect: highlight it with the red color + highlight also the correct answer with the green color
+      else {
+        for (let i of answers) {
+          choices[i].type = ChoiceTypes.uncorrect;
+        }
+        for (let i in correctAnswersIndex) {
+          choices[i].type = ChoiceTypes.correct;
+        }
       }
     }, after);
   }
