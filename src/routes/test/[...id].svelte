@@ -62,7 +62,8 @@
       choices,
       stepCircles,
       correctAnswersIndex,
-      currentQuestionIndex: questionIndex,
+      currentQuestionIndex: parseInt(questionIndex), // for incrementation 👈
+      currentTestID: testID,
       /*
        * for the initialisation: because the browserstore the css behaviour + the chosen radio/checkboxs,
        * so when you switch to another route you get the same css as the last route,
@@ -97,6 +98,8 @@
   export let isMultiple;
   // currect question index
   export let currentQuestionIndex;
+  // current test id;
+  export let currentTestID;
   // Array of index of correct answers
   export let correctAnswersIndex;
 
@@ -218,7 +221,12 @@
   </div>
 
   <!-- Next Button Data -->
-  <button slot="nextButton" class="btn btn--default text-component">
+  <button
+    slot="nextButton"
+    class="btn btn--default text-component"
+    on:click={() => goto(`/test/${currentTestID}/${currentQuestionIndex + 1}`)}
+    disabled={currentQuestionIndex == stepCircles.length - 1}
+    class:btn--disabled={currentQuestionIndex == stepCircles.length - 1}>
     Next Question
   </button>
 
