@@ -43,7 +43,7 @@
     // -- get all question references of test --
     let res3 = await this.fetch(`api/questions/test/${testID}`);
     let stepCircles = await res3.json();
-    let i = 0; // local
+    let i = 1; // local: must start at 1 >> index for question references in tests >> for easy indexing by url
 
     // set the "sep circles" table with correct format + add referece to it if someone need :p
     stepCircles.map(el => {
@@ -127,7 +127,7 @@
 
   // Reactive Statement: select the current step circle
   $: if (currentQuestionIndex != undefined) {
-    stepCircles[currentQuestionIndex].type = StepCircleTypes.current;
+    stepCircles[currentQuestionIndex-1].type = StepCircleTypes.current;
   }
 
   // for handling single choice: ux and db
@@ -159,6 +159,7 @@
 
   // for handling multi-choices: ux and db
   function handleMultiChoices({ answers, after = 2000 }) {
+    
     // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;
@@ -182,7 +183,7 @@
         for (let i of answers) {
           choices[i].type = ChoiceTypes.uncorrect;
         }
-        for (let i in correctAnswersIndex) {
+        for (let i of correctAnswersIndex) {
           choices[i].type = ChoiceTypes.correct;
         }
       }
@@ -225,8 +226,8 @@
     slot="nextButton"
     class="btn btn--default text-component"
     on:click={() => goto(`/test/${currentTestID}/${currentQuestionIndex + 1}`)}
-    disabled={currentQuestionIndex == stepCircles.length - 1}
-    class:btn--disabled={currentQuestionIndex == stepCircles.length - 1}>
+    disabled={currentQuestionIndex == stepCircles.length}
+    class:btn--disabled={currentQuestionIndex == stepCircles.length}>
     Next Question
   </button>
 

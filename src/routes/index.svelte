@@ -41,7 +41,7 @@
         title={testTitle}
         subtitle={testSubtitle}
         value="25"
-        url="/test/{id}/{0}" />
+        url="/test/{id}/{1}" />
     {/each}
   </ul>
 </div>
