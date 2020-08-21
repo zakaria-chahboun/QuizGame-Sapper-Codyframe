@@ -18,16 +18,47 @@ const dev = NODE_ENV === 'development';
 polka()
 	// -- get all tests data from db --
 	.get('/api/tests', async (req, res) => {
-		const snapshot = await firestore
+		const testsCollection = await firestore
 			.collection("tests")
 			.get();
 
-		let tests = snapshot.docs.map(doc => {
+		// User Variables 🤦‍♂
+		let userProgress = [];
+		const userID = 'cUJjO5EJly1Rf2z0uUlb';
+		const userDoc = await firestore
+			.collection("users").doc(userID)
+			.get();
+
+		// Check if the User alredy exist and have the 'lastTest 🐶' field in db
+		if (userDoc.exists && userDoc.data().lastTest) {
+			const userData = await firestore
+				.collection("users").doc(userID).collection('userProgress')
+				.get();
+
+			// array of maps (js objects) 🤠
+			userProgress = userData.docs.map(doc => {
+				let data = doc.data();
+				data.id = doc.id;
+				return data;
+			});
+		}
+
+		// Return the data of 'tests'
+		let tests = testsCollection.docs.map(doc => {
 			let data = doc.data();
 			data.id = doc.id;
+			data.stepValue = 0; // by default: no step 🙄!
+			data.isCompleted = false; // by default: no test for user 🙄!
+
+			// if the user exsit >> update the progress 🦊
+			userProgress.forEach((e, i) => {
+				if (e.id == data.id) {
+					data.stepValue = e.stepValue;
+					data.isCompleted = e.isCompleted;
+				}
+			})
 			return data;
 		});
-
 		res.setHeader('Content-Type', 'application/json');
 		res.end(JSON.stringify(tests));
 	})
@@ -37,8 +68,6 @@ polka()
 			id
 		} = req.params;
 		try {
-
-			
 
 			const snapshot = await firestore
 				.collection("questions").doc(`${id}`).get();

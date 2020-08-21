@@ -2,6 +2,7 @@
   export async function preload(page, session) {
     let res = await this.fetch(`api/tests`);
     let tests = await res.json();
+
     return { tests };
   }
 </script>
@@ -35,12 +36,12 @@
 <div class="container margin-top-lg justify-between@md max-width-lg">
   <ul class="grid-auto-xl gap-md">
     <!-- TestCard Elements -->
-    {#each tests as { id, testTitle, testSubtitle, isAuth }}
+    {#each tests as { id, testTitle, stepValue, testSubtitle, isAuth, isCompleted }}
       <TestCard
-        type="card--{isAuth ? 'locked' : 'uncompleted'}"
+        type="card--{isAuth ? 'locked' : isCompleted ? 'completed' : 'uncompleted'}"
         title={testTitle}
         subtitle={testSubtitle}
-        value="25"
+        value={stepValue}
         url="/test/{id}/{1}" />
     {/each}
   </ul>
