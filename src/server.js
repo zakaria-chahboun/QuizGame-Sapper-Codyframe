@@ -29,7 +29,9 @@ polka()
 			.collection("users").doc(userID)
 			.get();
 
-		// Check if the User alredy exist and have the 'lastTest 🐶' field in db
+		// ------------------------- Step 1 -------------------------
+
+		// Check if the User alredy exist and has the 'lastTest 🐶' field in db
 		if (userDoc.exists && userDoc.data().lastTest) {
 			const userData = await firestore
 				.collection("users").doc(userID).collection('userProgress')
@@ -41,22 +43,30 @@ polka()
 				data.id = doc.id;
 				return data;
 			});
+
+			// const userLastTest = await userDoc.data().lastTest.get();
+			// console.log(userLastTest.data());
 		}
+
+		// ------------------------- Step 2 -------------------------
 
 		// Return the data of 'tests'
 		let tests = testsCollection.docs.map(doc => {
 			let data = doc.data();
 			data.id = doc.id;
 			data.stepValue = 0; // by default: no step 🙄!
-			data.isCompleted = false; // by default: no test for user 🙄!
+			data.isCompleted = false; // by default: no user play 🙄!
+			data.lastQuestion = 1; // by default: no user play 🙄!
 
 			// if the user exsit >> update the progress 🦊
 			userProgress.forEach((e, i) => {
 				if (e.id == data.id) {
 					data.stepValue = e.stepValue;
 					data.isCompleted = e.isCompleted;
+					data.lastQuestion = e.lastQuestion;
 				}
 			})
+
 			return data;
 		});
 		res.setHeader('Content-Type', 'application/json');

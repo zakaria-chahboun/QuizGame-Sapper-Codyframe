@@ -36,13 +36,13 @@
 <div class="container margin-top-lg justify-between@md max-width-lg">
   <ul class="grid-auto-xl gap-md">
     <!-- TestCard Elements -->
-    {#each tests as { id, testTitle, stepValue, testSubtitle, isAuth, isCompleted }}
+    {#each tests as { id, testTitle, stepValue, lastQuestion, testSubtitle, isAuth, isCompleted }}
       <TestCard
         type="card--{isAuth ? 'locked' : isCompleted ? 'completed' : 'uncompleted'}"
         title={testTitle}
         subtitle={testSubtitle}
         value={stepValue}
-        url="/test/{id}/{1}" />
+        url="/test/{id}/{tests.length == lastQuestion ? lastQuestion : lastQuestion + 1}" />
     {/each}
   </ul>
 </div>
