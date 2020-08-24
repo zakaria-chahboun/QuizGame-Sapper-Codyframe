@@ -3,6 +3,9 @@ import polka from 'polka';
 import compression from 'compression';
 import * as sapper from '@sapper/server';
 import send from "@polka/send-type";
+const {
+	json
+} = require('body-parser');
 
 import {
 	firestore
@@ -16,6 +19,8 @@ const dev = NODE_ENV === 'development';
 
 // You can also use Express
 polka()
+	// - body parser
+	.use(json())
 	// -- get all tests data from db --
 	.get('/api/tests', async (req, res) => {
 		const testsCollection = await firestore

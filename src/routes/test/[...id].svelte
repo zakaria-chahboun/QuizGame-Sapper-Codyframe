@@ -1,6 +1,4 @@
 <script context="module">
-  //import { admin } from "../../firebase.js";
-
   export async function preload(page, session) {
     // array of paramaters: '0' for test id, '1' for question index in test
     const { id } = page.params;
@@ -127,7 +125,7 @@
 
   // Reactive Statement: select the current step circle
   $: if (currentQuestionIndex != undefined) {
-    stepCircles[currentQuestionIndex-1].type = StepCircleTypes.current;
+    stepCircles[currentQuestionIndex - 1].type = StepCircleTypes.current;
   }
 
   // for handling single choice: ux and db
@@ -159,7 +157,6 @@
 
   // for handling multi-choices: ux and db
   function handleMultiChoices({ answers, after = 2000 }) {
-    
     // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;

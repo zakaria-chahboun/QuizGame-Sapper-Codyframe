@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@polka/send-type": "^0.5.2",
+    "body-parser": "^1.19.0",
     "codyhouse-framework": "^2.7.3",
     "compression": "^1.7.1",
     "firebase-admin": "^8.13.0",
