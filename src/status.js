@@ -56,7 +56,7 @@ const ErrorStatus = {
     }
 }
 
-// To send the data in uniq format
+// To send the data in unique format
 /**
  * This method send a JSON Format 👌
  * @param {object} res - Server Response >> the 'res' argument 👈.
@@ -101,6 +101,6 @@ function checkTheErrors(error_status) {
 // Export All!
 export default {
     types,
-    messages,
+    ErrorStatus,
     simpleResponse
 }
