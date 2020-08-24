@@ -2,12 +2,11 @@ import sirv from 'sirv';
 import polka from 'polka';
 import compression from 'compression';
 import * as sapper from '@sapper/server';
-import send from "@polka/send-type";
 const {
 	json
 } = require('body-parser');
 
-import status from "./components/status";
+import status from "./status";
 import {
 	firestore
 } from "./firebase.js";
@@ -95,10 +94,9 @@ polka()
 			send(res, 200, JSON.stringify(question));
 
 		} catch (error) {
-			send(res, 200, JSON.stringify({
-				error: {
-					message: error.message
-				}
+			res.setHeader('Content-Type', 'application/json');
+			res.end(JSON.stringify({
+				message: error.message
 			}));
 		}
 	})
@@ -145,41 +143,3 @@ polka()
 	.listen(PORT, err => {
 		if (err) console.log('error', err);
 	});
-
-
-// To send the data in uniq format
-/**
- * This method send a JSON Format 👌
- * @param {object} res - Server Response >> the 'res' argument 👈.
- * @param {object} data - The data to be sent 🥑.
- * @param {boolean} error -[false] Is there an error? true or false 🙄.
- * @param {string} type - ["Success"] Types from status.types 🤦‍♂.
- * @param {string} message - [""] Messages from status.messages 😂.
- */
-function simpleResponse(
-	res,
-	data,
-	error = false, // default
-	type = status.types.Success, // default
-	message = '' // default
-) {
-	const format = JSON.stringify({
-		status: {
-			type,
-			error,
-			message
-		},
-		data
-	});
-	let statusCode = 200; // default
-
-	switch (type) {
-		case status.types.Bad_Request:
-			statusCode = 400
-			break;
-		case status.types.Unauthorized:
-			statusCode = 401
-			break;
-	}
-	send(res, statusCode, format);
-}
