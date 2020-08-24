@@ -91,7 +91,8 @@ polka()
 
 			let question = snapshot.data();
 			question.id = snapshot.id;
-			send(res, 200, JSON.stringify(question));
+			res.setHeader('Content-Type', 'application/json');
+			res.end(JSON.stringify(question));
 
 		} catch (error) {
 			res.setHeader('Content-Type', 'application/json');
