@@ -3,7 +3,7 @@
 */
 
 import {
-    easyResponse,
+    easyResponse
 } from "./response";
 
 import {
@@ -30,6 +30,8 @@ export const checkAuthenticated = async (req, res, next) => {
             const {
                 authToken
             } = req;
+
+            // for a regular visitor
             if (authToken == null) {
                 next();
                 return;
@@ -37,8 +39,8 @@ export const checkAuthenticated = async (req, res, next) => {
             const userInfo = await auth.verifyIdToken(authToken, true);
             req.user = userInfo;
             return next();
-        } catch (e) {
-            easyResponse(res, null, true, e.code);
+        } catch (error) {
+            easyResponse(res, null, true, error.code);
         }
     });
 };

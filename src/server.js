@@ -29,9 +29,8 @@ const dev = NODE_ENV === 'development';
 polka()
 	// - body parser
 	.use(json())
-	.use(checkAuthenticated)
 	// -- get all tests data from db --
-	.get('/api/v1/tests', async (req, res) => {
+	.get('/api/v1/tests', checkAuthenticated, async (req, res) => {
 		try {
 			// get all native tests from 'tests' collection in db
 			const testsCollection = await firestore
@@ -41,11 +40,11 @@ polka()
 			// ------------------------- Step 1 -------------------------
 
 			// User Variables 🤦‍♂
-			let userID = 'cUJjO5EJly1Rf2z0uUlb';
 			let userProgress = [];
 
 			// Check if user logged in
 			if (req.user) {
+				let userID = req.user.uid;
 				const userDoc = await firestore
 					.collection("users").doc(userID)
 					.get();

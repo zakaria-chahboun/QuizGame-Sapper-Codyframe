@@ -1,7 +1,13 @@
 <script context="module">
+  import { StatusTypes } from "../tools/status.js";
+
   export async function preload(page, session) {
     let res = await this.fetch(`api/v1/tests`);
     let tests = await res.json();
+
+    if (tests.status.isError) {
+      return this.redirect(302, "login");
+    }
 
     return { tests: tests.data };
   }
