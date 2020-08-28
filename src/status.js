@@ -67,10 +67,25 @@ const ErrorStatus = {
         type: Types.UNAUTHORIZED,
         message: "Authentication Failed, Try again!"
     },
-    Revoked_Token_ID: {
+    Token_ID_Revoked: {
         code: 'auth/id-token-revoked',
         type: Types.UNAUTHORIZED,
         message: "Try to login again!"
+    },
+    Token_ID_Expired: {
+        code: 'auth/user-token-expired',
+        type: Types.UNAUTHORIZED,
+        message: "The credential of this account is expired or the account is deleted! Try to sign in again!"
+    },
+    Network_Error: {
+        code: 'auth/network-request-failed',
+        type: Types.BAD_REQUEST,
+        message: "This is a network error! Try later!"
+    },
+    User_Disabled: {
+        code: 'auth/user-disabled',
+        type: Types.UNAUTHORIZED,
+        message: "Your account is disabled by the administrator, Try to contact us!"
     },
     Internal_Error: {
         code: 'auth/internal-error',
