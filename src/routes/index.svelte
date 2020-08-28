@@ -1,9 +1,9 @@
 <script context="module">
   export async function preload(page, session) {
-    let res = await this.fetch(`api/tests`);
+    let res = await this.fetch(`api/v1/tests`);
     let tests = await res.json();
 
-    return { tests };
+    return { tests: tests.data };
   }
 </script>
 
@@ -38,13 +38,13 @@
     <!-- TestCard Elements -->
     <!-- from Tests collection >> (id, testTitle, testSubtitle, isAuth) -->
     <!-- from Users collection >> isCompleted, stepValue, lastQuestion -->
-    {#each tests as { id, testTitle, testSubtitle, isAuth, isCompleted, stepValue, lastQuestion }}
+    {#each tests as { id, testTitle, testSubtitle, isAuth, isCompleted, stepValue, maxSteps, lastQuestion }}
       <TestCard
         type="card--{isAuth ? 'locked' : isCompleted ? 'completed' : 'uncompleted'}"
         title={testTitle}
         subtitle={testSubtitle}
         value={stepValue}
-        url="/test/{id}/{tests.length == lastQuestion ? lastQuestion : lastQuestion + 1}" />
+        url="/test/{id}/{lastQuestion == maxSteps ? lastQuestion : lastQuestion + 1}" />
     {/each}
   </ul>
 </div>
