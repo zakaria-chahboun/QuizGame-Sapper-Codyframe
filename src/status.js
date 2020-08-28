@@ -51,6 +51,11 @@ const ErrorStatus = {
         type: Types.NOT_FOUND,
         message: "Your email or password is incorrect. please try again!"
     },
+    Invalid_Token_ID: {
+        code: 'auth/invalid-id-token',
+        type: Types.UNAUTHORIZED,
+        message: "Try to login again!"
+    },
     // not an anonymous user 👌
     Login_Is_Required: {
         code: 'Login_Is_Required',
@@ -61,6 +66,11 @@ const ErrorStatus = {
         code: 'auth/invalid-credential',
         type: Types.UNAUTHORIZED,
         message: "Authentication Failed, Try again!"
+    },
+    Revoked_Token_ID: {
+        code: 'auth/id-token-revoked',
+        type: Types.UNAUTHORIZED,
+        message: "Try to login again!"
     },
     Internal_Error: {
         code: 'auth/internal-error',
@@ -99,6 +109,24 @@ function easyResponse(
     for (const el in ErrorStatus) {
         if (ErrorStatus[el].code == errorCode) {
             status.type = ErrorStatus[el].type;
+            // set the number of error status
+            switch (status.type) {
+                case Types.ANONYMOUS:
+                    statusCode = 400;
+                    break;
+                case Types.BAD_REQUEST:
+                    statusCode = 400;
+                    break;
+                case Types.INTERNAL_ERROR:
+                    statusCode = 500;
+                    break;
+                case Types.NOT_FOUND:
+                    statusCode = 404;
+                    break;
+                case Types.UNAUTHORIZED:
+                    statusCode = 401;
+                    break;
+            }
             // check the message, is it a cutom one or not? 😉
             if (message != '')
                 status.message = ErrorStatus[el].message;
@@ -129,7 +157,9 @@ function easyResponse(
     });
 
     // Send an HTTP JSON!
-    send(res, statusCode, format);
+    send(res, statusCode, format, {
+        'Content-Type': 'application/json'
+    });
 }
 
 // Export All!
