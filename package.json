@@ -12,6 +12,7 @@
     "test": "run-p --race dev cy:run"
   },
   "dependencies": {
+    "@polka/redirect": "^1.0.0-next.0",
     "@polka/send-type": "^0.5.2",
     "body-parser": "^1.19.0",
     "codyhouse-framework": "^2.7.3",
