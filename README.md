@@ -10,17 +10,34 @@ install the dependencies:
 npm install
 ```
 
+### Firebase on the server side
 - In `/src/private` folder add your firebase _json_ configurations. and rename it as **firebase-config.json**.
 
-> Note: we use the firebase in the server which require a *-private key-* from firebase itself, So you have to create one [click here to read the docs](https://firebase.google.com/docs/admin/setup#initialize-sdk), if you finish this step you must have a complete json file iclude all the configurations.
+> Note: we use the firebase admin on the server, Which require a *-private key-* from the firebase itself, So you have to create one [click here to read the docs](https://firebase.google.com/docs/admin/setup#initialize-sdk), if you finish this step, You must have a complete json file included all the configurations.
 
-- Also in `/src/private` you have to create a **firebase-database-url.json** file, and put your `databaseUrl` into like that:
+- Also in `/src/private` You have to create a **firebase-database-url.json** file, and put your `databaseUrl` into like that:
 
 ```json
 {
   "databaseURL": "https://my-firebase-test.firebaseio.com"
 }
 ```
+### Firebase on the client side
+We need this only in the authentication case _(sign in/login ..)_
+
+So for that you have to _replace_ the **firebaseConfig** object in the `/src/firebase-web-config.js` file - with yours.
+
+> This is not the same configurations as we mentioned in the previous step (firebase admin server side) Which mean it's not the same configurations in 'json file'!
+
+Why? because this configurations now is **public**, it's contain only the necessary fields! You find the **firebaseConfig** object in the project setting in your firebase dashboard, _like you see in the image bellow_.
+
+<img src='./docs/firebase web config from dashboard.png' alert='firebase web config from dashboard'/>
+
+It's not contain any of the private fields like: _private_id or private_key_id or private_key ect ..._
+
+The `/src/firebase-web-config.js` file look like this:
+
+<img src='./docs/firebase web config.png' alert='firebase web config js file'/>
 
 ### Tests Plan
 
