@@ -1,6 +1,17 @@
+<script context="module">
+  export async function preload(page, session) {
+    let { message } = page.query;
+    if (!message) message = "welcome to our game!";
+    return { message };
+  }
+</script>
+
 <script>
   import Navbar from "../../components/Navbar.svelte";
   import { onMount } from "svelte";
+
+  // ------ Props ------
+  export let message;
 
   // ------ To mount the CodyFrame scripts ------------------------
   let codyFrameScripts = "";
@@ -25,7 +36,7 @@
   <form class="login-form">
     <div class="text-component text-center margin-bottom-sm">
       <h1>Log in</h1>
-      <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+      <p>{message}</p>
     </div>
 
     <div class="grid gap-xs">

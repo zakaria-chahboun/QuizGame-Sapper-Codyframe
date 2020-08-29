@@ -6,7 +6,7 @@
     let tests = await res.json();
 
     if (tests.status.isError) {
-      return this.redirect(302, "login");
+      return this.redirect(302, `login?message=${tests.status.message}`);
     }
 
     return { tests: tests.data };
