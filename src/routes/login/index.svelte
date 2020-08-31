@@ -9,14 +9,52 @@
 <script>
   import Navbar from "../../components/Navbar.svelte";
   import { onMount } from "svelte";
+  import { firebaseConfig } from "../../firebase-web-config.js";
+  import { StatusTypes } from "../../tools/status.js";
 
   // ------ Props ------
-  export let message;
+  export let message; // to show it to the user in case samething happen
+  let email;
+  let password;
+  let authentication;
+  let firebase;
+
+  async function login() {
+    try {
+      let result = await authentication.signInWithEmailAndPassword(
+        email,
+        password
+      );
+      console.log(result.user);
+    } catch (error) {
+      if (error.code == StatusTypes.Invalid_Argument.code) {
+        message = "Empty fields! Login with a valid email and password!";
+        return;
+      }
+      for (const el in StatusTypes) {
+        if (StatusTypes[el].code == error.code) {
+          message = StatusTypes[el].message;
+          break;
+        }
+      }
+    }
+  }
 
   // ------ To mount the CodyFrame scripts ------------------------
   let codyFrameScripts = "";
-  onMount(() => {
+  // let firebaseScripts = ["", ""];
+  onMount(async () => {
     codyFrameScripts = "codyframe/scripts.js";
+
+    // dynamic import for SSR compatible 🤗
+    // look at 🥰: https://stackoverflow.com/questions/56315901/how-to-import-firebase-only-on-client-in-sapper/63672503#63672503
+    const module = await import("firebase/app");
+    await import("firebase/auth");
+    firebase = module.default;
+
+    // Initialize firebase: in the client side for the authentication reason
+    firebase.initializeApp(firebaseConfig);
+    authentication = firebase.auth();
   });
 </script>
 
@@ -33,7 +71,7 @@
 <div
   class="container margin-top-md margin-bottom-lg justify-between@md
   max-width-xs">
-  <form class="login-form">
+  <div class="login-form">
     <div class="text-component text-center margin-bottom-sm">
       <h1>Log in</h1>
       <p>{message}</p>
@@ -86,6 +124,7 @@
         type="email"
         name="inputEmail1"
         id="inputEmail1"
+        bind:value={email}
         placeholder="email@myemail.com" />
     </div>
 
@@ -101,11 +140,14 @@
         class="form-control width-100%"
         type="password"
         name="inputPassword1"
+        bind:value={password}
         id="inputPassword1" />
     </div>
 
     <div class="margin-bottom-sm">
-      <button class="btn btn--primary btn width-100%">Login</button>
+      <button class="btn btn--primary btn width-100%" on:click={login}>
+        Login
+      </button>
     </div>
 
     <div class="text-center">
@@ -114,6 +156,6 @@
         <a href="signup">Get started</a>
       </p>
     </div>
-  </form>
+  </div>
 
 </div>
