@@ -53,7 +53,12 @@ const StatusTypes = {
     Invalid_Password: {
         code: 'auth/invalid-password',
         number: StatusNumbers.BAD_REQUEST,
-        message: 'Sorry! Invalid password, It must be a string with at least six characters.'
+        message: 'Sorry! Invalid password, It must be a string with at least 6 characters.'
+    },
+    Wrong_Password: {
+        code: 'auth/wrong-password',
+        number: StatusNumbers.BAD_REQUEST,
+        message: 'Sorry! wrong password! Try again or click on forget link.'
     },
     Invalid_User: {
         code: 'auth/user-not-found',
