@@ -1,5 +1,6 @@
 <script context="module">
   export async function preload(page, session) {
+    //> /login?message=text
     let { message } = page.query;
     if (!message) message = "welcome to our game!";
     return { message };
@@ -18,15 +19,22 @@
   let password;
   let authentication;
   let firebase;
+  let isLoading = false;
+  let isError = false;
 
   async function login() {
+    isLoading = true;
     try {
       let result = await authentication.signInWithEmailAndPassword(
         email,
         password
       );
-      console.log(result.user);
+      isLoading = false;
+      isError = false;
+      message = `Success Login!,your name is ${result.user.displayName}, your id is: ${result.user.uid}`;
     } catch (error) {
+      isLoading = false;
+      isError = true;
       if (error.code == StatusTypes.Invalid_Argument.code) {
         message = "Empty fields! Login with a valid email and password!";
         return;
@@ -74,7 +82,19 @@
   <div class="login-form">
     <div class="text-component text-center margin-bottom-sm">
       <h1>Log in</h1>
-      <p>{message}</p>
+      {#if !isLoading}
+        <p class:bg-error-light={isError} class:color-white={isError}>
+          {message}
+        </p>
+      {:else}
+        <div class="fill-loader fill-loader--v1" role="alert">
+          <p class="fill-loader__label">Content is loading...</p>
+          <div aria-hidden="true">
+            <div class="fill-loader__base" />
+            <div class="fill-loader__fill" />
+          </div>
+        </div>
+      {/if}
     </div>
 
     <div class="grid gap-xs">
