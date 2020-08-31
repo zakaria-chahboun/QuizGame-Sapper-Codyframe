@@ -1,0 +1,338 @@
+/* -------------------------------- 
+
+File#: _1_fill-loader
+Title: Loader
+Descr: A collection of animated loaders with a filling effect
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.fill-loader {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.fill-loader__fill {
+  position: absolute;
+}
+
+@supports (animation-name: this) {
+  .fill-loader__label {
+    @include srHide; // show label only to screen readers if animations are supported
+  }
+}
+
+// loader v1 + v2
+@supports (animation-name: this) {
+  .fill-loader--v1, .fill-loader--v2 {
+    .fill-loader__base {
+      width: 64px; // loader width
+      height: 4px; // loader height
+      background-color: var(--color-contrast-low);
+    }
+  
+    .fill-loader__fill {
+      background-color: var(--color-primary);
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      will-change: transform;
+    }
+  }
+  
+  .fill-loader--v1 {
+    .fill-loader__fill {
+      animation: fill-loader-1 0.8s infinite var(--ease-in-out);
+    }
+  }
+  
+  .fill-loader--v2 {
+    .fill-loader__fill {
+      animation: fill-loader-2 0.8s infinite alternate var(--ease-in-out);
+    }
+  }
+}
+
+@keyframes fill-loader-1 {
+  0% {
+    transform-origin: 0 0;
+    transform: scaleX(0);
+  }
+
+  49% {
+    transform-origin: 0 0;
+    transform: scaleX(1);
+  }
+
+  51% {
+    transform: scaleX(1);
+    transform-origin: 100% 0;
+  }
+
+  100% {
+    transform: scaleX(0);
+    transform-origin: 100% 0;
+  }
+}
+
+@keyframes fill-loader-2 {
+  0% {
+    transform-origin: 0 0;
+    transform: scaleX(0.1);
+  }
+
+  49% {
+    transform-origin: 0 0;
+    transform: scaleX(1);
+  }
+
+  51% {
+    transform: scaleX(1);
+    transform-origin: 100% 0;
+  }
+
+  100% {
+    transform: scaleX(0.1);
+    transform-origin: 100% 0;
+  }
+}
+
+// loader v3
+@supports (animation-name: this) {
+  .fill-loader--v3 {
+    .fill-loader__base {
+      width: 120px; // loader width
+      height: 10px; // loader height
+      background-color: var(--color-contrast-low);
+    }
+
+    .fill-loader__fill {
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      transform: scaleX(0);
+      will-change: transform;
+      animation: fill-loader-1 1s infinite var(--ease-in-out);
+    }
+
+    .fill-loader__fill--1st {
+      background-color: var(--color-contrast-medium);
+    }
+    
+    .fill-loader__fill--2nd {
+      background-color: var(--color-contrast-higher);
+      animation-delay: 0.1s;
+    }
+    
+    .fill-loader__fill--3rd {
+      background-color: var(--color-primary);
+      animation-delay: 0.2s;
+    }
+  }
+}
+
+// loader v4
+@supports (animation-name: this) {
+  .fill-loader--v4 {
+    width: 90%; // loader width
+    max-width: 300px;
+
+    .fill-loader__base {
+      height: 4px; // loader height
+      background-color: var(--color-contrast-low);
+    }
+
+    .fill-loader__fill {
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background-color: var(--color-primary);
+      animation: fill-loader-4 1.6s infinite var(--ease-in-out);
+      will-change: left, right;
+    }
+  }
+}
+
+@keyframes fill-loader-4 {
+  0% {
+    left: 0;
+    right: 100%;
+    background-color: var(--color-primary);
+  }
+
+  10%, 60% {
+    left: 0;
+  }
+
+  40%, 90% {
+    right: 0;
+  }
+
+  50% {
+    left: 100%;
+    background-color: var(--color-primary);
+  }
+
+  51% {
+    left: 0;
+    right: 100%;
+    background-color: var(--color-accent);
+  }
+
+  100% {
+    left: 100%;
+    background-color: var(--color-accent);
+  }
+}
+
+// loader v5
+@supports (animation-name: this) {
+  .fill-loader--v5 {
+    .fill-loader__base {
+      width: 48px; // loader width
+      height: 48px; // loader height
+      background-color: var(--color-contrast-low);
+    }
+
+    .fill-loader__fill {
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      will-change: transform;
+    }
+
+    .fill-loader__fill--1st {
+      background-color: var(--color-primary);
+      transform-origin: 0 50%;
+      animation: fill-loader-5-1st 2s infinite var(--ease-in-out);
+    }
+
+    .fill-loader__fill--2nd {
+      background-color: var(--color-contrast-higher);
+      transform-origin: 50% 100%;
+      animation: fill-loader-5-2nd 2s infinite var(--ease-in-out);
+    }
+
+    .fill-loader__fill--3rd {
+      background-color: var(--color-accent);
+      transform-origin: 100% 50%;
+      animation: fill-loader-5-3rd 2s infinite var(--ease-in-out);
+    }
+
+    .fill-loader__fill--4th {
+      background-color: var(--color-contrast-low);
+      transform-origin: 50% 0%;
+      animation: fill-loader-5-4th 2s infinite var(--ease-in-out);
+    }
+  }
+}
+
+@keyframes fill-loader-5-1st {
+  0% {
+    transform: scaleX(0);
+  }
+
+  25%, 100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes fill-loader-5-2nd {
+  0%, 25% {
+    transform: scaleY(0);
+  }
+
+  50%, 100% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes fill-loader-5-3rd {
+  0%, 50% {
+    transform: scaleX(0);
+  }
+
+  75%, 100% {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes fill-loader-5-4th {
+  0%, 75% {
+    transform: scaleY(0);
+  }
+
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+// loader v6
+@supports (animation-name: this) {
+  .fill-loader--v6 {
+    .fill-loader__grid {
+      display: flex;
+    }
+
+    .fill-loader__bar {
+      position: relative;
+    }
+
+    .fill-loader__bar:nth-child(2) {
+      margin: 0 8px;
+    }
+
+    .fill-loader__base {
+      width: 6px;
+      height: 30px;
+      background-color: var(--color-contrast-low);
+    }
+
+    .fill-loader__fill {
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      will-change: transform;
+      transform: scaleY(0);
+      transform-origin: 50% 100%;
+      background-color: var(--color-primary);
+      animation: fill-loader-6 0.8s infinite;
+    }
+
+    .fill-loader__fill--2nd {
+      animation-delay: 0.1s;
+    }
+
+    .fill-loader__fill--3rd {
+      animation-delay: 0.2s;
+    }
+  }
+}
+
+@keyframes fill-loader-6 {
+  0% {
+    transform-origin: 0 100%;
+    transform: scaleY(0);
+  }
+
+  49% {
+    transform-origin: 0 100%;
+    transform: scaleY(1);
+  }
+
+  51% {
+    transform: scaleY(1);
+    transform-origin: 0 0;
+  }
+
+  100% {
+    transform: scaleY(0);
+    transform-origin: 0 0;
+  }
+} 
