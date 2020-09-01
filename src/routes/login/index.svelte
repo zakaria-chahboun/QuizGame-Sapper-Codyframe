@@ -9,19 +9,24 @@
 
 <script>
   import Navbar from "../../components/Navbar.svelte";
+  import { firebase } from "../../components/store.js";
   import { onMount } from "svelte";
-  import { firebaseConfig } from "../../firebase-web-config.js";
   import { StatusTypes } from "../../tools/status.js";
 
   // ------ Props ------
   export let message; // to show it to the user in case samething happen
   let email;
   let password;
-  let authentication;
-  let firebase;
-  let isLoading = false;
-  let isError = false;
 
+  // We did this (in this way) because the "$firebase 🔥" store initialized in "global layout" page, WHEN the page is loaded successfully >> "onMount(..)"
+  // But this page here is loaded first, So we get a "null $firebase" value 👈!
+  // So we have to listen to the store, and then we can work with it without any issues 😉 #zaki
+  $: authentication = $firebase == null ? {} : $firebase.auth();
+
+  let isLoading = false; // UI UX
+  let isError = false; // UI UX
+
+  //- Login with email & password
   async function login() {
     isLoading = true;
     try {
@@ -29,9 +34,29 @@
         email,
         password
       );
+
+      let tokenID = await authentication.currentUser.getIdToken(true);
+
+      let toServer = await fetch("/api/v1/login", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenID}`
+        }
+      });
+
+      let data = await toServer.json();
+
       isLoading = false;
-      isError = false;
-      message = `Success Login!,your name is ${result.user.displayName}, your id is: ${result.user.uid}`;
+
+      if (data.status.code == StatusTypes.SUCCESS.code) {
+        isError = false;
+        message = `Success Login!,your name is ${result.user.displayName}, your id is: ${result.user.uid}`;
+        return;
+      }
+
+      isError = true;
+      message = data.status.message;
     } catch (error) {
       isLoading = false;
       isError = true;
@@ -48,21 +73,16 @@
     }
   }
 
+  //- Logout
+  async function logout() {
+    await authentication.signOut();
+  }
+
   // ------ To mount the CodyFrame scripts ------------------------
   let codyFrameScripts = "";
   // let firebaseScripts = ["", ""];
   onMount(async () => {
     codyFrameScripts = "codyframe/scripts.js";
-
-    // dynamic import for SSR compatible 🤗
-    // look at 🥰: https://stackoverflow.com/questions/56315901/how-to-import-firebase-only-on-client-in-sapper/63672503#63672503
-    const module = await import("firebase/app");
-    await import("firebase/auth");
-    firebase = module.default;
-
-    // Initialize firebase: in the client side for the authentication reason
-    firebase.initializeApp(firebaseConfig);
-    authentication = firebase.auth();
   });
 </script>
 
@@ -76,6 +96,7 @@
 <!-- Navbar CodyFrame -->
 <Navbar segment="login" />
 
+<button on:click={logout}>Logout</button>
 <div
   class="container margin-top-md margin-bottom-lg justify-between@md
   max-width-xs">
