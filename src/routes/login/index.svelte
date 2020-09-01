@@ -37,19 +37,20 @@
 
       let tokenID = await authentication.currentUser.getIdToken(true);
 
-      let toServer = await fetch("/api/v1/login", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${tokenID}`
-        }
-      });
+      // let toServer = await fetch("/api/v1/login", {
+      //   method: "GET",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${tokenID}`
+      //   }
+      // });
 
-      let data = await toServer.json();
+      // let data = await toServer.json();
 
       isLoading = false;
 
-      if (data.status.code == StatusTypes.SUCCESS.code) {
+      //if (data.status.code == StatusTypes.SUCCESS.code) {
+      if (true) {
         isError = false;
         message = `Success Login!,your name is ${result.user.displayName}, your id is: ${result.user.uid}`;
         return;
