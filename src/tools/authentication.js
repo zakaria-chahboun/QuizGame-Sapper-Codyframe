@@ -8,7 +8,7 @@ import {
 
 import {
     auth
-} from "../firebase.js";
+} from "../firebase-admin.js";
 
 // To extract authentication token from client request: this is a (polka or express) middleware 😉
 const getAuthToken = (req, res, next) => {

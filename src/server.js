@@ -2,22 +2,28 @@ import sirv from 'sirv';
 import polka from 'polka';
 import compression from 'compression';
 import * as sapper from '@sapper/server';
-const {
+
+import {
 	json
-} = require('body-parser');
+} from 'body-parser';
 
 // my tools to get easy work 💜
 import {
 	easyResponse
 } from "./tools/response";
+
 import {
 	checkAuthenticated
 } from "./tools/authentication";
 
 import {
+	StatusTypes
+} from './tools/status';
+
+import {
 	firestore,
 	auth
-} from "./firebase.js";
+} from "./firebase-admin.js";
 
 const {
 	PORT,
@@ -178,6 +184,9 @@ polka()
 			easyResponse(res, "", true, error.code);
 		}
 	})
+	.get('/logout', async (req, res) => {
+
+	})
 	.use(
 		compression({
 			threshold: 0
@@ -185,7 +194,11 @@ polka()
 		sirv('static', {
 			dev
 		}),
-		sapper.middleware()
+		sapper.middleware({
+			session: (req, res) => ({
+				user: req.user
+			})
+		})
 	)
 	.listen(PORT, err => {
 		if (err) console.log('error', err);

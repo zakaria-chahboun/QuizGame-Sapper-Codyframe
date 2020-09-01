@@ -32,7 +32,7 @@ function easyResponse(
     // The status format
     let status = {
         // no error by default
-        type: StatusTypes.SUCCESS.code,
+        code: StatusTypes.SUCCESS.code,
         isError,
         message
     }
@@ -44,7 +44,7 @@ function easyResponse(
         for (const el in StatusTypes) {
             if (StatusTypes[el].code == errorCode) {
                 statusNumber = StatusTypes[el].number;
-                status.type = el;
+                status.code = StatusTypes[el].code;
                 // check the message is empty >> is this a cutom message or not? 😉
                 if (message == '')
                     status.message = StatusTypes[el].message;
@@ -58,7 +58,7 @@ function easyResponse(
         // So we have to send something to the user 🤷!
         // Cause the default values is always the "sucess" status 👈, We won't send a sucess message in an error 👍!
         if (i == 0) {
-            status.type = "ERROR";
+            status.code = "ERROR";
             statusNumber = 400;
             status.message = "It doesn't look okay, something is wrong, try again!";
         }
@@ -78,7 +78,7 @@ function easyResponse(
     data can be an array of elements or just 1 element.
     {
         status: {
-            type: "Authentication_Failed",
+            code: "auth/invalid-credential",
             isError: true,
             message: "Try again!"
         },
