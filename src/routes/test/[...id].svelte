@@ -8,12 +8,12 @@
 
     // -- get a question reference from (index) of current test --
     let res1 = await this.fetch(
-      `api/question_of_test/${testID}/${questionIndex}`
+      `api/v1/question_of_test/${testID}/${questionIndex}`
     );
     let questionReference = await res1.json();
 
     // -- get the question data by the question reference --
-    let res2 = await this.fetch(`api/question/${questionReference.reference}`);
+    let res2 = await this.fetch(`api/v1/question/${questionReference.reference}`);
     let questionData = await res2.json();
 
     let question = questionData.question;
@@ -39,7 +39,7 @@
     let isMultiple = counter > 1 ? true : false;
 
     // -- get all question references of test --
-    let res3 = await this.fetch(`api/questions/test/${testID}`);
+    let res3 = await this.fetch(`api/v1/questions/test/${testID}`);
     let stepCircles = await res3.json();
     let i = 1; // local: must start at 1 >> index for question references in tests >> for easy indexing by url
 

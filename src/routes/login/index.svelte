@@ -53,19 +53,17 @@
         body: JSON.stringify({ tokenID })
       });
       // Get the result from server (success or failure) 👈
-      let serverResult = await toServer.json();
+      const serverResult = await toServer.json();
       // Ux
       isLoading = false;
       // Check the result: Success Case 👍
-      //if (serverResult.status.code == StatusTypes.SUCCESS.code) {
-      if (true) {
+      if (serverResult.status.code == StatusTypes.SUCCESS.code) {
         isError = false;
         message = `Success Login!,your name is ${UserResult.user.displayName}, your id is: ${UserResult.user.uid}`;
         // logout from firebase, WHY? because the backend (and session) is taken the place now 😉
         authentication.signOut();
         // redirect to the home!
-        goto("/");
-        return;
+        return window.location.assign('/');
       }
 
       // Failure Case 👎
