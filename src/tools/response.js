@@ -1,6 +1,24 @@
 /*
     This function help us to send good JSON format in the API
     It handle errors out of the box
+
+    ---------------------------------------------------------
+    
+    The structure of response is like that:
+    data can be an array of elements or just 1 element.
+    {
+        status: {
+            code: "auth/invalid-credential",
+            isError: true,
+            message: "Try again!"
+        },
+        user: {
+            claims ..
+        }
+        data:[
+            {...}
+        ]
+    }
 */
 
 import send from "@polka/send-type";
@@ -15,6 +33,7 @@ import {
  * This method send a Http JSON Format 👌
  * @param {object} res - Server Response >> the 'res' argument 👈.
  * @param {object} data - The data to be sent 🥑.
+ * @param {object} user - [null] The data of user 🤴.
  * @param {boolean} isError -[false] Is there an error? true or false 🙄.
  * @param {String} errorCode -[""] error code, You have to put it from firebase catch "error.code", You can put a custom one from StatusTypes.{}.code 🤠!
  * @param {String} message - [""] optional argument = empty by default, cause the Messages are generated from StatusTypes.{}.message, You can put a custom text if you want 🤠!
@@ -22,6 +41,7 @@ import {
 function easyResponse(
     res,
     data,
+    user = null,
     isError = false, // no error by default
     errorCode = '', // no error by default
     message = '' // empty by default >> in case you want a custom message or in success case for example!
@@ -72,24 +92,9 @@ function easyResponse(
             status.message = StatusTypes.SUCCESS.message;
     }
 
-    // ---------------------------------------------
-    /*
-    The structure of response is like that:
-    data can be an array of elements or just 1 element.
-    {
-        status: {
-            code: "auth/invalid-credential",
-            isError: true,
-            message: "Try again!"
-        },
-        data:[
-            {...}
-        ]
-    }
-    */
-    // ---------------------------------------------
     const format = JSON.stringify({
         status,
+        user,
         data
     });
 
