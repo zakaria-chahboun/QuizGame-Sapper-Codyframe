@@ -7,4 +7,3 @@ import {
 */
 
 export const saver = writable([]);
-export const firebase = writable(null);

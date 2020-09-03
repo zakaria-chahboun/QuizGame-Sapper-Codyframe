@@ -9,62 +9,78 @@
 
 <script>
   import Navbar from "../../components/Navbar.svelte";
-  import { firebase } from "../../components/store.js";
   import { onMount } from "svelte";
   import { StatusTypes } from "../../tools/status.js";
+  import { firebaseConfig } from "../../firebase-web-config.js";
+  import { goto } from "@sapper/app";
 
   // ------ Props ------
-  export let message; // to show it to the user in case samething happen
+  export let message; // To show it to the user in case samething happen
   let email;
   let password;
 
-  // We did this (in this way) because the "$firebase 🔥" store initialized in "global layout" page, WHEN the page is loaded successfully >> "onMount(..)"
-  // But this page here is loaded first, So we get a "null $firebase" value 👈!
-  // So we have to listen to the store, and then we can work with it without any issues 😉 #zaki
-  $: authentication = $firebase == null ? {} : $firebase.auth();
+  let firebase;
+  let authentication;
+  let csrfCookie;
 
   let isLoading = false; // UI UX
   let isError = false; // UI UX
 
-  //- Login with email & password
+  // ------ Login with email & password ------
   async function login() {
+    // UX
     isLoading = true;
     try {
-      let result = await authentication.signInWithEmailAndPassword(
+      /* As httpOnly cookies are to be used, do not persist any state client side 👍
+        For the Seesion authentication not the JWT */
+      firebase.auth().setPersistence("none");
+      // Authenticate 🔥!
+      let UserResult = await authentication.signInWithEmailAndPassword(
         email,
         password
       );
-
+      // Get the Firebase TokenID 👈
       let tokenID = await authentication.currentUser.getIdToken(true);
-
-      // let toServer = await fetch("/api/v1/login", {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${tokenID}`
-      //   }
-      // });
-
-      // let data = await toServer.json();
-
+      // Send the CSRF Cookie with the TokenID to the server 👌
+      let toServer = await fetch("/api/v1/login", {
+        method: "POST",
+        headers: {
+          //Accept: "application/json",
+          "Content-Type": "application/json",
+          "CSRF-Token": csrfCookie
+        },
+        credentials: "include",
+        body: JSON.stringify({ tokenID })
+      });
+      // Get the result from server (success or failure) 👈
+      let serverResult = await toServer.json();
+      // Ux
       isLoading = false;
-
-      //if (data.status.code == StatusTypes.SUCCESS.code) {
+      // Check the result: Success Case 👍
+      //if (serverResult.status.code == StatusTypes.SUCCESS.code) {
       if (true) {
         isError = false;
-        message = `Success Login!,your name is ${result.user.displayName}, your id is: ${result.user.uid}`;
+        message = `Success Login!,your name is ${UserResult.user.displayName}, your id is: ${UserResult.user.uid}`;
+        // logout from firebase, WHY? because the backend (and session) is taken the place now 😉
+        authentication.signOut();
+        // redirect to the home!
+        goto("/");
         return;
       }
 
+      // Failure Case 👎
       isError = true;
       message = data.status.message;
     } catch (error) {
+      // UX
       isLoading = false;
       isError = true;
+      // Empty fields case: 😉
       if (error.code == StatusTypes.Invalid_Argument.code) {
         message = "Empty fields! Login with a valid email and password!";
         return;
       }
+      // Other cases: 😉
       for (const el in StatusTypes) {
         if (StatusTypes[el].code == error.code) {
           message = StatusTypes[el].message;
@@ -74,16 +90,29 @@
     }
   }
 
-  //- Logout
-  async function logout() {
-    await authentication.signOut();
-  }
-
-  // ------ To mount the CodyFrame scripts ------------------------
+  // ------ client side only ------------------
   let codyFrameScripts = "";
-  // let firebaseScripts = ["", ""];
   onMount(async () => {
+    // ---- To mount the CodyFrame scripts ----
     codyFrameScripts = "codyframe/scripts.js";
+
+    // ---- Firbase Init : For Authentication -
+    // Dynamic Import for SSR compatible 🤗
+    // look at 🥰: https://stackoverflow.com/questions/56315901/how-to-import-firebase-only-on-client-in-sapper/63672503#63672503
+    const module = await import("firebase/app");
+    await import("firebase/auth");
+    firebase = module.default;
+
+    firebase = !firebase.apps.length
+      ? firebase.initializeApp(firebaseConfig)
+      : firebase.app();
+
+    authentication = firebase.auth();
+
+    // ---- get crsf cookie ----
+    let jsc = await import("js-cookie");
+    let Cookies = jsc.default;
+    csrfCookie = Cookies.get("XSRF-TOKEN");
   });
 </script>
 
@@ -97,7 +126,6 @@
 <!-- Navbar CodyFrame -->
 <Navbar segment="login" />
 
-<button on:click={logout}>Logout</button>
 <div
   class="container margin-top-md margin-bottom-lg justify-between@md
   max-width-xs">
