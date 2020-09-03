@@ -1,5 +1,6 @@
 import sirv from 'sirv';
 import polka from 'polka';
+import express from 'express';
 import compression from 'compression';
 import * as sapper from '@sapper/server';
 
@@ -7,13 +8,18 @@ import {
 	json
 } from 'body-parser';
 
+import csurfMiddleware from "csurf";
+import cookieParser from "cookie-parser";
+import cookie from "cookie";
+import redirect from "@polka/redirect";
+
 // my tools to get easy work 💜
 import {
 	easyResponse
 } from "./tools/response";
 
 import {
-	checkAuthenticated
+	SessionAuthentication
 } from "./tools/authentication";
 
 import {
@@ -35,8 +41,21 @@ const dev = NODE_ENV === 'development';
 polka()
 	// - body parser
 	.use(json())
+	// - cookies parser
+	.use(cookieParser())
+	.use(SessionAuthentication)
+	// - csurf cookie
+	// .use(csurfMiddleware({
+	// 	cookie: true
+	// }))
+	// // - to avoid csurf attacks
+	// .all("*", (req, res, next) => {
+	// 	///res.cookie("XSRF-TOKEN", req.csrfToken());
+	// 	res.setHeader('Set-Cookie', cookie.serialize("XSRF-TOKEN", req.csrfToken()));
+	// 	next();
+	// })
 	// -- get all tests data from db --
-	.get('/api/v1/tests', checkAuthenticated, async (req, res) => {
+	.get('/api/v1/tests', async (req, res) => {
 		try {
 			// get all native tests from 'tests' collection in db
 			const testsCollection = await firestore
@@ -108,10 +127,10 @@ polka()
 			const tests = await Promise.all(tests_);
 
 			// ------------------------- Step 3 -------------------------
-			easyResponse(res, tests);
+			easyResponse(res, tests, req.user ? req.user : null);
 
 		} catch (error) {
-			easyResponse(res, null, true, error.code);
+			easyResponse(res, null, null, true, error.code);
 		}
 	})
 	// -- get questions data by id from db
@@ -177,15 +196,42 @@ polka()
 				displayName: "sarah",
 				password: "123456"
 			});
-			easyResponse(res, user.toJSON());
+			easyResponse(res, null, user.toJSON());
 		} catch (error) {
 			console.log(error.code);
 
-			easyResponse(res, "", true, error.code);
+			easyResponse(res, null, null, true, error.code);
 		}
 	})
-	.get('/logout', async (req, res) => {
+	.post('/api/v1/login', async (req, res) => {
+		// Get the token ID passed.
+		const tokenID = req.body.tokenID.toString();
 
+		// Set session expiration to 5 days.
+		const expiresIn = 60 * 60 * 24 * 5 * 1000;
+		// Create the session cookie. This will also verify the ID token in the process.
+		// The session cookie will have the same claims as the ID token.
+		auth.createSessionCookie(tokenID, {
+				expiresIn
+			})
+			.then((sessionCookie) => {
+				// Set cookie policy for session cookie.
+				const options = {
+					maxAge: expiresIn,
+					//httpOnly: true,
+					//secure: true
+				};
+				res.setHeader('Set-Cookie', cookie.serialize("session", sessionCookie, options));
+				easyResponse(res, null);
+			}, error => {
+				easyResponse(res, null, null, true, StatusTypes.Authentication_Failed.code);
+			});
+	})
+	.get('/api/v1/logout', async (req, res) => {
+		res.setHeader('Set-Cookie', cookie.serialize('session', "", {
+			maxAge: 0
+		}));
+		redirect(res, 302, '/login');
 	})
 	.use(
 		compression({
