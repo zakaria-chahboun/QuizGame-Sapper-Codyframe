@@ -10,11 +10,6 @@ import {
     auth
 } from "../firebase-admin.js";
 
-import {
-    StatusTypes
-} from "./status";
-import cookie from "cookie";
-
 // JWT: To extract authentication token from client request: this is a (polka or express) middleware 😉
 const getAuthToken = (req, res, next) => {
     if (
@@ -45,7 +40,7 @@ export const JWTAuthentication = async (req, res, next) => {
             req.user = userInfo;
             return next();
         } catch (error) {
-            easyResponse(res, null, null, true, error.code);
+            easyResponse(res, null, true, error.code);
         }
     });
 };
@@ -56,27 +51,26 @@ export const SessionAuthentication = async (req, res, next) => {
     /* Verify the session cookie. 
        In this case an additional check is added to detect if the user's Firebase session was revoked, user deleted/disabled, etc.
     */
-    auth.verifySessionCookie(
-            sessionCookie, true /** checkRevoked */ )
-        .then((decodedClaims) => {
-            req.user = {
-                uid: decodedClaims.uid,
-                email: decodedClaims.email,
-                name: decodedClaims.name || "",
-                avatar: decodedClaims.picture || "",
-                phoneNumber: decodedClaims.phone_number || "",
-                loginTime: Unix_timestamp(decodedClaims.auth_time),
-                isAnonymous: decodedClaims.isAnonymous || false,
-                emailVerified: decodedClaims.email_verified,
-            }
-            next();
-        })
-        .catch(error => {
-            // Session cookie is unavailable or invalid. Force user to login.
-            //easyResponse(res, null, null, true, StatusTypes.Login_Is_Required.code);
-            next()
-        });
-};
+    try {
+        const decodedClaims = await auth.verifySessionCookie(
+            sessionCookie, true /** checkRevoked */ );
+        req.user = {
+            uid: decodedClaims.uid,
+            email: decodedClaims.email,
+            name: decodedClaims.name || "",
+            avatar: decodedClaims.picture || "",
+            phoneNumber: decodedClaims.phone_number || "",
+            loginTime: Unix_timestamp(decodedClaims.auth_time),
+            isAnonymous: decodedClaims.isAnonymous || false,
+            emailVerified: decodedClaims.email_verified,
+        };
+        next();
+    } catch (error) {
+        // Session cookie is unavailable or invalid. Force user to login.
+        //easyResponse(res, null, null, true, StatusTypes.Login_Is_Required.code);
+        next();
+    }
+}
 
 // To Convert Unix Seconds to Normal HH:MM:SS time
 function Unix_timestamp(t) {

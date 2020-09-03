@@ -12,19 +12,13 @@
             isError: true,
             message: "Try again!"
         },
-        user: {
-            claims ..
-        }
         data:[
             {...}
         ]
     }
 */
 
-import send from "@polka/send-type";
-
 import {
-    StatusNumbers,
     StatusTypes
 } from "./status";
 
@@ -33,7 +27,6 @@ import {
  * This method send a Http JSON Format 👌
  * @param {object} res - Server Response >> the 'res' argument 👈.
  * @param {object} data - The data to be sent 🥑.
- * @param {object} user - [null] The data of user 🤴.
  * @param {boolean} isError -[false] Is there an error? true or false 🙄.
  * @param {String} errorCode -[""] error code, You have to put it from firebase catch "error.code", You can put a custom one from StatusTypes.{}.code 🤠!
  * @param {String} message - [""] optional argument = empty by default, cause the Messages are generated from StatusTypes.{}.message, You can put a custom text if you want 🤠!
@@ -41,7 +34,6 @@ import {
 function easyResponse(
     res,
     data,
-    user = null,
     isError = false, // no error by default
     errorCode = '', // no error by default
     message = '' // empty by default >> in case you want a custom message or in success case for example!
@@ -92,16 +84,12 @@ function easyResponse(
             status.message = StatusTypes.SUCCESS.message;
     }
 
-    const format = JSON.stringify({
+    const format = {
         status,
-        user,
         data
-    });
+    };
 
-    // Send an HTTP JSON!
-    send(res, statusNumber, format, {
-        'Content-Type': 'application/json'
-    });
+    res.status(statusNumber).send(format);
 }
 
 // Export! 
