@@ -23,7 +23,7 @@
 </script>
 
 <li class="card {type} padding-sm">
-  <a href={url}>
+  <a rel="external" href={url}>
     <div class="card__content">
       <div class="text-component">
         <h4>{title}</h4>

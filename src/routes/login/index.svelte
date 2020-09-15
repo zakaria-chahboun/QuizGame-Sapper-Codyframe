@@ -2,13 +2,14 @@
   export async function preload(page, session) {
     //> /login?message=text
     let { message } = page.query;
+    let { user } = session;
     if (!message) message = "welcome to our game!";
+    if (user) this.redirect(302, "/");
     return { message };
   }
 </script>
 
 <script>
-  import Navbar from "../../components/Navbar.svelte";
   import { onMount } from "svelte";
   import { StatusTypes } from "../../tools/status.js";
   import { firebaseConfig } from "../../firebase-web-config.js";
@@ -42,7 +43,7 @@
       // Get the Firebase TokenID 👈
       let tokenID = await authentication.currentUser.getIdToken(true);
       // Send the CSRF Cookie with the TokenID to the server 👌
-      let toServer = await fetch("/api/v1/login", {
+      let toServer = await fetch("/api/v1/session_login", {
         method: "POST",
         headers: {
           //Accept: "application/json",
@@ -63,7 +64,7 @@
         // logout from firebase, WHY? because the backend (and session) is taken the place now 😉
         authentication.signOut();
         // redirect to the home!
-        return window.location.assign('/');
+        return window.location.assign("/");
       }
 
       // Failure Case 👎
@@ -89,11 +90,7 @@
   }
 
   // ------ client side only ------------------
-  let codyFrameScripts = "";
   onMount(async () => {
-    // ---- To mount the CodyFrame scripts ----
-    codyFrameScripts = "codyframe/scripts.js";
-
     // ---- Firbase Init : For Authentication -
     // Dynamic Import for SSR compatible 🤗
     // look at 🥰: https://stackoverflow.com/questions/56315901/how-to-import-firebase-only-on-client-in-sapper/63672503#63672503
@@ -113,16 +110,6 @@
     csrfCookie = Cookies.get("XSRF-TOKEN");
   });
 </script>
-
-<!-- Scripts CodyFrame (we do this here to mount the bad script on every call of route) -->
-<svelte:head>
-  <script defer src={codyFrameScripts}>
-
-  </script>
-</svelte:head>
-
-<!-- Navbar CodyFrame -->
-<Navbar segment="login" />
 
 <div
   class="container margin-top-md margin-bottom-lg justify-between@md
@@ -200,7 +187,7 @@
       <div class="flex justify-between margin-bottom-xxxs">
         <label class="form-label" for="inputPassword1">Password</label>
         <span class="text-sm">
-          <a href="reset">Forgot?</a>
+          <a rel="external" href="reset">Forgot?</a>
         </span>
       </div>
 
@@ -221,9 +208,8 @@
     <div class="text-center">
       <p class="text-sm">
         Don't have an account?
-        <a href="signup">Get started</a>
+        <a rel="external" href="signup">Get started</a>
       </p>
     </div>
   </div>
-
 </div>
