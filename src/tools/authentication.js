@@ -37,10 +37,19 @@ export const JWTAuthentication = async (req, res, next) => {
                 return;
             }
             const userInfo = await auth.verifyIdToken(authToken, true);
-            req.user = userInfo;
+            req.user = {
+                uid: userInfo.uid,
+                email: userInfo.email,
+                name: userInfo.name || "",
+                avatar: userInfo.picture || "",
+                phoneNumber: userInfo.phone_number || "",
+                loginTime: Unix_timestamp(userInfo.auth_time),
+                isAnonymous: userInfo.isAnonymous || false,
+                emailVerified: userInfo.email_verified,
+            };
             return next();
         } catch (error) {
-            easyResponse(res, null, true, error.code);
+            return next();
         }
     });
 };
@@ -64,11 +73,11 @@ export const SessionAuthentication = async (req, res, next) => {
             isAnonymous: decodedClaims.isAnonymous || false,
             emailVerified: decodedClaims.email_verified,
         };
-        next();
+        return next();
     } catch (error) {
         // Session cookie is unavailable or invalid. Force user to login.
         //easyResponse(res, null, null, true, StatusTypes.Login_Is_Required.code);
-        next();
+        return next();
     }
 }
 

@@ -16,8 +16,8 @@ import {
 } from "../firebase-admin.js";
 
 const {
-	PORT,
-	NODE_ENV,
+    PORT,
+    NODE_ENV,
 } = process.env;
 const dev = NODE_ENV === 'development';
 
@@ -156,7 +156,8 @@ api_v1_router
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(questionReference));
     })
-    .post('/login', async (req, res) => {
+    // -- firbase session login
+    .post('/session_login', async (req, res) => {
         // Get the token ID passed.
         const tokenID = req.body.tokenID.toString();
         // Set session expiration to 5 days.
@@ -173,7 +174,6 @@ api_v1_router
                 httpOnly: true,
                 secure: dev ? false : true,
             };
-            //res.setHeader('Set-Cookie', cookie.serialize("session", sessionCookie, options));
             res.cookie("session", sessionCookie, options);
             easyResponse(res, null);
 
@@ -181,6 +181,7 @@ api_v1_router
             easyResponse(res, null, true, StatusTypes.Authentication_Failed.code);
         }
     })
+    // -- firbase session logout
     .get('/logout', async (req, res) => {
         res.clearCookie('session');
         res.redirect('/login');
