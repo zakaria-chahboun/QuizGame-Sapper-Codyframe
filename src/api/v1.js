@@ -23,12 +23,26 @@ const dev = NODE_ENV === 'development';
 
 api_v1_router
     // -- get all tests data from db --
-    .get('/tests', async (req, res) => {
+    .get('/tests/:id?', async (req, res) => {
         try {
+            // global variables
+            let testsCollection = {};
+
+            // get a specific native test from 'tests' collection in db - by ID
+            if (req.params.id) {
+                testsCollection = await firestore
+                    .collection("tests").doc(req.params.id)
+                    .get();
+                if (!testsCollection.exists) {
+                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code);
+                }
+            }
             // get all native tests from 'tests' collection in db
-            const testsCollection = await firestore
-                .collection("tests")
-                .get();
+            else {
+                testsCollection = await firestore
+                    .collection("tests")
+                    .get();
+            }
 
             // ------------------------- Step 1 -------------------------
 
@@ -61,39 +75,69 @@ api_v1_router
             }
 
             // ------------------------- Step 2 -------------------------
+            // the final clean result (maybe array of objects if tests, maybe one object if one test)
+            let tests;
 
-            // Return the data of 'tests'
-            const tests_ = testsCollection.docs.map(async (doc) => {
-                let data = doc.data();
-                data.id = doc.id;
+            // Return the data of the 'test'
+            if (req.params.id) {
+                let data = testsCollection.data();
+                data.id = testsCollection.id;
                 data.stepValue = 0; // by default: no step 🙄!
                 data.isCompleted = false; // by default: no user play 🙄!
                 data.lastQuestion = 0; // by default: no user play 🙄!
 
                 // if the user logged and exist >> update the progress 🦊
-                userProgress.forEach((e, i) => {
-                    if (e.id == data.id) {
+                for (const e of userProgress) {
+                    if (e.id == req.params.id) {
                         data.stepValue = e.stepValue;
                         data.isCompleted = e.isCompleted;
                         data.lastQuestion = e.lastQuestion;
+                        break;
                     }
-                })
+                }
 
-                // finally add 'max steps' for the current test 😉
-                // this is useful to not increase question index more than it have (out of range) 👌
                 const max = await firestore
                     .collection("tests")
-                    .doc(doc.id)
+                    .doc(req.params.id)
                     .collection('questionsID').get();
 
                 data.maxSteps = max.docs.length;
+                tests = data;
+            }
+            // Return the data of 'tests'
+            else {
+                const tests_ = testsCollection.docs.map(async (doc) => {
+                    let data = doc.data();
+                    data.id = doc.id;
+                    data.stepValue = 0; // by default: no step 🙄!
+                    data.isCompleted = false; // by default: no user play 🙄!
+                    data.lastQuestion = 0; // by default: no user play 🙄!
 
-                return data;
-            });
+                    // if the user logged and exist >> update the progress 🦊
+                    for (const e of userProgress) {
+                        if (e.id == data.id) {
+                            data.stepValue = e.stepValue;
+                            data.isCompleted = e.isCompleted;
+                            data.lastQuestion = e.lastQuestion;
+                            break;
+                        }
+                    }
 
-            // Promise.all is useful if you have a "async/await" inside the "map" function of your array
-            const tests = await Promise.all(tests_);
+                    // finally add 'max steps' for the current test 😉
+                    // this is useful to not increase question index more than it have (out of range) 👌
+                    const max = await firestore
+                        .collection("tests")
+                        .doc(doc.id)
+                        .collection('questionsID').get();
 
+                    data.maxSteps = max.docs.length;
+
+                    return data;
+                });
+
+                // Promise.all is useful if you have a "async/await" inside the "map" function of your array
+                tests = await Promise.all(tests_);
+            }
             // ------------------------- Step 3 -------------------------
             easyResponse(res, tests);
 
