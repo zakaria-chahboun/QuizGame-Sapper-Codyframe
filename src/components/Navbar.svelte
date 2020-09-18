@@ -53,22 +53,33 @@
 
       <!-- Nav Right Side -->
       <ul class="f-header__list flex-grow flex-basis-0 justify-end@md">
-        <li class="f-header__item">
-          <a
-            class={segment === 'login' ? 'f-header__btn btn btn--primary' : segment === 'undefined' ? 'f-header__link' : 'f-header__link'}
-            rel="external"
-            href="login">
-            Login
-          </a>
-        </li>
-        <li class="f-header__item">
-          <a
-            class={segment === 'signup' ? 'f-header__btn btn btn--primary' : segment === 'undefined' || segment === 'login' ? 'f-header__link' : 'f-header__btn btn btn--primary'}
-            rel="external"
-            href="signup">
-            Sign Up
-          </a>
-        </li>
+        {#if segment !== 'logout'}
+          <li class="f-header__item">
+            <a
+              class={segment === 'login' ? 'f-header__btn btn btn--primary' : segment === 'undefined' ? 'f-header__link' : 'f-header__link'}
+              rel="external"
+              href="login">
+              Login
+            </a>
+          </li>
+          <li class="f-header__item">
+            <a
+              class={segment === 'signup' ? 'f-header__btn btn btn--primary' : segment === 'undefined' || segment === 'login' ? 'f-header__link' : 'f-header__btn btn btn--primary'}
+              rel="external"
+              href="signup">
+              Sign Up
+            </a>
+          </li>
+        {:else}
+          <li class="f-header__item">
+            <a
+              class="f-header__btn btn btn--primary"
+              rel="external"
+              href="logout">
+              Logout
+            </a>
+          </li>
+        {/if}
       </ul>
     </div>
   </div>
