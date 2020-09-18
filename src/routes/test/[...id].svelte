@@ -94,9 +94,9 @@
   import Sidebar from "../../components/Sidebar.svelte";
   import StepBar from "../../components/StepBar.svelte";
   import StepCircles from "../../components/StepCircles.svelte";
+  import NextButton from "../../components/NextButton.svelte";
   import MyLayout from "./_test.svelte";
   import { StepCircleTypes, ChoiceTypes } from "../../components/types.js";
-  import { goto } from "@sapper/app";
 
   // step circles data
   export let stepCircles;
@@ -233,13 +233,11 @@
   </div>
 
   <!-- Next Button Data -->
-  <button
-    slot="nextButton"
-    class="btn btn--default text-component"
-    on:click={() => goto(`/test/${currentTestID}/${currentQuestionIndex + 1}`)}
-    disabled={currentQuestionIndex == stepCircles.length}
-    class:btn--disabled={currentQuestionIndex == stepCircles.length}>
-    Next Question
-  </button>
+  <span slot="nextButton">
+    <NextButton
+      {currentTestID}
+      {currentQuestionIndex}
+      maxQuestions={stepCircles.length} />
+  </span>
 
 </MyLayout>
