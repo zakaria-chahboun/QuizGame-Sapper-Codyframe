@@ -40,6 +40,10 @@ express()
 		next();
 	})
 	.use('/api/v1', api_v1_router)
+	// -- for easy use & to not show the "api/v1/logout" in the href attribute in the button
+	.get('/logout', (req, res, next) => {
+		res.redirect('api/v1/logout');
+	})
 	.use(
 		compression({
 			threshold: 0
