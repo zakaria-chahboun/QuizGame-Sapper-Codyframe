@@ -6,6 +6,18 @@
     const testID = id[0];
     const questionIndex = id[1];
 
+    // if no user >> no game bro 🙄!
+    if (!session.user) {
+      return this.redirect(302, "login");
+    }
+    // if user is anonymous >> no game bro 🙄 if the test is private, just eat this 👉 🍪!
+    else if (session.user.isAnonymous) {
+      const snapshot = await this.fetch(`api/v1/tests/${testID}`);
+      const result = await snapshot.json();
+      if (result.status.isError) return this.redirect(302, "/");
+      else if (result.data.isAuth) return this.redirect(302, "login");
+    }
+
     // -- get a question reference from (index) of current test --
     let res1 = await this.fetch(
       `api/v1/question_of_test/${testID}/${questionIndex}`
@@ -13,7 +25,9 @@
     let questionReference = await res1.json();
 
     // -- get the question data by the question reference --
-    let res2 = await this.fetch(`api/v1/question/${questionReference.reference}`);
+    let res2 = await this.fetch(
+      `api/v1/question/${questionReference.reference}`
+    );
     let questionData = await res2.json();
 
     let question = questionData.question;
