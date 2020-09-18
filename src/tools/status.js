@@ -110,7 +110,13 @@ const StatusTypes = {
         code: 'auth/argument-error',
         number: StatusNumbers.BAD_REQUEST,
         message: "Incorrect arguments!"
-    }
+    },
+    // for all kind of no data of this game
+    NO_DATA: {
+        code: 'NO_DATA',
+        number: StatusNumbers.BAD_REQUEST,
+        message: "There is no data for this request."
+    },
 }
 
 

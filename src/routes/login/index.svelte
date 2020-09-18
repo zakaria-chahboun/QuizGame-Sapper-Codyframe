@@ -4,7 +4,7 @@
     let { message } = page.query;
     let { user } = session;
     if (!message) message = "welcome to our game!";
-    if (user) this.redirect(302, "/");
+    if (user && !user.isAnonymous) this.redirect(302, "/");
     return { message };
   }
 </script>
@@ -27,8 +27,8 @@
   let isLoading = false; // UI UX
   let isError = false; // UI UX
 
-  // ------ Login with email & password ------
-  async function login() {
+  // ------ Session Login with email & password ------
+  async function session_login() {
     // UX
     isLoading = true;
     try {
@@ -200,7 +200,7 @@
     </div>
 
     <div class="margin-bottom-sm">
-      <button class="btn btn--primary btn width-100%" on:click={login}>
+      <button class="btn btn--primary btn width-100%" on:click={session_login}>
         Login
       </button>
     </div>
