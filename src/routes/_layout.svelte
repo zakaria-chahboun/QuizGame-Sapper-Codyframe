@@ -7,9 +7,7 @@
   import { stores } from "@sapper/app";
   const { session } = stores();
 
-  if ($session.user && !$session.user.isAnonymous) {
-    segment = "logout";
-  }
+  $: segment = $session.user && !$session.user.isAnonymous ? "logout" : segment;
 
   // let uid;
   //let isAnonymous;
@@ -54,6 +52,7 @@
 
   </script>
 </svelte:head>
+
 {#if $session.user}
   User: ID: {$session.user.uid || '__'}, isAnonymous: {$session.user.isAnonymous || '__'}
 {:else}No User{/if}
