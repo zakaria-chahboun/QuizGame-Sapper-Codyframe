@@ -11,9 +11,13 @@ import {
 } from '../tools/status';
 
 import {
+    randomNumbers
+} from '../tools/cool';
+
+import {
     firestore,
     auth
-} from "../firebase-admin.js";
+} from "../firebase-admin";
 
 const {
     PORT,
@@ -146,27 +150,64 @@ api_v1_router
         }
     })
     // -- get questions data by id from db
-    .get('/question/:id', async (req, res) => {
+    .get('/questions/:id?', async (req, res) => {
         const {
             id
         } = req.params;
+        const {
+            limit
+        } = req.query;
+
         try {
+            // point on questions colelction
+            const questionColl = await firestore.collection("questions");
 
-            const snapshot = await firestore
-                .collection("questions").doc(`${id}`).get();
-            if (!snapshot.exists)
-                throw Error(`no data with this ID: ${id}`);
+            // if specific question 🤠
+            if (id) {
+                const snapshot = await questionColl.doc(id).get();
+                if (!snapshot.exists)
+                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code);
 
-            let question = snapshot.data();
-            question.id = snapshot.id;
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify(question));
-
+                let question = snapshot.data();
+                question.id = snapshot.id;
+                easyResponse(res, question);
+            }
+            // or all questions
+            else {
+                // limit query: range of random data 🤗
+                if (limit) {
+                    let numberLimit = parseInt(limit.toString().trim());
+                    let length = (await questionColl.get()).docs.length;
+                    if (length == 0) {
+                        return easyResponse(res, null, true, StatusTypes.NO_DATA.code, "There no questions in database!");
+                    } else if (!numberLimit || numberLimit <= 0) {
+                        return easyResponse(res, null, true, StatusTypes.Invalid_Argument.code, "Enter a valid limit number.");
+                    } else if (length < numberLimit) {
+                        return easyResponse(res, null, true, StatusTypes.Invalid_Argument.code, `We don't have this range of data, We just have ${length} questions.`);
+                    }
+                    let data = [];
+                    let random = await randomNumbers(0, length - 1, numberLimit);
+                    console.log(random);
+                    for (let i = 0; i < numberLimit; i++) {
+                        const x = random[i];
+                        data[i] = (await questionColl
+                            .where("index", ">=", x)
+                            .limit(1)
+                            .get()).docs[0].data();
+                    }
+                    return easyResponse(res, data);
+                }
+                // all the data 🤗
+                const snapshot = await questionColl.get();
+                let questions = snapshot.docs.map(doc => {
+                    let data = doc.data();
+                    data.id = doc.id;
+                    return data;
+                });
+                easyResponse(res, questions);
+            }
         } catch (error) {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify({
-                message: error.message
-            }));
+            easyResponse(res, null, true, error.code);
         }
     })
     // -- get all questions references of test
@@ -229,6 +270,31 @@ api_v1_router
     .get('/logout', async (req, res) => {
         res.clearCookie('session');
         res.redirect('/login');
+    })
+    .get('/user/test/:test_id', async (req, res) => {
+
+        // First of all: check the existence of user
+        if (!req.user) {
+            return easyResponse(res, null, true, StatusTypes.Login_Is_Required.code);
+        }
+        const {
+            test_id
+        } = req.params;
+
+        try {
+            let testDoc = await firestore
+                .collection("tests")
+                .doc(test_id)
+                .get();
+
+            if (!testDoc.exists) {
+                return easyResponse(res, null, true, StatusTypes.NO_DATA.code);
+            }
+
+
+        } catch (error) {
+
+        }
     })
 
 

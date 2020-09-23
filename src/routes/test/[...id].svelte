@@ -26,18 +26,18 @@
 
     // -- get the question data by the question reference --
     let res2 = await this.fetch(
-      `api/v1/question/${questionReference.reference}`
+      `api/v1/questions/${questionReference.reference}`
     );
     let questionData = await res2.json();
 
-    let question = questionData.question;
-    let description = questionData.description;
+    let question = questionData.data.question;
+    let description = questionData.data.description;
     let counter = 0; // local
     let choices = [];
     let correctAnswersIndex = [];
 
     // set choices data with the right format
-    for (let [i, e] of questionData.answers.entries()) {
+    for (let [i, e] of questionData.data.answers.entries()) {
       choices.push({
         type: ChoiceTypes.current,
         answer: e.answer,
