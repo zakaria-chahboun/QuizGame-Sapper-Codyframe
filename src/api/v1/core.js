@@ -1,23 +1,23 @@
 import express from 'express';
-const api_v1_router = express.Router();
+const api_v1_core_router = express.Router();
 
 // my tools to get easy work 💜
 import {
     easyResponse
-} from "../tools/response";
+} from "../../tools/response";
 
 import {
     StatusTypes
-} from '../tools/status';
+} from '../../tools/status';
 
 import {
     randomNumbers
-} from '../tools/cool';
+} from '../../tools/cool';
 
 import {
     firestore,
     auth
-} from "../firebase-admin";
+} from "../../firebase-admin";
 
 const {
     PORT,
@@ -25,7 +25,7 @@ const {
 } = process.env;
 const dev = NODE_ENV === 'development';
 
-api_v1_router
+api_v1_core_router
     // -- get all tests data from db --
     .get('/tests/:id?', async (req, res) => {
         try {
@@ -271,34 +271,9 @@ api_v1_router
         res.clearCookie('session');
         res.redirect('/login');
     })
-    .get('/user/test/:test_id', async (req, res) => {
-
-        // First of all: check the existence of user
-        if (!req.user) {
-            return easyResponse(res, null, true, StatusTypes.Login_Is_Required.code);
-        }
-        const {
-            test_id
-        } = req.params;
-
-        try {
-            let testDoc = await firestore
-                .collection("tests")
-                .doc(test_id)
-                .get();
-
-            if (!testDoc.exists) {
-                return easyResponse(res, null, true, StatusTypes.NO_DATA.code);
-            }
-
-
-        } catch (error) {
-
-        }
-    })
 
 
 // export the router 
 export {
-    api_v1_router
+    api_v1_core_router
 };

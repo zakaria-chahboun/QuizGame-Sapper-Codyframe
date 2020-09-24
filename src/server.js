@@ -13,8 +13,12 @@ import {
 } from "./tools/authentication";
 
 import {
-	api_v1_router
-} from "./api/v1";
+	api_v1_core_router
+} from "./api/v1/core";
+
+import {
+	api_v1_user_router
+} from "./api/v1/user";
 
 const {
 	PORT,
@@ -36,10 +40,10 @@ express()
 	// - to avoid csurf attacks
 	.all("*", (req, res, next) => {
 		res.cookie("XSRF-TOKEN", req.csrfToken());
-		//res.setHeader('Set-Cookie', cookie.serialize("XSRF-TOKEN", req.csrfToken()));
 		next();
 	})
-	.use('/api/v1', api_v1_router)
+	.use('/api/v1', api_v1_core_router)
+	.use('/api/v1', api_v1_user_router)
 	// -- for easy use & to not show the "api/v1/logout" in the href attribute in the button
 	.get('/logout', (req, res, next) => {
 		res.redirect('api/v1/logout');
