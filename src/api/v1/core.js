@@ -26,136 +26,57 @@ const {
 const dev = NODE_ENV === 'development';
 
 api_v1_core_router
-    // -- get all tests data from db --
-    .get('/tests/:id?', async (req, res) => {
+    // -- get tests data from db --
+    // -- example: api/v1/core/tests
+    // -- example: api/v1/core/tests/[id]
+    .get('/core/tests/:id?', async (req, res) => {
         try {
-            // global variables
-            let testsCollection = {};
-
-            // get a specific native test from 'tests' collection in db - by ID
+            // [option 1] GET test data from 'tests collection' by id
             if (req.params.id) {
-                testsCollection = await firestore
+                const testDoc = await firestore
                     .collection("tests").doc(req.params.id)
                     .get();
-                if (!testsCollection.exists) {
-                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code);
+                // - check the existence of this test
+                if (!testDoc.exists) {
+                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code, `There is no test with this id ${req.params.id} !`);
                 }
+                // - generate data
+                let data = testDoc.data();
+                data.id = testDoc.id;
+                // send data
+                return easyResponse(res, data);
             }
-            // get all native tests from 'tests' collection in db
+            // [option 2] GET all tests data from 'tests collection'
             else {
-                testsCollection = await firestore
+                const testCollection = await firestore
                     .collection("tests")
                     .get();
-            }
-
-            // ------------------------- Step 1 -------------------------
-
-            // User Variables 🤦‍♂
-            let userProgress = [];
-
-            // Check if user logged in
-            if (req.user) {
-                let userID = req.user.uid;
-                const userDoc = await firestore
-                    .collection("users").doc(userID)
-                    .get();
-
-                // Check if the User alredy exist and has the 'lastTest' field 🐶 in db
-                if (userDoc.exists && userDoc.data().lastTest) {
-                    const userData = await firestore
-                        .collection("users").doc(userID).collection('userProgress')
-                        .get();
-
-                    // array of maps (js objects) 🤠
-                    userProgress = userData.docs.map(doc => {
-                        let data = doc.data();
-                        data.id = doc.id;
-                        return data;
-                    });
-
-                    // const userLastTest = await userDoc.data().lastTest.get();
-                    // console.log(userLastTest.data());
+                // - check the existence of tests
+                if (testCollection.empty) {
+                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code, "We have no tests in our database!");
                 }
-            }
-
-            // ------------------------- Step 2 -------------------------
-            // the final clean result (maybe array of objects if tests, maybe one object if one test)
-            let tests;
-
-            // Return the data of the 'test'
-            if (req.params.id) {
-                let data = testsCollection.data();
-                data.id = testsCollection.id;
-                data.stepValue = 0; // by default: no step 🙄!
-                data.isCompleted = false; // by default: no user play 🙄!
-                data.lastQuestion = 0; // by default: no user play 🙄!
-
-                // if the user logged and exist >> update the progress 🦊
-                for (const e of userProgress) {
-                    if (e.id == req.params.id) {
-                        data.stepValue = e.stepValue;
-                        data.isCompleted = e.isCompleted;
-                        data.lastQuestion = e.lastQuestion;
-                        break;
-                    }
-                }
-
-                const max = await firestore
-                    .collection("tests")
-                    .doc(req.params.id)
-                    .collection('questionsID').get();
-
-                data.maxSteps = max.docs.length;
-                tests = data;
-            }
-            // Return the data of 'tests'
-            else {
-                const tests_ = testsCollection.docs.map(async (doc) => {
-                    let data = doc.data();
-                    data.id = doc.id;
-                    data.stepValue = 0; // by default: no step 🙄!
-                    data.isCompleted = false; // by default: no user play 🙄!
-                    data.lastQuestion = 0; // by default: no user play 🙄!
-
-                    // if the user logged and exist >> update the progress 🦊
-                    for (const e of userProgress) {
-                        if (e.id == data.id) {
-                            data.stepValue = e.stepValue;
-                            data.isCompleted = e.isCompleted;
-                            data.lastQuestion = e.lastQuestion;
-                            break;
-                        }
-                    }
-
-                    // finally add 'max steps' for the current test 😉
-                    // this is useful to not increase question index more than it have (out of range) 👌
-                    const max = await firestore
-                        .collection("tests")
-                        .doc(doc.id)
-                        .collection('questionsID').get();
-
-                    data.maxSteps = max.docs.length;
-
-                    return data;
+                // - generate data
+                let data = testCollection.docs.map(e => {
+                    let t = e.data();
+                    t.id = e.id;
+                    return t;
                 });
-
-                // Promise.all is useful if you have a "async/await" inside the "map" function of your array
-                tests = await Promise.all(tests_);
+                // send data
+                return easyResponse(res, data);
             }
-            // ------------------------- Step 3 -------------------------
-            easyResponse(res, tests);
-
         } catch (error) {
             easyResponse(res, null, true, error.code);
         }
     })
     // -- get questions data by id from db
-    .get('/questions/:id?', async (req, res) => {
+    // -- example: api/v1/core/questions
+    // -- example: api/v1/core/questions/[id]
+    .get('/core/questions/:id?', async (req, res) => {
         const {
             id
         } = req.params;
         const {
-            limit
+            rand
         } = req.query;
 
         try {
@@ -166,7 +87,7 @@ api_v1_core_router
             if (id) {
                 const snapshot = await questionColl.doc(id).get();
                 if (!snapshot.exists)
-                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code);
+                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code, `There is no question with this id ${id} !`);
 
                 let question = snapshot.data();
                 question.id = snapshot.id;
@@ -174,9 +95,9 @@ api_v1_core_router
             }
             // or all questions
             else {
-                // limit query: range of random data 🤗
-                if (limit) {
-                    let numberLimit = parseInt(limit.toString().trim());
+                // rand query: range of random data 🤗
+                if (rand) {
+                    let numberLimit = parseInt(rand.toString().trim());
                     let length = (await questionColl.get()).docs.length;
                     if (length == 0) {
                         return easyResponse(res, null, true, StatusTypes.NO_DATA.code, "There no questions in database!");
@@ -187,7 +108,6 @@ api_v1_core_router
                     }
                     let data = [];
                     let random = await randomNumbers(0, length - 1, numberLimit);
-                    console.log(random);
                     for (let i = 0; i < numberLimit; i++) {
                         const x = random[i];
                         data[i] = (await questionColl
@@ -199,6 +119,9 @@ api_v1_core_router
                 }
                 // all the data 🤗
                 const snapshot = await questionColl.get();
+                if (snapshot.empty) {
+                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code, "There no questions in database!");
+                }
                 let questions = snapshot.docs.map(doc => {
                     let data = doc.data();
                     data.id = doc.id;
@@ -210,36 +133,45 @@ api_v1_core_router
             easyResponse(res, null, true, error.code);
         }
     })
-    // -- get all questions references of test
-    .get('/questions/test/:testID', async (req, res) => {
+    // -- Get question(s) reference(s) of a specific test
+    // -- example: api/v1/core/questions/test/[id]
+    // -- example: api/v1/core/questions/test/[id]/[index]
+    .get('/core/questions/test/:testID/:questionIndex?', async (req, res) => {
+        try {
+            const {
+                testID,
+                questionIndex
+            } = req.params;
 
-        const {
-            testID
-        } = req.params;
-
-        const snapshot = await firestore
-            .collection("tests").doc(`${testID}`).collection('questionsID').get();
-
-        let questionsOfTest = snapshot.docs.map(doc => doc.data());
-
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(questionsOfTest));
-    })
-    // -- get one (question reference (by index)) of test
-    .get('/question_of_test/:testID/:questionIndex', async (req, res) => {
-
-        const {
-            testID,
-            questionIndex
-        } = req.params;
-
-        const snapshot = await firestore
-            .collection("tests").doc(`${testID}`).collection('questionsID').doc(`${questionIndex}`).get();
-
-        let questionReference = snapshot.data();
-
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(questionReference));
+            // [opetion 1] Get all question references in a test
+            if (!questionIndex) {
+                const snapshot = await firestore
+                    .collection("tests")
+                    .doc(`${testID}`)
+                    .collection('questionsID').get();
+                if (snapshot.empty) {
+                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code, `There is no test with this id ${testID} !`);
+                }
+                const references = snapshot.docs.map(doc => doc.data());
+                easyResponse(res, references);
+            }
+            // [opetion 2] Get a specific question reference in a test, by the index of this question
+            else {
+                const snapshot = await firestore
+                    .collection("tests")
+                    .doc(`${testID}`)
+                    .collection('questionsID')
+                    .doc(`${questionIndex}`)
+                    .get();
+                if (!snapshot.exists) {
+                    return easyResponse(res, null, true, StatusTypes.NO_DATA.code, `There is no test '${testID}' in database, Or this test doesn't have this question index '${questionIndex}'`);
+                }
+                const reference = snapshot.data();
+                easyResponse(res, reference);
+            }
+        } catch (error) {
+            easyResponse(res, null, true, error.code);
+        }
     })
     // -- firbase session login
     .post('/session_login', async (req, res) => {
