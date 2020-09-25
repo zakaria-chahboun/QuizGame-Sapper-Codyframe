@@ -2,7 +2,7 @@
   import { StatusTypes } from "../tools/status.js";
 
   export async function preload(page, session) {
-    let res = await this.fetch(`api/v1/tests`);
+    let res = await this.fetch(`api/v1/user/tests`);
     let tests = await res.json();
 
     if (tests.status.isError) {

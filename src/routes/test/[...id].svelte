@@ -12,7 +12,7 @@
     }
     // if user is anonymous >> no game bro 🙄 if the test is private, just eat this 👉 🍪!
     else if (session.user.isAnonymous) {
-      const snapshot = await this.fetch(`api/v1/tests/${testID}`);
+      const snapshot = await this.fetch(`api/v1/core/tests/${testID}`);
       const result = await snapshot.json();
       if (result.status.isError) return this.redirect(302, "/");
       else if (result.data.isAuth) return this.redirect(302, "login");
@@ -20,13 +20,13 @@
 
     // -- get a question reference from (index) of current test --
     let res1 = await this.fetch(
-      `api/v1/question_of_test/${testID}/${questionIndex}`
+      `api/v1/core/questions/test/${testID}/${questionIndex}`
     );
     let questionReference = await res1.json();
 
     // -- get the question data by the question reference --
     let res2 = await this.fetch(
-      `api/v1/questions/${questionReference.reference}`
+      `api/v1/core/questions/${questionReference.data.reference}`
     );
     let questionData = await res2.json();
 
@@ -53,8 +53,9 @@
     let isMultiple = counter > 1 ? true : false;
 
     // -- get all question references of test --
-    let res3 = await this.fetch(`api/v1/questions/test/${testID}`);
-    let stepCircles = await res3.json();
+    let res3 = await this.fetch(`api/v1/core/questions/test/${testID}`);
+    res3 = await res3.json();
+    let stepCircles = res3.data;
     let i = 1; // local: must start at 1 >> index for question references in tests >> for easy indexing by url
 
     // set the "sep circles" table with correct format + add referece to it if someone need :p
