@@ -12,8 +12,12 @@ import {
 
 import {
     firestore,
-    auth
 } from "../../firebase-admin";
+
+import {
+    ChoiceTypes,
+    StepCircleTypes
+} from '../../components/types';
 
 import fetch from 'node-fetch';
 
@@ -33,6 +37,7 @@ const {
 const dev = NODE_ENV === 'development';
 
 const coreApi = dev ? `http://localhost:${PORT}/api/v1/core` : `${hostname}/api/v1/core`;
+const userApi = dev ? `http://localhost:${PORT}/api/v1/user` : `${hostname}/api/v1/user`;
 
 api_v1_user_router
     // -- get all tests data from db --
@@ -147,7 +152,84 @@ api_v1_user_router
 
             easyResponse(res, null, true, error.code);
         }
-    })
+    }).get('/user/game/test/:test_id/question/:question_index', async (req, res) => {
+        try {
+            // Variables
+            const testID = req.params.test_id;
+            const questionIndex = req.params.question_index;
+            const user = req.user;
+
+            // No access for: no user
+            if (!user) return easyResponse(res, null, true, StatusTypes.Login_Is_Required.code);
+
+            // Get the test data
+            const snapshot1 = await fetch(`${userApi}/tests/${testID}`);
+            let result1 = await snapshot1.json();
+            if (result1.status.isError) return easyResponse(res, null, true, result1.status.code, result1.status.message);
+            const testData = result1.data;
+
+            // No access for: Anonymous 'User' in private 'Test'
+            if (testData.isAuth && user.isAnonymous) return easyResponse(res, null, true, StatusTypes.Login_Is_Required.code);
+
+            // Get the question reference
+            const snapshot2 = await fetch(`${coreApi}/questions/test/${testID}/${questionIndex}`);
+            let result2 = await snapshot2.json();
+            if (result2.status.isError) return easyResponse(res, null, true, result2.status.code, result2.status.message);
+            const questionReference = result2.data.reference;
+
+            // Get the question data
+            const snapshot3 = await fetch(`${coreApi}/questions/${questionReference}`);
+            let result3 = await snapshot3.json();
+            if (result3.status.isError) return easyResponse(res, null, true, result3.status.code, result3.status.message);
+            const questionData = result3.data;
+
+            // ----- Generate Data -----------------------------
+            let gameData = {};
+            gameData.parent = questionData.parent;
+            gameData.questionID = questionData.id;
+            gameData.question = questionData.question;
+            gameData.description = questionData.description;
+            gameData.isAuth = testData.isAuth;
+            gameData.stepValue = testData.stepValue;
+            gameData.lastQuestion = testData.lastQuestion;
+            gameData.isCompleted = testData.isCompleted;
+            gameData.choices = [];
+            gameData.correctAnswers = [];
+            gameData.stepCircles = [];
+
+            let counter = 0;
+
+            // Set 'choices' data for 'Choices' component
+            for (let [i, e] of questionData.answers.entries()) {
+                gameData.choices.push({
+                    type: ChoiceTypes.current,
+                    answer: e.answer,
+                    disabled: false
+                });
+                // We want 'counter' later to check if the choice is single or multiple!
+                if (e.isCorrect) {
+                    gameData.correctAnswers.push(i); // add the correct answer(s) by index 👍
+                    counter++;
+                }
+            }
+
+            gameData.isMultiple = counter > 1 ? true : false;
+
+            // Set the "sep circles" for 'StepCircles' component
+            for (let i = 1; i <= testData.maxSteps; i++) {
+                let step = {};
+                step.type = "current";
+                step.url = `/test/${testID}/${i}`;
+                step.index = i;
+                gameData.stepCircles.push(step);
+            }
+
+            // Send Data
+            return easyResponse(res, gameData);
+        } catch (error) {
+            return easyResponse(res, null, true, error.code);
+        }
+    });
 
 // export the router 
 export {
