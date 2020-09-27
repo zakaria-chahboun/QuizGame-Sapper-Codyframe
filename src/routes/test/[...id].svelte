@@ -1,80 +1,37 @@
 <script context="module">
+  import { StatusTypes } from "../../tools/status.js";
   export async function preload(page, session) {
-    // array of paramaters: '0' for test id, '1' for question index in test
     const { id } = page.params;
-
+    /*
+      Array of paramaters:
+      '0' for test id,
+      '1' for question index in test
+    */
     const testID = id[0];
     const questionIndex = id[1];
 
-    // if no user >> no game bro 🙄!
+    // If No user >> No game bro 🙄!
     if (!session.user) {
       return this.redirect(302, "login");
     }
-    // if user is anonymous >> no game bro 🙄 if the test is private, just eat this 👉 🍪!
-    else if (session.user.isAnonymous) {
-      const snapshot = await this.fetch(`api/v1/core/tests/${testID}`);
-      const result = await snapshot.json();
-      if (result.status.isError) return this.redirect(302, "/");
-      else if (result.data.isAuth) return this.redirect(302, "login");
-    }
 
-    // -- get a question reference from (index) of current test --
-    let res1 = await this.fetch(
-      `api/v1/core/questions/test/${testID}/${questionIndex}`
+    // Get Data from API 🌱
+    const snapshot = await this.fetch(
+      `api/v1/user/game/test/${testID}/question/${questionIndex}`
     );
-    let questionReference = await res1.json();
+    const result = await snapshot.json();
 
-    // -- get the question data by the question reference --
-    let res2 = await this.fetch(
-      `api/v1/core/questions/${questionReference.data.reference}`
-    );
-    let questionData = await res2.json();
-
-    let question = questionData.data.question;
-    let description = questionData.data.description;
-    let counter = 0; // local
-    let choices = [];
-    let correctAnswersIndex = [];
-
-    // set choices data with the right format
-    for (let [i, e] of questionData.data.answers.entries()) {
-      choices.push({
-        type: ChoiceTypes.current,
-        answer: e.answer,
-        disabled: false
-      });
-      // the 'counter' is to check if multiple or single choice!
-      if (e.isCorrect) {
-        correctAnswersIndex.push(i); // add the correct answer(s) by index 👍
-        counter++;
+    // If Login is required >> no game >> redirect 🦊
+    if (result.status.isError) {
+      if (result.status.code == StatusTypes.Login_Is_Required.code) {
+        return this.redirect(302, "login");
+      } else {
+        return this.error(snapshot.status, result.status.message);
       }
     }
 
-    let isMultiple = counter > 1 ? true : false;
-
-    // -- get all question references of test --
-    let res3 = await this.fetch(`api/v1/core/questions/test/${testID}`);
-    res3 = await res3.json();
-    let stepCircles = res3.data;
-    let i = 1; // local: must start at 1 >> index for question references in tests >> for easy indexing by url
-
-    // set the "sep circles" table with correct format + add referece to it if someone need :p
-    stepCircles.map(el => {
-      let step = el;
-      step.type = "current";
-      step.url = `/test/${testID}/${i}`;
-      step.index = i;
-      i++;
-      return step;
-    });
-
     return {
-      question,
-      description,
-      isMultiple,
-      choices,
-      stepCircles,
-      correctAnswersIndex,
+      ...result.data,
       currentQuestionIndex: parseInt(questionIndex), // for incrementation 👈
       currentTestID: testID,
       /*
@@ -114,7 +71,7 @@
   // current test id;
   export let currentTestID;
   // Array of index of correct answers
-  export let correctAnswersIndex;
+  export let correctAnswers;
 
   // to get the chosen radio "answer" (in single choice case) by binding from child to parent ;)
   export let singleChoiceAnswer;
@@ -148,7 +105,7 @@
     // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;
-    const correctIndex = correctAnswersIndex[0];
+    const correctIndex = correctAnswers[0];
 
     // prevent events by disabling all radio buttons
     for (const i in choices) {
@@ -185,7 +142,7 @@
       // loading desccription: stop striped backgound style 👌
       descriptionStriped = false;
       // if the chosen answers is correct so highlight it with the green color
-      if (answers.every((e, i) => e === correctAnswersIndex[i])) {
+      if (answers.every((e, i) => e === correctAnswers[i])) {
         for (let i of answers) {
           choices[i].type = ChoiceTypes.correct;
         }
@@ -195,7 +152,7 @@
         for (let i of answers) {
           choices[i].type = ChoiceTypes.uncorrect;
         }
-        for (let i of correctAnswersIndex) {
+        for (let i of correctAnswers) {
           choices[i].type = ChoiceTypes.correct;
         }
       }
