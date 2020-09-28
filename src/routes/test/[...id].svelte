@@ -35,9 +35,9 @@
       currentQuestionIndex: parseInt(questionIndex), // for incrementation 👈
       currentTestID: testID,
       /*
-       * for the initialisation: because the browserstore the css behaviour + the chosen radio/checkboxs,
-       * so when you switch to another route you get the same css as the last route,
-       * and we can avoid that with the pre initialisation
+       * for the initialisation: because the browser store the css behaviour + the chosen radio/checkboxs,
+       * so when you switch to another route you get the same css behaviour as the last route,
+       * we can avoid that with the pre-initialisation
        */
       singleChoiceAnswer: null,
       multiChoiceAnswers: [],
@@ -54,6 +54,8 @@
   import StepCircles from "../../components/StepCircles.svelte";
   import NextButton from "../../components/NextButton.svelte";
   import MyLayout from "./_test.svelte";
+  import { onMount } from "svelte";
+  import { goto } from "@sapper/app";
   import { StepCircleTypes, ChoiceTypes } from "../../components/types.js";
 
   // step circles data
@@ -83,6 +85,9 @@
   // to make description background striped animation when description is shown
   export let descriptionStriped;
 
+  // for csrf attacks
+  let csrfCookie;
+
   // ______________________ client logic __________________________
 
   // Reactive Statement > Case 1: if a single choice
@@ -101,7 +106,7 @@
   }
 
   // for handling single choice: ux and db
-  function handleSingleChoice({ answer, after = 2000 }) {
+  async function handleSingleChoice({ answer, after = 2000 }) {
     // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;
@@ -111,12 +116,45 @@
     for (const i in choices) {
       choices[i].disabled = true;
     }
+    // check if true answer or not
+    let isWrong = answer != correctIndex;
+    let chosenAnswers = {};
+    chosenAnswers[answer] = !isWrong;
+
+    // send data to database by api
+    const snapshot = await fetch("api/v1/user/game/test", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "CSRF-Token": csrfCookie
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        chosenAnswers,
+        isWrong,
+        test: currentTestID,
+        index: currentQuestionIndex,
+        max: stepCircles.length
+      })
+    });
+    const result = await snapshot.json();
+
+    // check the return data of api >> no sync game for no user
+    if (result.status.isError) {
+      if (result.status.code == StatusTypes.Login_Is_Required.code) {
+        await goto("login");
+        return;
+      } else {
+        return alert(`${snapshot.status}: ${result.status.message}`);
+      }
+    }
+
+    // --------- Css Behaviour ---------
     // After an 'after' time do this:
     setTimeout(() => {
-      // loading desccription: stop striped backgound style 👌
-      descriptionStriped = false;
       // if the chosen answer is correct so highlight it with the green color
-      if (answer == correctIndex) {
+      if (!isWrong) {
         choices[answer].type = ChoiceTypes.correct;
       }
       // of if uncorrect: highlight it with the red color + highlight also the correct answer with the green color
@@ -124,11 +162,13 @@
         choices[correctIndex].type = ChoiceTypes.correct;
         choices[answer].type = ChoiceTypes.uncorrect;
       }
+      // loading desccription: stop striped backgound style 👌
+      descriptionStriped = false;
     }, after);
   }
 
   // for handling multi-choices: ux and db
-  function handleMultiChoices({ answers, after = 2000 }) {
+  async function handleMultiChoices({ answers, after = 2000 }) {
     // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;
@@ -137,12 +177,46 @@
     for (const i in choices) {
       choices[i].disabled = true;
     }
+
+    // check if true answer or not
+    let chosenAnswers = {};
+    let isWrong = !answers
+      .map((e, i) => {
+        chosenAnswers[e] = correctAnswers.includes(e);
+        return e;
+      })
+      .every((e, i) => e === correctAnswers[i]);
+
+    // send data to database by api
+    const snapshot = await fetch("api/v1/user/game/test", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "CSRF-Token": csrfCookie
+      },
+      credentials: "include",
+      body: JSON.stringify({
+        chosenAnswers,
+        isWrong,
+        test: currentTestID,
+        index: currentQuestionIndex,
+        max: stepCircles.length
+      })
+    });
+    const result = await snapshot.json();
+
+    // check the return data of api
+    if (result.status.isError) {
+      return console.log("error ", result.status);
+    }
+
     // After an 'after' time do this:
     setTimeout(() => {
       // loading desccription: stop striped backgound style 👌
       descriptionStriped = false;
       // if the chosen answers is correct so highlight it with the green color
-      if (answers.every((e, i) => e === correctAnswers[i])) {
+      if (!isWrong) {
         for (let i of answers) {
           choices[i].type = ChoiceTypes.correct;
         }
@@ -158,6 +232,13 @@
       }
     }, after);
   }
+
+  onMount(async () => {
+    // ---- get crsf cookie ----
+    let jsc = await import("js-cookie");
+    let Cookies = jsc.default;
+    csrfCookie = Cookies.get("XSRF-TOKEN");
+  });
 </script>
 
 <MyLayout bind:descriptionStriped bind:descriptionShow>

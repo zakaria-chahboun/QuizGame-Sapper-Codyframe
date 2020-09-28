@@ -46,7 +46,7 @@
       let toServer = await fetch("/api/v1/session_login", {
         method: "POST",
         headers: {
-          //Accept: "application/json",
+          Accept: "application/json",
           "Content-Type": "application/json",
           "CSRF-Token": csrfCookie
         },

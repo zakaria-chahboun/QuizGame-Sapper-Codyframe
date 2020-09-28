@@ -229,7 +229,64 @@ api_v1_user_router
         } catch (error) {
             return easyResponse(res, null, true, error.code);
         }
-    });
+    })
+    .post('/user/game/test', async (req, res) => {
+        try {
+            const user = req.user;
+            const {
+                test,
+                index,
+                max,
+                isWrong,
+                chosenAnswers
+            } = req.body;
+
+            // No handling for: no user
+            if (!user) return easyResponse(res, null, true, StatusTypes.Login_Is_Required.code);
+
+            // ----- Firebase User Places -------------------------
+
+            // User DataBase Point
+            const userDB = await firestore
+                .collection('users')
+                .doc(user.uid);
+            // User Progress Point : Test
+            const userProgressTest = userDB
+                .collection('userProgress')
+                .doc(test);
+            // User Progress Point : Question
+            const userProgressQuestion = userProgressTest
+                .collection('questions');
+
+            // ----- Firebase User Transaction --------------------
+
+            await firestore.runTransaction(async (t) => {
+                await t.set(userDB, {
+                    lastTest: `/tests/${test}`
+                });
+                await t.set(userProgressQuestion.doc(`${index}`), {
+                    chosenAnswers,
+                    isWrong
+                });
+            });
+
+            await firestore.runTransaction(async (t) => {
+                let UPQ_Length = (await t.get(userProgressQuestion)).docs.length;
+                const isCompleted = UPQ_Length == max;
+                await t.set(userProgressTest, {
+                    isCompleted,
+                    lastQuestion: index,
+                    stepValue: UPQ_Length == 0 ? 1 : UPQ_Length
+                })
+            });
+
+            // All is good
+            easyResponse(res, null);
+        } catch (error) {
+            // console.log(error);
+            easyResponse(res, null, true, error.code);
+        }
+    })
 
 // export the router 
 export {
