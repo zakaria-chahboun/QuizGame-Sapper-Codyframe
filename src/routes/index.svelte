@@ -25,11 +25,9 @@
 <div class="container margin-top-lg justify-between@md max-width-lg">
   <ul class="grid-auto-xl gap-md">
     <!-- TestCard Elements -->
-    <!-- from Tests collection >> (id, testTitle, testSubtitle, isAuth) -->
-    <!-- from Users collection >> isCompleted, stepValue, lastQuestion -->
     {#each tests as { id, testTitle, testSubtitle, isAuth, isCompleted, stepValue, maxSteps, lastQuestion }}
       <TestCard
-        type="card--{isAuth ? 'locked' : isCompleted ? 'completed' : 'uncompleted'}"
+        type="card--{isCompleted ? 'completed' : isAuth ? 'locked' : 'uncompleted'}"
         title={testTitle}
         subtitle={testSubtitle}
         value={stepValue}
