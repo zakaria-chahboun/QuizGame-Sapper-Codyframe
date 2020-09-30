@@ -39,7 +39,7 @@
     <!-- start main content -->
     <div class="text-component padding-md max-width-md">
       <!-- StepBat Slot -->
-      <slot name="stap-bar" />
+      <slot name="step-bar" />
 
       <legend class="form-legend text-bold">
         <!-- Question Slot -->

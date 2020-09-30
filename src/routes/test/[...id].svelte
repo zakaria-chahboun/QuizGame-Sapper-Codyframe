@@ -53,6 +53,7 @@
   import StepBar from "../../components/StepBar.svelte";
   import StepCircles from "../../components/StepCircles.svelte";
   import NextButton from "../../components/NextButton.svelte";
+  import RestartButton from "../../components/RestartButton.svelte";
   import MyLayout from "./_test.svelte";
   import { onMount } from "svelte";
   import { goto } from "@sapper/app";
@@ -210,7 +211,7 @@
 
     // check the return data of api
     if (result.status.isError) {
-      return console.log("error ", result.status);
+      return alert(`${snapshot.status}: ${result.status.message}`);
     }
 
     // After an 'after' time do this:
@@ -259,12 +260,17 @@
   <span slot="sidebar">
     <Sidebar>
       <!-- Circle Steps Data -->
-      <StepCircles data={stepCircles} />
+      <span slot="step-circles">
+        <StepCircles data={stepCircles} />
+      </span>
+      <span slot="restart-button">
+        <RestartButton {currentTestID} />
+      </span>
     </Sidebar>
   </span>
 
   <!-- Stepbar Data -->
-  <div slot="stap-bar">
+  <div slot="step-bar">
     <StepBar index={currentQuestionIndex} />
   </div>
 
