@@ -189,7 +189,7 @@ api_v1_user_router
             const questionData = result3.data;
 
             // ----- User Progres  -----------------------------
-            let StepCirclesProgress = [];
+            let StepCirclesProgress;
             let CurrentChoiceProgress;
             const userDoc = await firestore.collection("users").doc(user.uid).get();
             // Check if the User alredy exist and has the 'lastTest' field 🐶 in db
@@ -203,7 +203,10 @@ api_v1_user_router
 
                 const userAllData = await userProgressColl.get();
                 const userQuestion = await userProgressColl.doc(`${questionIndex}`).get();
-                StepCirclesProgress = userAllData.docs.map(e => e.data().isWrong);
+                StepCirclesProgress = {};
+                userAllData.docs.forEach(e => {
+                    StepCirclesProgress[`${e.id}`] = e.data().isWrong;
+                });
                 if (userQuestion.exists) CurrentChoiceProgress = userQuestion.data();
             }
 
@@ -255,8 +258,8 @@ api_v1_user_router
             for (let i = 1; i <= testData.maxSteps; i++) {
                 let step = {};
                 let type = "";
-                if (StepCirclesProgress[i - 1] !== undefined) {
-                    type = StepCirclesProgress[i - 1] === true ? StepCircleTypes.uncorrect : StepCircleTypes.correct;
+                if (StepCirclesProgress && StepCirclesProgress[`${i}`] !== undefined) {
+                    type = StepCirclesProgress[`${i}`] === true ? StepCircleTypes.uncorrect : StepCircleTypes.correct;
                 }
                 step.type = type;
                 step.url = `/test/${testID}/${i}`;
@@ -347,7 +350,7 @@ api_v1_user_router
                 QuestionsUser.forEach(async e => {
                     await t.delete(e.ref);
                 });
-                t.delete(TestUser);
+                await t.delete(TestUser);
             });
 
             return easyResponse(res, null);
