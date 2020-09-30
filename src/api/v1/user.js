@@ -148,8 +148,6 @@ api_v1_user_router
                 return easyResponse(res, tests);
             }
         } catch (error) {
-            console.log(error);
-
             easyResponse(res, null, true, error.code);
         }
     }).get('/user/game/test/:test_id/question/:question_index', async (req, res) => {
@@ -163,7 +161,12 @@ api_v1_user_router
             if (!user) return easyResponse(res, null, true, StatusTypes.Login_Is_Required.code);
 
             // Get the test data
-            const snapshot1 = await fetch(`${userApi}/tests/${testID}`);
+            const snapshot1 = await fetch(`${userApi}/tests/${testID}`, {
+                method: 'GET',
+                headers: {
+                    cookie: `session=${req.cookies.session}`
+                }
+            });
             let result1 = await snapshot1.json();
             if (result1.status.isError) return easyResponse(res, null, true, result1.status.code, result1.status.message);
             const testData = result1.data;
@@ -183,6 +186,25 @@ api_v1_user_router
             if (result3.status.isError) return easyResponse(res, null, true, result3.status.code, result3.status.message);
             const questionData = result3.data;
 
+            // ----- User Progres  -----------------------------
+            let StepCirclesProgress = [];
+            let CurrentChoiceProgress;
+            const userDoc = await firestore.collection("users").doc(user.uid).get();
+            // Check if the User alredy exist and has the 'lastTest' field 🐶 in db
+            if (userDoc.exists && userDoc.data().lastTest) {
+                const userProgressColl = firestore
+                    .collection("users")
+                    .doc(user.uid)
+                    .collection('userProgress')
+                    .doc(testID)
+                    .collection('questions');
+
+                const userAllData = await userProgressColl.get();
+                const userQuestion = await userProgressColl.doc(`${questionIndex}`).get();
+                StepCirclesProgress = userAllData.docs.map(e => e.data().isWrong);
+                if (userQuestion.exists) CurrentChoiceProgress = userQuestion.data();
+            }
+
             // ----- Generate Data -----------------------------
             let gameData = {};
             gameData.parent = questionData.parent;
@@ -201,10 +223,22 @@ api_v1_user_router
 
             // Set 'choices' data for 'Choices' component
             for (let [i, e] of questionData.answers.entries()) {
+                let type = ChoiceTypes.current; // default
+                let disabled = false; // default
+                if (CurrentChoiceProgress) {
+                    disabled = true;
+                    if (CurrentChoiceProgress.chosenAnswers[`${i}`] != undefined) {
+                        if (CurrentChoiceProgress.chosenAnswers[`${i}`] === true) {
+                            type = ChoiceTypes.correct
+                        } else if (CurrentChoiceProgress.chosenAnswers[`${i}`] === false) {
+                            type = ChoiceTypes.uncorrect
+                        }
+                    }
+                }
                 gameData.choices.push({
-                    type: ChoiceTypes.current,
+                    type: type,
                     answer: e.answer,
-                    disabled: false
+                    disabled: disabled
                 });
                 // We want 'counter' later to check if the choice is single or multiple!
                 if (e.isCorrect) {
@@ -218,7 +252,11 @@ api_v1_user_router
             // Set the "sep circles" for 'StepCircles' component
             for (let i = 1; i <= testData.maxSteps; i++) {
                 let step = {};
-                step.type = "current";
+                let type = "";
+                if (StepCirclesProgress[i - 1] !== undefined) {
+                    type = StepCirclesProgress[i - 1] === true ? StepCircleTypes.uncorrect : StepCircleTypes.correct;
+                }
+                step.type = type;
                 step.url = `/test/${testID}/${i}`;
                 step.index = i;
                 gameData.stepCircles.push(step);
@@ -283,7 +321,6 @@ api_v1_user_router
             // All is good
             easyResponse(res, null);
         } catch (error) {
-            // console.log(error);
             easyResponse(res, null, true, error.code);
         }
     })
