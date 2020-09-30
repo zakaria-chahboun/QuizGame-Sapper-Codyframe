@@ -74,6 +74,8 @@
   export let currentTestID;
   // Array of index of correct answers
   export let correctAnswers;
+  // is the test completed or not
+  export let isCompleted;
 
   // to get the chosen radio "answer" (in single choice case) by binding from child to parent ;)
   export let singleChoiceAnswer;
@@ -101,7 +103,7 @@
   }
 
   // Reactive Statement: select the current step circle
-  $: if (currentQuestionIndex != undefined) {
+  $: if (currentQuestionIndex != undefined && !isCompleted) {
     stepCircles[currentQuestionIndex - 1].type = StepCircleTypes.current;
   }
 
