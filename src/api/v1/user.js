@@ -40,7 +40,7 @@ const coreApi = dev ? `http://localhost:${PORT}/api/v1/core` : `${hostname}/api/
 const userApi = dev ? `http://localhost:${PORT}/api/v1/user` : `${hostname}/api/v1/user`;
 
 api_v1_user_router
-    // -- get all tests data from db --
+    // -- get all tests + progress data from db --
     .get('/user/tests/:id?', async (req, res) => {
         try {
             // variables
@@ -150,7 +150,9 @@ api_v1_user_router
         } catch (error) {
             easyResponse(res, null, true, error.code);
         }
-    }).get('/user/game/test/:test_id/question/:question_index', async (req, res) => {
+    })
+    // -- get all question + progress data from db --
+    .get('/user/game/test/:test_id/question/:question_index', async (req, res) => {
         try {
             // Variables
             const testID = req.params.test_id;
@@ -268,6 +270,7 @@ api_v1_user_router
             return easyResponse(res, null, true, error.code);
         }
     })
+    // -- submit the answers of user --
     .post('/user/game/test', async (req, res) => {
         try {
             const user = req.user;
@@ -282,7 +285,7 @@ api_v1_user_router
             // No handling for: no user
             if (!user) return easyResponse(res, null, true, StatusTypes.Login_Is_Required.code);
 
-            // ----- Firebase User Places -------------------------
+            // -----   Firebase User Data   ----------------------
 
             // User DataBase Point
             const userDB = await firestore
@@ -296,7 +299,7 @@ api_v1_user_router
             const userProgressQuestion = userProgressTest
                 .collection('questions');
 
-            // ----- Firebase User Transaction --------------------
+            // -----   Firebase Transaction   --------------------
 
             await firestore.runTransaction(async (t) => {
                 await t.set(userDB, {
@@ -322,6 +325,34 @@ api_v1_user_router
             easyResponse(res, null);
         } catch (error) {
             easyResponse(res, null, true, error.code);
+        }
+    })
+    // -- reset a test of user --
+    .post('/user/game/test/reset', async (req, res) => {
+        try {
+            const user = req.user;
+            const {
+                test
+            } = req.body;
+
+            // No handling for: no user
+            if (!user) return easyResponse(res, null, true, StatusTypes.Login_Is_Required.code);
+
+            const TestUser = await firestore.collection('users').doc(user.uid).collection('userProgress').doc(test);
+            const QuestionsUser = await TestUser.collection('questions').get();
+
+            // User progress: delete question collection + test document
+            // in transaction
+            await firestore.runTransaction(async (t) => {
+                QuestionsUser.forEach(async e => {
+                    await t.delete(e.ref);
+                });
+                t.delete(TestUser);
+            });
+
+            return easyResponse(res, null);
+        } catch (error) {
+            return easyResponse(res, null, true, error.code);
         }
     })
 
