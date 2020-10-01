@@ -180,7 +180,12 @@
         name="inputEmail1"
         id="inputEmail1"
         bind:value={email}
-        placeholder="email@myemail.com" />
+        placeholder="email@myemail.com"
+        on:keyup={e => {
+          if (e.code == 'Enter' || e.code == 'NumpadEnter') {
+            return session_login();
+          }
+        }} />
     </div>
 
     <div class="margin-bottom-sm">
@@ -196,7 +201,12 @@
         type="password"
         name="inputPassword1"
         bind:value={password}
-        id="inputPassword1" />
+        id="inputPassword1"
+        on:keyup={e => {
+          if (e.code == 'Enter' || e.code == 'NumpadEnter') {
+            return session_login();
+          }
+        }} />
     </div>
 
     <div class="margin-bottom-sm">
