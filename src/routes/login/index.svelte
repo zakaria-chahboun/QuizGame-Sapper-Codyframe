@@ -24,22 +24,54 @@
   let authentication;
   let csrfCookie;
 
+  let GoogleAuthProvider;
+  let FacebookAuthProvider;
+  let TwitterAuthProvider;
+
+  // enum
+  const Providers = {
+    Email: 1,
+    Google: 2,
+    Facebook: 3,
+    Twitter: 4
+  };
+
   let isLoading = false; // UI UX
   let isError = false; // UI UX
 
   // ------ Session Login with email & password ------
-  async function session_login() {
+  async function session_login({ provider = Providers.Email }) {
     // UX
     isLoading = true;
     try {
       /* As httpOnly cookies are to be used, do not persist any state client side 👍
         For the Seesion authentication not the JWT */
       firebase.auth().setPersistence("none");
+      let UserResult;
+
       // Authenticate 🔥!
-      let UserResult = await authentication.signInWithEmailAndPassword(
-        email,
-        password
-      );
+      switch (provider) {
+        case Providers.Email:
+          UserResult = await authentication.signInWithEmailAndPassword(
+            email,
+            password
+          );
+          break;
+        case Providers.Google:
+          UserResult = await authentication.signInWithPopup(GoogleAuthProvider);
+          break;
+        case Providers.Facebook:
+          UserResult = await authentication.signInWithPopup(
+            FacebookAuthProvider
+          );
+          break;
+        case Providers.Twitter:
+          UserResult = await authentication.signInWithPopup(
+            TwitterAuthProvider
+          );
+          break;
+      }
+
       // Get the Firebase TokenID 👈
       let tokenID = await authentication.currentUser.getIdToken(true);
       // Send the CSRF Cookie with the TokenID to the server 👌
@@ -98,6 +130,12 @@
     await import("firebase/auth");
     firebase = module.default;
 
+    // set the social media providers
+    GoogleAuthProvider = new firebase.auth.GoogleAuthProvider();
+    FacebookAuthProvider = new firebase.auth.FacebookAuthProvider();
+    TwitterAuthProvider = new firebase.auth.TwitterAuthProvider();
+
+    // init the firebase app
     firebase = !firebase.apps.length
       ? firebase.initializeApp(firebaseConfig)
       : firebase.app();
@@ -134,7 +172,9 @@
 
     <div class="grid gap-xs">
       <div class="col-6@xs">
-        <button class="btn btn--subtle width-100%">
+        <button
+          class="btn btn--subtle width-100%"
+          on:click={() => session_login({ provider: Providers.Twitter })}>
           <svg
             aria-hidden="true"
             class="icon margin-right-xxxs"
@@ -152,7 +192,9 @@
       </div>
 
       <div class="col-6@xs">
-        <button class="btn btn--subtle width-100%">
+        <button
+          class="btn btn--subtle width-100%"
+          on:click={() => session_login({ provider: Providers.Facebook })}>
           <svg
             aria-hidden="true"
             class="icon margin-right-xxxs"
@@ -166,6 +208,26 @@
           <span>Login with Facebook</span>
         </button>
       </div>
+    </div>
+
+    <div class="col-6@xs">
+      <button
+        class="btn btn--subtle width-100%"
+        on:click={() => session_login({ provider: Providers.Google })}>
+        <svg
+          aria-hidden="true"
+          class="icon margin-right-xxxs"
+          viewBox="0 0 16 16">
+          <g>
+            <path
+              d="M16,3c-0.6,0.3-1.2,0.4-1.9,0.5c0.7-0.4,1.2-1,1.4-1.8c-0.6,0.4-1.3,0.6-2.1,0.8c-0.6-0.6-1.5-1-2.4-1
+              C9.3,1.5,7.8,3,7.8,4.8c0,0.3,0,0.5,0.1,0.7C5.2,5.4,2.7,4.1,1.1,2.1c-0.3,0.5-0.4,1-0.4,1.7c0,1.1,0.6,2.1,1.5,2.7
+              c-0.5,0-1-0.2-1.5-0.4c0,0,0,0,0,0c0,1.6,1.1,2.9,2.6,3.2C3,9.4,2.7,9.4,2.4,9.4c-0.2,0-0.4,0-0.6-0.1c0.4,1.3,1.6,2.3,3.1,2.3
+              c-1.1,0.9-2.5,1.4-4.1,1.4c-0.3,0-0.5,0-0.8,0c1.5,0.9,3.2,1.5,5,1.5c6,0,9.3-5,9.3-9.3c0-0.1,0-0.3,0-0.4C15,4.3,15.6,3.7,16,3z" />
+          </g>
+        </svg>
+        <span>Login with Google</span>
+      </button>
     </div>
 
     <p class="text-center margin-y-sm">or</p>
