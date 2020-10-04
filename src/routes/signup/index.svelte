@@ -1,3 +1,14 @@
+<script context="module">
+  export async function preload(page, session) {
+    //> /login?message=text
+    let { message } = page.query;
+    let { user } = session;
+    if (!message) message = "welcome to our game!";
+    if (user && !user.isAnonymous) this.redirect(302, "/");
+    return { message };
+  }
+</script>
+
 <div
   class="container margin-top-md margin-bottom-lg justify-between@md
   max-width-xs">
