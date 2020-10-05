@@ -39,8 +39,9 @@
   let isLoading = false; // UI UX
   let isError = false; // UI UX
 
-  // ------ Session Login with email & password ------
-  async function session_login({ provider = Providers.Email }) {
+  // ------ Session Login: by default email & password ------
+  // ------ Providers: Google, Facebook, Twitter       ------
+  async function session_login(provider = Providers.Email) {
     // UX
     isLoading = true;
     try {
@@ -103,6 +104,7 @@
       isError = true;
       message = data.status.message;
     } catch (error) {
+      console.log(error);
       // UX
       isLoading = false;
       isError = true;
@@ -174,7 +176,7 @@
       <div class="col-6@xs">
         <button
           class="btn btn--subtle width-100%"
-          on:click={() => session_login({ provider: Providers.Twitter })}>
+          on:click={() => session_login(Providers.Twitter)}>
           <svg
             aria-hidden="true"
             class="icon margin-right-xxxs"
@@ -194,7 +196,7 @@
       <div class="col-6@xs">
         <button
           class="btn btn--subtle width-100%"
-          on:click={() => session_login({ provider: Providers.Facebook })}>
+          on:click={() => session_login(Providers.Facebook)}>
           <svg
             aria-hidden="true"
             class="icon margin-right-xxxs"
@@ -213,7 +215,7 @@
     <div class="col-6@xs">
       <button
         class="btn btn--subtle width-100%"
-        on:click={() => session_login({ provider: Providers.Google })}>
+        on:click={() => session_login(Providers.Google)}>
         <svg
           aria-hidden="true"
           class="icon margin-right-xxxs"
@@ -245,7 +247,7 @@
         placeholder="email@myemail.com"
         on:keyup={e => {
           if (e.code == 'Enter' || e.code == 'NumpadEnter') {
-            return session_login();
+            return session_login(Providers.Email);
           }
         }} />
     </div>
@@ -266,13 +268,15 @@
         id="inputPassword1"
         on:keyup={e => {
           if (e.code == 'Enter' || e.code == 'NumpadEnter') {
-            return session_login();
+            return session_login(Providers.Email);
           }
         }} />
     </div>
 
     <div class="margin-bottom-sm">
-      <button class="btn btn--primary btn width-100%" on:click={session_login}>
+      <button
+        class="btn btn--primary btn width-100%"
+        on:click={() => session_login(Providers.Email)}>
         Login
       </button>
     </div>
