@@ -24,12 +24,8 @@
     // UX
     isLoading = true;
     try {
-      /* As httpOnly cookies are to be used, do not persist any state client side 👍
-        For the Seesion authentication not the JWT */
-      //  authentication.setPersistence("none");
       // Authenticate 🔥!
       let UserResult = await authentication.signInAnonymously();
-
       // Get the Firebase TokenID 👈
       let tokenID = await authentication.currentUser.getIdToken(true);
       // Send the CSRF Cookie with the TokenID to the server 👌

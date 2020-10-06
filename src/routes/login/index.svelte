@@ -13,13 +13,11 @@
   import { onMount } from "svelte";
   import { StatusTypes } from "../../tools/status.js";
   import { firebaseConfig } from "../../firebase-web-config.js";
-  import { goto, stores } from "@sapper/app";
-  const { session } = stores();
+  import { goto } from "@sapper/app";
 
   // ------ Props ------
   export let message; // To show it to the user in case samething happen
 
-  const { user } = session;
   let email;
   let password;
 
@@ -27,6 +25,8 @@
   let firebaseApp;
   let authentication;
   let csrfCookie;
+  
+  let AnonymousCurrentUser = "not-yet";
 
   let GoogleAuthProvider;
   let FacebookAuthProvider;
@@ -46,12 +46,13 @@
   // ------ Session Login: by default email & password ------
   // ------ Providers: Google, Facebook, Twitter       ------
   async function session_login(provider = Providers.Email) {
+    if (AnonymousCurrentUser === "not-yet") return alert("Please Wait ..");
     // UX
     isLoading = true;
     try {
       /* As httpOnly cookies are to be used, do not persist any state client side 👍
         For the Seesion authentication not the JWT */
-      authentication.setPersistence("none");
+      //if (!isAnonymous) authentication.setPersistence("none");
       let UserResult;
 
       // Authenticate 🔥!
@@ -63,7 +64,15 @@
           );
           break;
         case Providers.Google:
-          UserResult = await authentication.signInWithPopup(GoogleAuthProvider);
+          if (AnonymousCurrentUser) {
+            UserResult = await AnonymousCurrentUser.linkWithPopup(
+              GoogleAuthProvider
+            );
+          } else {
+            UserResult = await authentication.signInWithPopup(
+              GoogleAuthProvider
+            );
+          }
           break;
         case Providers.Facebook:
           UserResult = await authentication.signInWithPopup(
@@ -152,6 +161,14 @@
     let jsc = await import("js-cookie");
     let Cookies = jsc.default;
     csrfCookie = Cookies.get("XSRF-TOKEN");
+
+    authentication.onAuthStateChanged(function(userx) {
+      if (userx) {
+        AnonymousCurrentUser = authentication.currentUser;
+      } else {
+        AnonymousCurrentUser = null;
+      }
+    });
   });
 </script>
 
