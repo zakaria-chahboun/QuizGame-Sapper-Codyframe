@@ -54,7 +54,9 @@
 </svelte:head>
 
 {#if $session.user}
-  User: ID: {$session.user.uid || '__'}, isAnonymous: {$session.user.isAnonymous || '__'}
+  User: ID:
+  <mark>{$session.user.uid || '__'}</mark>
+  , isAnonymous: {$session.user.isAnonymous ? 'YES' : 'NO'}
 {:else}No User{/if}
 <Navbar {segment} />
 <slot />

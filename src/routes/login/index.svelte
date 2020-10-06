@@ -13,14 +13,18 @@
   import { onMount } from "svelte";
   import { StatusTypes } from "../../tools/status.js";
   import { firebaseConfig } from "../../firebase-web-config.js";
-  import { goto } from "@sapper/app";
+  import { goto, stores } from "@sapper/app";
+  const { session } = stores();
 
   // ------ Props ------
   export let message; // To show it to the user in case samething happen
+
+  const { user } = session;
   let email;
   let password;
 
-  let firebase;
+  let firebaseCore;
+  let firebaseApp;
   let authentication;
   let csrfCookie;
 
@@ -47,7 +51,7 @@
     try {
       /* As httpOnly cookies are to be used, do not persist any state client side 👍
         For the Seesion authentication not the JWT */
-      firebase.auth().setPersistence("none");
+      authentication.setPersistence("none");
       let UserResult;
 
       // Authenticate 🔥!
@@ -76,7 +80,7 @@
       // Get the Firebase TokenID 👈
       let tokenID = await authentication.currentUser.getIdToken(true);
       // Send the CSRF Cookie with the TokenID to the server 👌
-      let toServer = await fetch("/api/v1/session_login", {
+      let toServer = await fetch("/api/v1/user/session_login", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -93,7 +97,7 @@
       // Check the result: Success Case 👍
       if (serverResult.status.code == StatusTypes.SUCCESS.code) {
         isError = false;
-        message = `Success Login!,your name is ${UserResult.user.displayName}, your id is: ${UserResult.user.uid}`;
+        message = `Success Login! Hello " ${UserResult.user.displayName} "!`;
         // logout from firebase, WHY? because the backend (and session) is taken the place now 😉
         authentication.signOut();
         // redirect to the home!
@@ -102,7 +106,7 @@
 
       // Failure Case 👎
       isError = true;
-      message = data.status.message;
+      message = serverResult.status.message;
     } catch (error) {
       console.log(error);
       // UX
@@ -130,19 +134,19 @@
     // look at 🥰: https://stackoverflow.com/questions/56315901/how-to-import-firebase-only-on-client-in-sapper/63672503#63672503
     const module = await import("firebase/app");
     await import("firebase/auth");
-    firebase = module.default;
+    firebaseCore = module.default;
 
     // set the social media providers
-    GoogleAuthProvider = new firebase.auth.GoogleAuthProvider();
-    FacebookAuthProvider = new firebase.auth.FacebookAuthProvider();
-    TwitterAuthProvider = new firebase.auth.TwitterAuthProvider();
+    GoogleAuthProvider = new firebaseCore.auth.GoogleAuthProvider();
+    FacebookAuthProvider = new firebaseCore.auth.FacebookAuthProvider();
+    TwitterAuthProvider = new firebaseCore.auth.TwitterAuthProvider();
 
     // init the firebase app
-    firebase = !firebase.apps.length
-      ? firebase.initializeApp(firebaseConfig)
-      : firebase.app();
+    firebaseApp = !firebaseCore.apps.length
+      ? firebaseCore.initializeApp(firebaseConfig)
+      : firebaseCore.app();
 
-    authentication = firebase.auth();
+    authentication = firebaseApp.auth();
 
     // ---- get crsf cookie ----
     let jsc = await import("js-cookie");

@@ -5,7 +5,7 @@ const api_v1_core_router = express.Router();
 import { easyResponse } from "../../tools/response";
 import { StatusTypes } from "../../tools/status";
 import { randomNumbers } from "../../tools/cool";
-import { firestore, auth } from "../../firebase-admin";
+import { firestore } from "../../firebase-admin";
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
@@ -204,35 +204,6 @@ api_v1_core_router
       easyResponse(res, null, true, error.code);
     }
   })
-  // -- firbase session login
-  .post("/session_login", async (req, res) => {
-    // Get the token ID passed.
-    const tokenID = req.body.tokenID.toString();
-    // Set session expiration to 5 days.
-    const expiresIn = 60 * 60 * 24 * 5 * 1000;
-    // Create the session cookie. This will also verify the ID token in the process.
-    // The session cookie will have the same claims as the ID token.
-    try {
-      const sessionCookie = await auth.createSessionCookie(tokenID, {
-        expiresIn,
-      });
-      // Set cookie policy for session cookie.
-      const options = {
-        maxAge: expiresIn,
-        httpOnly: true,
-        secure: dev ? false : true,
-      };
-      res.cookie("session", sessionCookie, options);
-      easyResponse(res, null);
-    } catch (error) {
-      easyResponse(res, null, true, StatusTypes.Authentication_Failed.code);
-    }
-  })
-  // -- firbase session logout
-  .get("/logout", async (req, res) => {
-    res.clearCookie("session");
-    res.redirect("/login");
-  });
 
 // export the router
 export { api_v1_core_router };

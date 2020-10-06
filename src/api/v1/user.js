@@ -4,7 +4,7 @@ const api_v1_user_router = express.Router();
 // my tools to get easy work 💜
 import { easyResponse } from "../../tools/response";
 import { StatusTypes } from "../../tools/status";
-import { firestore } from "../../firebase-admin";
+import { firestore, auth } from "../../firebase-admin";
 import { ChoiceTypes, StepCircleTypes } from "../../components/types";
 import fetch from "node-fetch";
 
@@ -421,6 +421,39 @@ api_v1_user_router
     } catch (error) {
       return easyResponse(res, null, true, error.code);
     }
+  })
+  // -- firbase session login ---
+  .post("/user/session_login", async (req, res) => {
+    // Get the token ID passed.
+    const tokenID = req.body.tokenID.toString();
+    // Set session expiration to 5 days.
+    const expiresIn = 60 * 60 * 24 * 5 * 1000;
+    // Create the session cookie. This will also verify the ID token in the process.
+    // The session cookie will have the same claims as the ID token.
+    try {
+      const sessionCookie = await auth.createSessionCookie(tokenID, {
+        expiresIn,
+      });
+      // Set cookie policy for session cookie.
+      const options = {
+        maxAge: expiresIn,
+        httpOnly: true,
+        secure: dev ? false : true,
+      };
+      res.cookie("session", sessionCookie, options);
+      easyResponse(res, null);
+    } catch (error) {
+      easyResponse(res, null, true, StatusTypes.Authentication_Failed.code);
+    }
+  })
+  // -- firbase session logout
+  .get("/user/logout", async (req, res) => {
+    const { user } = req;
+    // if the user is anonymouse == no logout 😉
+    if (user && user.isAnonymous) return res.redirect("/");
+
+    res.clearCookie("session");
+    res.redirect("/login");
   });
 
 // export the router

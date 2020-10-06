@@ -24,7 +24,7 @@
     // If Login is required >> no game >> redirect 🦊
     if (result.status.isError) {
       if (result.status.code == StatusTypes.Login_Is_Required.code) {
-        return this.redirect(302, "login");
+        return this.redirect(302, `login?message=${result.status.message}`);
       } else {
         return this.error(snapshot.status, result.status.message);
       }
