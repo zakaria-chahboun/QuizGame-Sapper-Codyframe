@@ -4,10 +4,12 @@
   export async function preload(page, session) {
     let res = await this.fetch(`api/v1/user/tests`);
     let tests = await res.json();
+    const { user } = session;
 
-    if (tests.status.isError) {
+    if (tests.status.isError)
       return this.redirect(302, `login?message=${tests.status.message}`);
-    }
+
+    if (!user) return this.redirect(302, `anonymous`);
 
     return { tests: tests.data };
   }
