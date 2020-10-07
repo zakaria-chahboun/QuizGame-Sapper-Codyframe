@@ -35,6 +35,11 @@ const StatusTypes = {
         number: StatusNumbers.BAD_REQUEST,
         message: "The provided uid is already in use by an existing user. Each user must have a unique uid."
     },
+    Already_Exist_Credential: {
+        code: 'auth/credential-already-in-use',
+        number: StatusNumbers.BAD_REQUEST,
+        message: "This credential is already associated with a different user account. Try to use another one! or just Login!"
+    },
     Invalid_Email: {
         code: 'auth/invalid-email',
         number: StatusNumbers.BAD_REQUEST,
