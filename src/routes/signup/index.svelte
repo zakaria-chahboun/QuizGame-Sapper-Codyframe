@@ -9,19 +9,83 @@
   }
 </script>
 
+<script>
+  import UserLogin from "../../components/UserLogin.svelte";
+
+  // ------------------ Props ------------------
+
+  // To show it to the user in case samething happen
+  export let message;
+
+  // User Inputs
+  let email;
+  let password;
+  let provider;
+  let firstName;
+  let lastName;
+
+  // enum: Social Media Providers
+  const Providers = {
+    Email: 1,
+    Google: 2,
+    Facebook: 3,
+    Twitter: 4
+  };
+
+  // UI / UX
+  let isLoading = false;
+  let isError = false;
+
+  // event of UserLogin Component
+  let clicked = false;
+</script>
+
+<!-- UserLogin is a js componant for easy login handling 🥰 -->
+<UserLogin
+  bind:clicked
+  bind:provider
+  bind:email
+  bind:firstName
+  bind:lastName
+  bind:password
+  bind:message
+  bind:isLoading
+  bind:isError
+  isSingUp={true} />
+
+<!-- Body -->
 <div
   class="container margin-top-md margin-bottom-lg justify-between@md
   max-width-xs">
-  <form class="sign-up-form">
+  <div class="sign-up-form">
     <div class="text-component text-center margin-bottom-sm">
       <h1>Get started</h1>
+      {#if !isLoading}
+        <p class:bg-error-light={isError} class:color-white={isError}>
+          {message}
+        </p>
+      {:else}
+        <div class="fill-loader fill-loader--v1" role="alert">
+          <p class="fill-loader__label">Content is loading...</p>
+          <div aria-hidden="true">
+            <div class="fill-loader__base" />
+            <div class="fill-loader__fill" />
+          </div>
+        </div>
+      {/if}
+      <br />
       Already have an account?
       <a rel="external" href="login">Login</a>
     </div>
 
     <div class="grid gap-xs">
       <div class="col-6@xs">
-        <button class="btn btn--subtle width-100%">
+        <button
+          class="btn btn--subtle width-100%"
+          on:click={() => {
+            provider = Providers.Twitter;
+            clicked = true;
+          }}>
           <svg
             aria-hidden="true"
             class="icon margin-right-xxxs"
@@ -39,7 +103,12 @@
       </div>
 
       <div class="col-6@xs">
-        <button class="btn btn--subtle width-100%">
+        <button
+          class="btn btn--subtle width-100%"
+          on:click={() => {
+            provider = Providers.Facebook;
+            clicked = true;
+          }}>
           <svg
             aria-hidden="true"
             class="icon margin-right-xxxs"
@@ -51,6 +120,27 @@
             </g>
           </svg>
           <span>Join using Facebook</span>
+        </button>
+      </div>
+
+      <div class="col-6@xs">
+        <button
+          class="btn btn--subtle width-100%"
+          on:click={() => {
+            provider = Providers.Google;
+            clicked = true;
+          }}>
+          <svg
+            aria-hidden="true"
+            class="icon margin-right-xxxs"
+            viewBox="0 0 16 16">
+            <g>
+              <path
+                d="M15.3,0H0.7C0.3,0,0,0.3,0,0.7v14.7C0,15.7,0.3,16,0.7,16H8v-5H6V8h2V6c0-2.1,1.2-3,3-3
+                c0.9,0,1.8,0,2,0v3h-1c-0.6,0-1,0.4-1,1v1h2.6L13,11h-2v5h4.3c0.4,0,0.7-0.3,0.7-0.7V0.7C16,0.3,15.7,0,15.3,0z" />
+            </g>
+          </svg>
+          <span>Join using Google</span>
         </button>
       </div>
     </div>
@@ -67,7 +157,8 @@
             class="form-control width-100%"
             type="text"
             name="inputFirstName"
-            id="inputFirstName" />
+            id="inputFirstName"
+            bind:value={firstName} />
         </div>
 
         <div class="col-6@md">
@@ -78,7 +169,8 @@
             class="form-control width-100%"
             type="text"
             name="inputLastName"
-            id="inputLastName" />
+            id="inputLastName"
+            bind:value={lastName} />
         </div>
       </div>
     </div>
@@ -92,7 +184,8 @@
         type="email"
         name="inputEmail1"
         id="inputEmail1"
-        placeholder="email@myemail.com" />
+        placeholder="email@myemail.com"
+        bind:value={email} />
     </div>
 
     <div class="margin-bottom-md">
@@ -103,14 +196,22 @@
         class="form-control width-100%"
         type="password"
         name="inputPassword1"
-        id="inputPassword1" />
+        id="inputPassword1"
+        bind:value={password} />
       <p class="text-xs color-contrast-medium margin-top-xxs">
         Minimum 6 characters
       </p>
     </div>
 
     <div class="margin-bottom-sm">
-      <button class="btn btn--primary btn width-100%">Join</button>
+      <button
+        class="btn btn--primary btn width-100%"
+        on:click={() => {
+          provider = Providers.Email;
+          clicked = true;
+        }}>
+        Join
+      </button>
     </div>
 
     <div class="text-center">
@@ -122,5 +223,6 @@
         .
       </p>
     </div>
-  </form>
+
+  </div>
 </div>
