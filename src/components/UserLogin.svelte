@@ -12,6 +12,8 @@
   export let message;
 
   // User Inputs
+  export let firstName;
+  export let lastName;
   export let email;
   export let password;
   export let provider;
@@ -48,7 +50,7 @@
   let TwitterAuthProvider;
 
   // ------ Session Login: by default email & password ------
-  // ------ Providers: Google, Facebook, Twitter       ------
+  // ------ Or Providers: Google, Facebook, Twitter    ------
   async function session_login(provider = Providers.Email, isSingUp = false) {
     if (AnonymousCurrentUser === "not-yet") return alert("Please Wait ..");
     // UX
@@ -61,40 +63,81 @@
 
       // Authenticate 🔥!
       switch (provider) {
+        // 👉 Way: [Email + Password]
         case Providers.Email:
-          UserResult = await authentication.signInWithEmailAndPassword(
-            email,
-            password
-          );
+          // case 1: Singup! there is no anonymous user, so create a real user!
+          if (AnonymousCurrentUser == null && isSingUp) {
+            UserResult = await authentication.createUserWithEmailAndPassword(
+              email,
+              password
+            );
+            // rename it 😉!
+            await authentication.currentUser.updateProfile({
+              displayName: `${firstName} ${lastName}`
+            });
+          }
+          // case 2: Singup! there is an anonymous user, so convert it into a real user!
+          else if (AnonymousCurrentUser && isSingUp) {
+            let credential = firebaseCore.auth.EmailAuthProvider.credential(
+              email,
+              password
+            );
+            UserResult = await authentication.currentUser.linkWithCredential(
+              credential
+            );
+            // rename it 😉!
+            await authentication.currentUser.updateProfile({
+              displayName: `${firstName} ${lastName}`
+            });
+          }
+          // case 3: Login!
+          else {
+            UserResult = await authentication.signInWithEmailAndPassword(
+              email,
+              password
+            );
+          }
           break;
+        // 👉 Way: [Google account]
         case Providers.Google:
+          // case 1: Singup! there is an anonymous user, so convert it into real user!
           if (AnonymousCurrentUser && isSingUp) {
             UserResult = await AnonymousCurrentUser.linkWithPopup(
               GoogleAuthProvider
             );
-          } else {
+          }
+          // case 2: Login!
+          else {
             UserResult = await authentication.signInWithPopup(
               GoogleAuthProvider
             );
           }
           break;
+        // 👉 Way:[Facebook account]
         case Providers.Facebook:
+          // case 1: Singup! there is an anonymous user, so convert it into real user!
           if (AnonymousCurrentUser && isSingUp) {
             UserResult = await AnonymousCurrentUser.linkWithPopup(
               FacebookAuthProvider
             );
-          } else {
+          }
+          // case 2: Login!
+          else {
             UserResult = await authentication.signInWithPopup(
               FacebookAuthProvider
             );
           }
           break;
+        // 👉 Way [Twitter account]
         case Providers.Twitter:
+          // case 1: Singup! there is an anonymous user, so convert it into real user!
           if (AnonymousCurrentUser && isSingUp) {
             UserResult = await AnonymousCurrentUser.linkWithPopup(
               TwitterAuthProvider
             );
-          } else {
+          }
+          // case 2: Login!
+          else {
             UserResult = await authentication.signInWithPopup(
               TwitterAuthProvider
             );
@@ -104,6 +147,7 @@
 
       // Get the Firebase TokenID 👈
       let tokenID = await authentication.currentUser.getIdToken(true);
+
       // Send the CSRF Cookie with the TokenID to the server 👌
       let toServer = await fetch("/api/v1/user/session_login", {
         method: "POST",
@@ -115,6 +159,7 @@
         credentials: "include",
         body: JSON.stringify({ tokenID })
       });
+
       // Get the result from server (success or failure) 👈
       const serverResult = await toServer.json();
       // Ux
