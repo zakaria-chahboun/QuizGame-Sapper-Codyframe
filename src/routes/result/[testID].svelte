@@ -1,3 +1,21 @@
+<script context="module">
+  export async function preload(page, session) {
+    let { user } = session;
+    let { testID } = page.params;
+    let isCompleted;
+
+    if (!user) this.redirect(302, "/");
+
+    const result = await this.fetch(`api/v1/user/tests/${testID}`);
+    const testData = await result.json();
+
+    if (testData.status.isError) return this.error(testData.status.message);
+
+    if (!testData.data.isCompleted)
+      return this.redirect(302, `/test/${testID}/1"`);
+  }
+</script>
+
 <script>
   export let progress = 20;
   export let neededToPass = 80;
