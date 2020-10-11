@@ -109,7 +109,7 @@
   }
 
   // for handling single choice: ux and db
-  async function handleSingleChoice({ answer, after = 2000 }) {
+  async function handleSingleChoice({ answer, after = 200 }) {
     // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;
@@ -167,11 +167,15 @@
       }
       // loading desccription: stop striped backgound style 👌
       descriptionStriped = false;
+      // if the test is completed >> redirect to result page
+      if (result.data.isCompleted) {
+        return window.location.assign(`result/${currentTestID}`);
+      }
     }, after);
   }
 
   // for handling multi-choices: ux and db
-  async function handleMultiChoices({ answers, after = 2000 }) {
+  async function handleMultiChoices({ answers, after = 200 }) {
     // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;
@@ -232,6 +236,10 @@
         for (let i of correctAnswers) {
           choices[i].type = ChoiceTypes.correct;
         }
+      }
+      // if the test is completed >> redirect to result page
+      if (result.data.isCompleted) {
+        return window.location.assign(`result/${currentTestID}`);
       }
     }, after);
   }

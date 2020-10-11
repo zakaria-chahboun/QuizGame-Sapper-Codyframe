@@ -370,9 +370,11 @@ api_v1_user_router
         });
       });
 
+      let isCompleted;
+
       await firestore.runTransaction(async (t) => {
         let UPQ_Length = (await t.get(userProgressQuestion)).docs.length;
-        const isCompleted = UPQ_Length == max;
+        isCompleted = UPQ_Length == max;
         await t.set(userProgressTest, {
           isCompleted,
           lastQuestion: index,
@@ -381,7 +383,7 @@ api_v1_user_router
       });
 
       // All is good
-      easyResponse(res, null);
+      easyResponse(res, { isCompleted });
     } catch (error) {
       easyResponse(res, null, true, error.code);
     }
