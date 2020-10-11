@@ -9,10 +9,14 @@
     const result = await this.fetch(`api/v1/user/tests/${testID}`);
     const testData = await result.json();
 
-    if (testData.status.isError) return this.error(testData.status.message);
+    if (testData.status.isError)
+      return this.error(result.status, testData.status.message);
 
     if (!testData.data.isCompleted)
-      return this.redirect(302, `/test/${testID}/1"`);
+      return this.redirect(
+        302,
+        `/test/${testID}/${testData.data.lastQuestion}`
+      );
   }
 </script>
 
