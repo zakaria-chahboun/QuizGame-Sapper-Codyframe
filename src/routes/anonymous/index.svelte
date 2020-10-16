@@ -1,8 +1,11 @@
 <script context="module">
   export async function preload(page, session) {
     const { user } = session;
+    const { redirect } = page.query;
 
     if (user) return this.redirect(302, "/");
+
+    return { redirect };
   }
 </script>
 
@@ -10,6 +13,8 @@
   import { onMount } from "svelte";
   import { StatusTypes } from "../../tools/status.js";
   import { firebaseConfig } from "../../firebase-web-config.js";
+
+  export let redirect;
 
   let firebaseCore;
   let firebaseApp;
@@ -49,7 +54,8 @@
         message = `Success Login! Hello " ${UserResult.user.displayName} "!`;
         // logout from firebase, WHY? because the backend (and session) is taken the place now 😉
         //authentication.signOut();
-        // redirect to the home!
+        // redirect to the url or to home!
+        if (redirect) return window.location.assign(redirect);
         return window.location.assign("/");
       }
 

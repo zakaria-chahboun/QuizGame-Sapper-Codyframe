@@ -2,6 +2,7 @@
   import { StatusTypes } from "../../tools/status.js";
   export async function preload(page, session) {
     const { id } = page.params;
+    const { user } = session;
     /*
       Array of paramaters:
       '0' for test id,
@@ -11,9 +12,11 @@
     const questionIndex = id[1];
 
     // If No user >> No game bro 🙄!
-    if (!session.user) {
-      return this.redirect(302, "login");
-    }
+    if (!user)
+      return this.redirect(
+        302,
+        `anonymous?redirect=test/${testID}/${questionIndex}`
+      );
 
     // Get Data from API 🌱
     const snapshot = await this.fetch(

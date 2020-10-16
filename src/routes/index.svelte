@@ -9,8 +9,6 @@
     if (tests.status.isError)
       return this.redirect(302, `login?message=${tests.status.message}`);
 
-    if (!user) return this.redirect(302, `anonymous`);
-
     return { tests: tests.data };
   }
 </script>
