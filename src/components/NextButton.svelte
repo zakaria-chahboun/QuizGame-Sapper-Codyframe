@@ -37,7 +37,7 @@
     await goto(`/test/${currentTestID}/${currentQuestionIndex + 1}`);
     wait = !wait;
   }}
-  disabled={currentQuestionIndex == maxQuestions}
+  disabled={!done || currentQuestionIndex == maxQuestions}
   class:btn--disabled={!done || currentQuestionIndex == maxQuestions}>
   Next Question
 </button>
