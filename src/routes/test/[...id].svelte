@@ -44,9 +44,9 @@
        */
       singleChoiceAnswer: null,
       multiChoiceAnswers: [],
-      descriptionShow: result.data.choices.every(e => e.disabled == true),
-      descriptionStriped: false,
-      done: result.data.choices.every(e => e.disabled == true)
+      isDone: result.data.choices.every(e => e.disabled == true),
+      descriptionIsLoading: false,
+      descriptionIsVisible: false
     };
   }
 </script>
@@ -56,6 +56,7 @@
   import Sidebar from "../../components/Sidebar.svelte";
   import StepBar from "../../components/StepBar.svelte";
   import StepCircles from "../../components/StepCircles.svelte";
+  import Description from "../../components/Description.svelte";
   import NextButton from "../../components/NextButton.svelte";
   import RestartButton from "../../components/RestartButton.svelte";
   import ResultButton from "../../components/ResultButton.svelte";
@@ -88,12 +89,12 @@
   // to get the chosen checks "answers" (in multi-choices case) by binding from child to parent ;)
   export let multiChoiceAnswers = [];
 
-  // to show description after user chose the answers
-  export let descriptionShow;
-  // to make description background striped animation when description is shown
-  export let descriptionStriped;
+  // description >> Set visibility + loading ux (background striped animation) 🤗
+  export let descriptionIsLoading;
+  export let descriptionIsVisible;
+
   // this is came 'true' when the answers is chosed by the user
-  export let done;
+  export let isDone;
 
   // for csrf attacks
   let csrfCookie;
@@ -118,8 +119,8 @@
   // for handling single choice: ux and db
   async function handleSingleChoice({ answer }) {
     // loading description: start striped backgound style 👌
-    descriptionShow = true;
-    descriptionStriped = true;
+    descriptionIsVisible = true;
+    descriptionIsLoading = true;
     const correctIndex = correctAnswers[0];
 
     // prevent events by disabling all radio buttons
@@ -171,8 +172,8 @@
       choices[answer].type = ChoiceTypes.uncorrect;
     }
     // loading desccription: stop striped backgound style 👌
-    descriptionStriped = false;
-    done = true;
+    descriptionIsLoading = false;
+    isDone = true;
     // if the test is completed >> Show result button
     if (result.data.isCompleted) isCompleted = true;
   }
@@ -180,8 +181,8 @@
   // for handling multi-choices: ux and db
   async function handleMultiChoices({ answers }) {
     // loading description: start striped backgound style 👌
-    descriptionShow = true;
-    descriptionStriped = true;
+    descriptionIsVisible = true;
+    descriptionIsLoading = true;
 
     // prevent events by disabling all checkboxs
     for (const i in choices) {
@@ -223,8 +224,8 @@
 
     // --------- Css Behaviour ---------
     // loading desccription: stop striped backgound style 👌
-    descriptionStriped = false;
-    done = true;
+    descriptionIsLoading = false;
+    isDone = true;
     // if the chosen answers is correct so highlight it with the green color
     if (!isWrong) {
       for (let i of answers) {
@@ -252,7 +253,7 @@
   });
 </script>
 
-<MyLayout bind:descriptionStriped bind:descriptionShow>
+<MyLayout>
 
   <!-- Question Data -->
   <h4 slot="question">{question}</h4>
@@ -283,8 +284,11 @@
   </div>
 
   <!-- Description Data -->
-  <div slot="description" class="color-white">
-    {descriptionStriped ? '' : description}
+  <div slot="description">
+    <Description
+      isVisible={descriptionIsVisible}
+      isLoading={descriptionIsLoading}
+      data={description} />
   </div>
 
   <!-- Next/Result Button -->
@@ -292,7 +296,7 @@
     {#if !isCompleted}
       <!-- Next Button Data -->
       <NextButton
-        {done}
+        {isDone}
         {currentTestID}
         {currentQuestionIndex}
         maxQuestions={stepCircles.length} />
