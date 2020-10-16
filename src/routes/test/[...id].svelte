@@ -286,7 +286,7 @@
   <!-- Description Data -->
   <div slot="description">
     <Description
-      isVisible={descriptionIsVisible}
+      isVisible={descriptionIsVisible || isDone}
       isLoading={descriptionIsLoading}
       data={description} />
   </div>
