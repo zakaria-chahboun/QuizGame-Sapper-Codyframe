@@ -282,8 +282,12 @@ api_v1_user_router
         for (let [i, e] of questionData.answers.entries()) {
           let type = ChoiceTypes.current; // default
           let disabled = false; // default
+
+          // - User already play this question?
           if (CurrentChoiceProgress) {
+            // - So: Don't let the user replay it again!
             disabled = true;
+            // - Then: Recolor his chosen answers!
             if (CurrentChoiceProgress.chosenAnswers[`${i}`] != undefined) {
               if (CurrentChoiceProgress.chosenAnswers[`${i}`] === true) {
                 type = ChoiceTypes.correct;
@@ -292,6 +296,10 @@ api_v1_user_router
               ) {
                 type = ChoiceTypes.uncorrect;
               }
+            }
+            // - Then: Recolor the correct answers too!
+            if (e.isCorrect) {
+              type = ChoiceTypes.correct;
             }
           }
           gameData.choices.push({
