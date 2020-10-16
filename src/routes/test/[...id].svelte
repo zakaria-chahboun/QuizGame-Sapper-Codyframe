@@ -33,6 +33,17 @@
       }
     }
 
+    // -- Init Varaibales --
+    /*
+     We did that here not on the api!
+     the problem is: we can't check the chosen answers (user progress), because of the binding rules!
+     even if we set checked choices by the server (api)!
+     the variables binding always win!
+
+     This forced us to add the 'chosenAnswers' array also in the api!
+    */
+    const chosenAnswers = result.data.chosenAnswers;
+
     return {
       ...result.data,
       currentQuestionIndex: parseInt(questionIndex), // for incrementation 👈
@@ -42,8 +53,8 @@
        * so when you switch to another route you get the same css behaviour as the last route,
        * we can avoid that with the pre-initialisation
        */
-      singleChoiceAnswer: null,
-      multiChoiceAnswers: [],
+      singleChoiceAnswer: chosenAnswers.length == 0 ? null : chosenAnswers[0],
+      multiChoiceAnswers: chosenAnswers.length == 0 ? [] : chosenAnswers,
       isDone: result.data.choices.every(e => e.disabled == true),
       descriptionIsLoading: false,
       descriptionIsVisible: false
@@ -103,12 +114,12 @@
 
   // Reactive Statement > Case 1: if a single choice
   $: if (singleChoiceAnswer != undefined) {
-    handleSingleChoice({ answer: singleChoiceAnswer });
+    if (!isDone) handleSingleChoice({ answer: singleChoiceAnswer });
   }
 
   // Reactive Statement > Case 2: if mutiple choices
   $: if (isMultiple && multiChoiceAnswers.length >= correctAnswers.length) {
-    handleMultiChoices({ answers: multiChoiceAnswers });
+    if (!isDone) handleMultiChoices({ answers: multiChoiceAnswers });
   }
 
   // Reactive Statement: select the current step circle
