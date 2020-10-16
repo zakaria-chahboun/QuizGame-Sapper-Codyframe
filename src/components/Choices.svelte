@@ -5,10 +5,26 @@
 
   // data format:
   export let data = [
-    { type: ChoiceTypes.correct, answer: "Hola1 !", disabled: false },
-    { type: ChoiceTypes.uncorrect, answer: "Hola2 !", disabled: false },
-    { type: ChoiceTypes.current, answer: "Hola3 !", disabled: false },
-    { type: ChoiceTypes.correct, answer: "Hola4 !", disabled: false }
+    {
+      type: ChoiceTypes.correct,
+      answer: "Hola1 !",
+      disabled: false
+    },
+    {
+      type: ChoiceTypes.uncorrect,
+      answer: "Hola2 !",
+      disabled: false
+    },
+    {
+      type: ChoiceTypes.current,
+      answer: "Hola3 !",
+      disabled: false
+    },
+    {
+      type: ChoiceTypes.correct,
+      answer: "Hola4 !",
+      disabled: false
+    }
   ];
 
   // to get the chosen radio "answer" (in single choice)
