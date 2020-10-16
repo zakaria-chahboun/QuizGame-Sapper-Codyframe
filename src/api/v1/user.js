@@ -428,8 +428,8 @@ api_v1_user_router
   .post("/user/session_login", async (req, res) => {
     // Get the token ID passed.
     const tokenID = req.body.tokenID.toString();
-    // Set session expiration to 5 days.
-    const expiresIn = 60 * 60 * 24 * 5 * 1000;
+    // Set session expiration to 14 (two weeks) days.
+    const expiresIn = 60 * 60 * 24 * 14 * 1000;
     // Create the session cookie. This will also verify the ID token in the process.
     // The session cookie will have the same claims as the ID token.
     try {
