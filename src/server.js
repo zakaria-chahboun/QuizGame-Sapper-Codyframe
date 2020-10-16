@@ -20,16 +20,16 @@ express()
   // - cookies parser
   .use(cookieParser())
   // - csurf cookie
-  .use(
-    csurfMiddleware({
-      cookie: true,
-    })
-  )
+  // .use(
+  //   csurfMiddleware({
+  //     cookie: true,
+  //   })
+  // )
   // - to avoid csurf attacks
-  .all("*", (req, res, next) => {
-    res.cookie("XSRF-TOKEN", req.csrfToken());
-    next();
-  })
+  // .all("*", (req, res, next) => {
+  //   res.cookie("XSRF-TOKEN", req.csrfToken());
+  //   next();
+  // })
   .use("/api/v1", api_v1_core_router)
   .use("/api/v1", SessionAuthentication, api_v1_user_router)
   // -- for easy use & to not show the "api/v1/user/logout" in the href attribute in the button
