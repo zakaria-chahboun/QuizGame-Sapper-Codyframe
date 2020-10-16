@@ -269,7 +269,7 @@
     <Sidebar>
       <!-- Circle Steps Data -->
       <span slot="step-circles">
-        <StepCircles data={stepCircles} />
+        <StepCircles data={stepCircles} {isCompleted} />
       </span>
       <span slot="restart-button">
         <RestartButton {currentTestID} />

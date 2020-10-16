@@ -11,6 +11,9 @@
     { type: "", url: "#", index: 3 },
     { type: "", url: "#", index: 4 }
   ];
+
+  // test is completed?
+  export let isCompleted = false;
 </script>
 
 <style>
@@ -35,11 +38,13 @@
 
 {#each data as { type, index, url }}
   <div
-    class="progress-cell {wait ? "is-striped" : type}"
+    class="progress-cell {wait ? 'is-striped' : type}"
     on:click={async () => {
-      wait = !wait;
-      await goto(url);
-      wait = !wait;
+      if (isCompleted) {
+        wait = !wait;
+        await goto(url);
+        wait = !wait;
+      }
     }}>
     <p>{index}</p>
   </div>
