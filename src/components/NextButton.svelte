@@ -4,6 +4,7 @@
   export let currentTestID = 1;
   export let currentQuestionIndex = 1;
   export let maxQuestions = 1;
+  export let done = false;
 
   // Ux/Ui
   let wait = false;
@@ -37,6 +38,6 @@
     wait = !wait;
   }}
   disabled={currentQuestionIndex == maxQuestions}
-  class:btn--disabled={currentQuestionIndex == maxQuestions}>
+  class:btn--disabled={!done || currentQuestionIndex == maxQuestions}>
   Next Question
 </button>

@@ -45,7 +45,8 @@
       singleChoiceAnswer: null,
       multiChoiceAnswers: [],
       descriptionShow: false,
-      descriptionStriped: false
+      descriptionStriped: false,
+      done: result.data.choices.every(e => e.disabled == true)
     };
   }
 </script>
@@ -90,6 +91,8 @@
   export let descriptionShow;
   // to make description background striped animation when description is shown
   export let descriptionStriped;
+  // this is came 'true' when the answers is chosed by the user
+  export let done;
 
   // for csrf attacks
   let csrfCookie;
@@ -112,7 +115,7 @@
   }
 
   // for handling single choice: ux and db
-  async function handleSingleChoice({ answer, after = 200 }) {
+  async function handleSingleChoice({ answer }) {
     // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;
@@ -157,28 +160,26 @@
     }
 
     // --------- Css Behaviour ---------
-    // After an 'after' time do this:
-    setTimeout(() => {
-      // if the chosen answer is correct so highlight it with the green color
-      if (!isWrong) {
-        choices[answer].type = ChoiceTypes.correct;
-      }
-      // of if uncorrect: highlight it with the red color + highlight also the correct answer with the green color
-      else {
-        choices[correctIndex].type = ChoiceTypes.correct;
-        choices[answer].type = ChoiceTypes.uncorrect;
-      }
-      // loading desccription: stop striped backgound style 👌
-      descriptionStriped = false;
-      // if the test is completed >> redirect to result page
-      if (result.data.isCompleted) {
-        return window.location.assign(`result/${currentTestID}`);
-      }
-    }, after);
+    // if the chosen answer is correct so highlight it with the green color
+    if (!isWrong) {
+      choices[answer].type = ChoiceTypes.correct;
+    }
+    // of if uncorrect: highlight it with the red color + highlight also the correct answer with the green color
+    else {
+      choices[correctIndex].type = ChoiceTypes.correct;
+      choices[answer].type = ChoiceTypes.uncorrect;
+    }
+    // loading desccription: stop striped backgound style 👌
+    descriptionStriped = false;
+    done = true;
+    // if the test is completed >> redirect to result page
+    if (result.data.isCompleted) {
+      return window.location.assign(`result/${currentTestID}`);
+    }
   }
 
   // for handling multi-choices: ux and db
-  async function handleMultiChoices({ answers, after = 200 }) {
+  async function handleMultiChoices({ answers }) {
     // loading description: start striped backgound style 👌
     descriptionShow = true;
     descriptionStriped = true;
@@ -221,30 +222,29 @@
       return alert(`${snapshot.status}: ${result.status.message}`);
     }
 
-    // After an 'after' time do this:
-    setTimeout(() => {
-      // loading desccription: stop striped backgound style 👌
-      descriptionStriped = false;
-      // if the chosen answers is correct so highlight it with the green color
-      if (!isWrong) {
-        for (let i of answers) {
-          choices[i].type = ChoiceTypes.correct;
-        }
+    // --------- Css Behaviour ---------
+    // loading desccription: stop striped backgound style 👌
+    descriptionStriped = false;
+    done = true;
+    // if the chosen answers is correct so highlight it with the green color
+    if (!isWrong) {
+      for (let i of answers) {
+        choices[i].type = ChoiceTypes.correct;
       }
-      // of if uncorrect: highlight it with the red color + highlight also the correct answer with the green color
-      else {
-        for (let i of answers) {
-          choices[i].type = ChoiceTypes.uncorrect;
-        }
-        for (let i of correctAnswers) {
-          choices[i].type = ChoiceTypes.correct;
-        }
+    }
+    // of if uncorrect: highlight it with the red color + highlight also the correct answer with the green color
+    else {
+      for (let i of answers) {
+        choices[i].type = ChoiceTypes.uncorrect;
       }
-      // if the test is completed >> redirect to result page
-      if (result.data.isCompleted) {
-        return window.location.assign(`result/${currentTestID}`);
+      for (let i of correctAnswers) {
+        choices[i].type = ChoiceTypes.correct;
       }
-    }, after);
+    }
+    // if the test is completed >> redirect to result page
+    if (result.data.isCompleted) {
+      return window.location.assign(`result/${currentTestID}`);
+    }
   }
 
   onMount(async () => {
@@ -293,6 +293,7 @@
   <!-- Next Button Data -->
   <span slot="nextButton">
     <NextButton
+      {done}
       {currentTestID}
       {currentQuestionIndex}
       maxQuestions={stepCircles.length} />
