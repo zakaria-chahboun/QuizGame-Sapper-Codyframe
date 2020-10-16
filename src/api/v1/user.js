@@ -275,6 +275,7 @@ api_v1_user_router
         gameData.choices = [];
         gameData.correctAnswers = [];
         gameData.stepCircles = [];
+        gameData.chosenAnswers = [];
 
         let counter = 0;
 
@@ -289,6 +290,7 @@ api_v1_user_router
             disabled = true;
             // - Then: Recolor his chosen answers!
             if (CurrentChoiceProgress.chosenAnswers[`${i}`] != undefined) {
+              gameData.chosenAnswers.push(i);
               if (CurrentChoiceProgress.chosenAnswers[`${i}`] === true) {
                 type = ChoiceTypes.correct;
               } else if (
