@@ -102,7 +102,7 @@
   }
 
   // Reactive Statement > Case 2: if mutiple choices
-  $: if (isMultiple && multiChoiceAnswers.length >= 2) {
+  $: if (isMultiple && multiChoiceAnswers.length >= correctAnswers.length) {
     handleMultiChoices({ answers: multiChoiceAnswers });
   }
 
