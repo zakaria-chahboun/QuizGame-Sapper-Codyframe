@@ -58,6 +58,7 @@
   import StepCircles from "../../components/StepCircles.svelte";
   import NextButton from "../../components/NextButton.svelte";
   import RestartButton from "../../components/RestartButton.svelte";
+  import ResultButton from "../../components/ResultButton.svelte";
   import MyLayout from "./_test.svelte";
   import { onMount } from "svelte";
   import { goto } from "@sapper/app";
@@ -172,10 +173,8 @@
     // loading desccription: stop striped backgound style 👌
     descriptionStriped = false;
     done = true;
-    // if the test is completed >> redirect to result page
-    if (result.data.isCompleted) {
-      return window.location.assign(`result/${currentTestID}`);
-    }
+    // if the test is completed >> Show result button
+    if (result.data.isCompleted) isCompleted = true;
   }
 
   // for handling multi-choices: ux and db
@@ -241,10 +240,8 @@
         choices[i].type = ChoiceTypes.correct;
       }
     }
-    // if the test is completed >> redirect to result page
-    if (result.data.isCompleted) {
-      return window.location.assign(`result/${currentTestID}`);
-    }
+    // if the test is completed >> Show result button
+    if (result.data.isCompleted) isCompleted = true;
   }
 
   onMount(async () => {
@@ -290,13 +287,19 @@
     {descriptionStriped ? '' : description}
   </div>
 
-  <!-- Next Button Data -->
+  <!-- Next/Result Button -->
   <span slot="nextButton">
-    <NextButton
-      {done}
-      {currentTestID}
-      {currentQuestionIndex}
-      maxQuestions={stepCircles.length} />
+    {#if !isCompleted}
+      <!-- Next Button Data -->
+      <NextButton
+        {done}
+        {currentTestID}
+        {currentQuestionIndex}
+        maxQuestions={stepCircles.length} />
+    {:else}
+      <!-- Result Button Data -->
+      <ResultButton {currentTestID} />
+    {/if}
   </span>
 
 </MyLayout>
