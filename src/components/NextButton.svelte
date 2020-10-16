@@ -4,7 +4,7 @@
   export let currentTestID = 1;
   export let currentQuestionIndex = 1;
   export let maxQuestions = 1;
-  export let done = false;
+  export let isDone = false;
 
   // Ux/Ui
   let wait = false;
@@ -37,7 +37,7 @@
     await goto(`/test/${currentTestID}/${currentQuestionIndex + 1}`);
     wait = !wait;
   }}
-  disabled={!done || currentQuestionIndex == maxQuestions}
-  class:btn--disabled={!done || currentQuestionIndex == maxQuestions}>
+  disabled={!isDone || currentQuestionIndex == maxQuestions}
+  class:btn--disabled={!isDone || currentQuestionIndex == maxQuestions}>
   Next Question
 </button>
