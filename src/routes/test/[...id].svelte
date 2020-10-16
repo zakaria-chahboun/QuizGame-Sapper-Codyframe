@@ -44,7 +44,7 @@
        */
       singleChoiceAnswer: null,
       multiChoiceAnswers: [],
-      descriptionShow: false,
+      descriptionShow: result.data.choices.every(e => e.disabled == true),
       descriptionStriped: false,
       done: result.data.choices.every(e => e.disabled == true)
     };
