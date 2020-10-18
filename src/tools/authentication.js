@@ -3,6 +3,7 @@
 */
 
 import { auth } from "../firebase-admin.js";
+import { Unix_timestamp } from "./cool.js";
 
 // JWT: To extract authentication token from client request: this is a (polka or express) middleware 😉
 const getAuthToken = (req, res, next) => {
@@ -72,12 +73,3 @@ export const SessionAuthentication = async (req, res, next) => {
     return next();
   }
 };
-
-// To Convert Unix Seconds to Normal HH:MM:SS time
-function Unix_timestamp(t) {
-  var dt = new Date(t * 1000);
-  var hr = dt.getHours();
-  var m = "0" + dt.getMinutes();
-  var s = "0" + dt.getSeconds();
-  return hr + ":" + m.substr(-2) + ":" + s.substr(-2);
-}
