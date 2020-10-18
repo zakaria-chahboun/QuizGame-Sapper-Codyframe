@@ -200,7 +200,7 @@ api_v1_user_router
         const testData = result1.data;
 
         // No access for: Anonymous 'User' in private 'Test'
-        if (testData.isAuth && user.isAnonymous)
+        if (testData.isPrivate && user.isAnonymous)
           return easyResponse(
             res,
             null,
@@ -268,7 +268,7 @@ api_v1_user_router
         gameData.questionID = questionData.id;
         gameData.question = questionData.question;
         gameData.description = questionData.description;
-        gameData.isAuth = testData.isAuth;
+        gameData.isPrivate = testData.isPrivate;
         gameData.stepValue = testData.stepValue;
         gameData.lastQuestion = testData.lastQuestion;
         gameData.isCompleted = testData.isCompleted;

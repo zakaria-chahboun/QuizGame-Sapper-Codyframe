@@ -5,7 +5,7 @@ const api_v1_core_router = express.Router();
 import { easyResponse } from "../../tools/response";
 import { StatusTypes } from "../../tools/status";
 import { randomNumbers } from "../../tools/cool";
-import { firestore } from "../../firebase-admin";
+import { firestore, firebase } from "../../firebase-admin";
 
 const { PORT, NODE_ENV } = process.env;
 const dev = NODE_ENV === "development";
@@ -40,7 +40,10 @@ api_v1_core_router
       }
       // [option 2] GET all tests data from 'tests collection'
       else {
-        const testCollection = await firestore.collection("tests").get();
+        const testCollection = await firestore
+          .collection("tests")
+          .orderBy("createdAt")
+          .get();
         // - check the existence of tests
         if (testCollection.empty) {
           return easyResponse(
@@ -127,7 +130,7 @@ api_v1_core_router
           for (let i = 0; i < numberLimit; i++) {
             const x = random[i];
             data[i] = (
-              await questionColl.where("index", ">=", x).limit(1).get()
+              await questionColl.where("rand", ">=", x).limit(1).get()
             ).docs[0].data();
           }
           return easyResponse(res, data);
@@ -204,6 +207,35 @@ api_v1_core_router
       easyResponse(res, null, true, error.code);
     }
   })
+  .get("/core/update", async (req, res) => {
+    let tests = await firestore.collection("tests").get();
+    let q = await firestore.collection("questions").get();
+
+    tests.forEach((e) => {
+      e.ref.set(
+        {
+          createdAt: e.createTime,
+          isPrivate: false,
+          isAuth: firebase.firestore.FieldValue.delete(),
+        },
+        { merge: true }
+      );
+    });
+
+    let i = 0;
+    q.forEach((e) => {
+      e.ref.set(
+        {
+          rand: i,
+          index: firebase.firestore.FieldValue.delete(),
+        },
+        { merge: true }
+      );
+      i++;
+    });
+
+    easyResponse(res, null);
+  });
 
 // export the router
 export { api_v1_core_router };
