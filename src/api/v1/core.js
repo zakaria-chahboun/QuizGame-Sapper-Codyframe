@@ -174,7 +174,7 @@ api_v1_core_router
             null,
             true,
             StatusTypes.NO_DATA.code,
-            `There is no test with this id ${testID} !`
+            `There is no test '${testID}' in database, Or this test doesn't have this question index '${questionIndex}'`
           );
         }
         const references = snapshot.docs.map((doc) => doc.data());
