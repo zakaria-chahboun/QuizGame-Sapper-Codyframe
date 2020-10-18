@@ -6,14 +6,20 @@
 
   // data format:
   export let data = [
-    { type: "", url: "#", index: 1 },
-    { type: "", url: "#", index: 2 },
-    { type: "", url: "#", index: 3 },
-    { type: "", url: "#", index: 4 }
+    { type: "", url: "#", index: 1, done: false },
+    { type: "", url: "#", index: 2, done: false },
+    { type: "", url: "#", index: 3, done: false },
+    { type: "", url: "#", index: 4, done: false }
   ];
 
   // test is completed?
   export let isCompleted = false;
+
+  /*
+  Let User Show His Previous Progress IF:
+    - question is not done.
+    - test is completed.
+  */
 </script>
 
 <style>
@@ -36,11 +42,11 @@
   }
 </style>
 
-{#each data as { type, index, url }}
+{#each data as { type, index, url, done }}
   <div
     class="progress-cell {wait ? 'is-striped' : type}"
     on:click={async () => {
-      if (isCompleted) {
+      if (!done || isCompleted) {
         wait = !wait;
         await goto(url);
         wait = !wait;

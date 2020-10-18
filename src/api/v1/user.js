@@ -322,10 +322,13 @@ api_v1_user_router
         for (let i = 1; i <= testData.maxSteps; i++) {
           let step = {};
           let type = "";
+          let done = false; // is the user alredy play this question?
+
           if (
             StepCirclesProgress &&
             StepCirclesProgress[`${i}`] !== undefined
           ) {
+            done = true;
             type =
               StepCirclesProgress[`${i}`] === true
                 ? StepCircleTypes.uncorrect
@@ -334,6 +337,7 @@ api_v1_user_router
           step.type = type;
           step.url = `/test/${testID}/${i}`;
           step.index = i;
+          step.done = done;
           gameData.stepCircles.push(step);
         }
 
