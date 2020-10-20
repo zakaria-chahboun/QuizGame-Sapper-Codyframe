@@ -1,9 +1,6 @@
 <script>
   import { goto } from "@sapper/app";
 
-  // Ui/Ux : loading data >> for tell the user to wait
-  let wait = false;
-
   // data format:
   export let data = [
     { type: "", url: "#", index: 1, done: false },
@@ -11,6 +8,9 @@
     { type: "", url: "#", index: 3, done: false },
     { type: "", url: "#", index: 4, done: false }
   ];
+
+  // Ui/Ux : loading data for each stepcircle: the user have to wait
+  let wait = data.map(e => false);
 
   // test is completed?
   export let isCompleted = false;
@@ -42,14 +42,14 @@
   }
 </style>
 
-{#each data as { type, index, url, done }}
+{#each data as { type, index, url, done }, i}
   <div
-    class="progress-cell {wait ? 'is-striped' : type}"
+    class="progress-cell {wait[i] ? 'is-striped' : type}"
     on:click={async () => {
       if (!done || isCompleted) {
-        wait = !wait;
+        wait[i] = !wait[i];
         await goto(url);
-        wait = !wait;
+        wait[i] = !wait[i];
       }
     }}>
     <p>{index}</p>
