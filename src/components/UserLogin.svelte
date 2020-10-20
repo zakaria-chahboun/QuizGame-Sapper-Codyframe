@@ -26,6 +26,8 @@
   export let clicked = false;
   // we can chose between singup or login 🤠
   export let isSingUp = false;
+  // Loading Ui: Check the existence of user: Then the login/signin Method is ready!
+  export let isReady = false;
 
   // enum: Social Media Providers
   const Providers = {
@@ -230,6 +232,7 @@
     csrfCookie = Cookies.get("XSRF-TOKEN");
 
     authentication.onAuthStateChanged(function(userx) {
+      isReady = true;
       if (userx) {
         AnonymousCurrentUser = authentication.currentUser;
       } else {
