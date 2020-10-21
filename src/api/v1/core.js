@@ -130,7 +130,7 @@ api_v1_core_router
           for (let i = 0; i < numberLimit; i++) {
             const x = random[i];
             data[i] = (
-              await questionColl.where("rand", ">=", x).limit(1).get()
+              await questionColl.where("random", ">=", x).limit(1).get()
             ).docs[0].data();
           }
           return easyResponse(res, data);
@@ -210,23 +210,24 @@ api_v1_core_router
   .get("/core/update", async (req, res) => {
     let tests = await firestore.collection("tests").get();
     let q = await firestore.collection("questions").get();
-
+    // replace isAuth with isPrivate
     tests.forEach((e) => {
       e.ref.set(
         {
           createdAt: e.createTime,
           isPrivate: false,
           isAuth: firebase.firestore.FieldValue.delete(),
+          needToPass: 40,
         },
         { merge: true }
       );
     });
-
+    // replace index with random
     let i = 0;
     q.forEach((e) => {
       e.ref.set(
         {
-          rand: i,
+          random: i,
           index: firebase.firestore.FieldValue.delete(),
         },
         { merge: true }
