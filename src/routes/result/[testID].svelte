@@ -6,7 +6,7 @@
     let isError = false;
     let message = "";
 
-    if (!user || user.isAnonymous) return this.redirect(302, "/login");
+    if (!user || user.isAnonymous) return this.redirect(302, "/signup");
 
     const result = await this.fetch(`api/v1/user/result/${testID}`);
     const testData = await result.json();
