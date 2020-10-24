@@ -438,6 +438,95 @@ api_v1_user_router
       return easyResponse(res, null, true, error.code);
     }
   })
+  .get("/user/result/:test_id", async (req, res) => {
+    const { test_id } = req.params;
+    const { user } = req;
+    try {
+      // No handling for: no user or anonymous user
+      if (!user || user.isAnonymous)
+        return easyResponse(
+          res,
+          null,
+          true,
+          StatusTypes.Login_Is_Required.code
+        );
+
+      // fetch test data
+      let apiUrl = `${coreApi}/tests/${test_id}`;
+      const data = await fetch(apiUrl);
+      const result = await data.json();
+      // check errors
+      if (result.status.isError) {
+        return easyResponse(
+          res,
+          null,
+          true,
+          result.status.code,
+          result.status.message
+        );
+      }
+      // get test data
+      const testData = result.data;
+
+      // ----- User Progres  -----------------------------
+      const userDoc = await firestore.collection("users").doc(user.uid).get();
+      // Check if the User alredy exist and has the 'lastTest' field 🐶 in db
+      if (userDoc.exists && userDoc.data().lastTest) {
+        const userProgressDoc = firestore
+          .collection("users")
+          .doc(user.uid)
+          .collection("userProgress")
+          .doc(test_id);
+
+        // get the data of progress test
+        const userProgressData = await userProgressDoc.get();
+
+        // if the user didn't play this test before 🙄
+        if (!userProgressData.exists)
+          return easyResponse(
+            res,
+            "",
+            true,
+            StatusTypes.NO_DATA.code,
+            `User didn't play this test: '${test_id}'`
+          );
+
+        // is this test completed?
+        const isCompleted = userProgressData.data().isCompleted;
+
+        // get the test progress
+        const userProgress = await userProgressDoc
+          .collection("questions")
+          .get();
+
+        // the progress of user: 1 pint per correct question 🌱
+        let counter = 0;
+        userProgress.docs.forEach((e) => {
+          if (!e.data().isWrong) counter++;
+        });
+
+        // data to send 🍪
+        const data = {
+          test: test_id,
+          testTitle: testData.testTitle,
+          testSubtitle: testData.testSubtitle,
+          needToPass: testData.needToPass,
+          isCompleted,
+          progress: counter,
+        };
+        // send data to client 🌻
+        return easyResponse(res, data);
+      }
+      // if new user so no progress 🤠
+      return easyResponse(
+        res,
+        "",
+        true,
+        StatusTypes.NO_DATA.code,
+        `User didn't play this test: '${test_id}'`
+      );
+    } catch (error) {}
+  })
   // -- firbase session login ---
   .post("/user/session_login", async (req, res) => {
     // Get the token ID passed.
