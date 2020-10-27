@@ -4,7 +4,7 @@ import compression from "compression";
 import * as sapper from "@sapper/server";
 
 import { json } from "body-parser";
-import csurfMiddleware from "csurf";
+//import csurfMiddleware from "csurf";
 import cookieParser from "cookie-parser";
 import { SessionAuthentication } from "./tools/authentication";
 import { api_v1_core_router } from "./api/v1/core";
