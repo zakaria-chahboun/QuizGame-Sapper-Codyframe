@@ -29,27 +29,56 @@
   import { onMount } from "svelte";
   export let progress;
   export let needToPass;
+  export let max;
 
   // export let testTitle;
   // export let testSubtitle;
 
+  /*
+  -- Calculation of percent of progress by the rule of three
+    Max => 100%
+    progress => {(progress*100)/Max}%
+  */
+
+  const calculation = Math.round((progress * 100) / max);
+  const variation = calculation - needToPass;
+
+  // Levels
   let levels = {
-    quite: "#6DDE4E",
-    almost: "#DEA461",
-    weak: "#DE205C"
+    quite: "#12B95D", // 🥰
+    almost: "#1F87FF", // 🙂
+    weak: "#7CAEFF" // 😭
   };
 
+  // Values
+  let series;
+
+  // Status with Levels
+  if (variation < 0) {
+    series = [
+      {
+        perc: calculation,
+        color: levels.weak
+      },
+      {
+        perc: variation * -1,
+        color: "#1F87FF"
+      }
+    ];
+  } else if (variation > 0) {
+    series = {
+      perc: calculation,
+      color: levels.quite
+    };
+  } else {
+    series = {
+      perc: calculation,
+      color: levels.almost
+    };
+  }
+
+  // Component
   let ProgressBar;
-  let series = [
-    {
-      perc: progress * 10,
-      color: "#5AB6DF"
-    },
-    {
-      perc: needToPass,
-      color: "#1F87FF"
-    }
-  ];
 
   onMount(async () => {
     const module = await import("@okrad/svelte-progressbar");
@@ -57,13 +86,17 @@
   });
 </script>
 
-<div class="text-component padding-md margin-auto margin-top-md max-width-md">
-
-  <svelte:component
-    this={ProgressBar}
-    textSize={50}
-    style="semicircle"
-    {series}
-    thickness={10}
-    width="500px" />
+<!-- Body -->
+<div
+  class="container margin-top-md margin-bottom-lg justify-between@md
+  max-width-xs">
+  <div class="text-component text-center margin-bottom-sm">
+    <svelte:component
+      this={ProgressBar}
+      textSize={50}
+      style="semicircle"
+      {series}
+      thickness={10}
+      width="500px" />
+  </div>
 </div>
