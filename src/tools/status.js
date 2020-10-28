@@ -135,6 +135,12 @@ const StatusTypes = {
     number: StatusNumbers.BAD_REQUEST,
     message: "There is no data for this request.",
   },
+  // for all kind of empty data of this game
+  Empty_Data: {
+    code: "Empty_Data",
+    number: StatusNumbers.BAD_REQUEST,
+    message: "There is no data for this request.",
+  },
 };
 
 // Export All!

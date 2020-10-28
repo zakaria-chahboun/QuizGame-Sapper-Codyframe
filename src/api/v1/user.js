@@ -455,7 +455,7 @@ api_v1_user_router
             res,
             "",
             true,
-            StatusTypes.NO_DATA.code,
+            StatusTypes.Empty_Data.code,
             `User didn't play this test: '${test_id}'`
           );
 
@@ -491,7 +491,7 @@ api_v1_user_router
         res,
         "",
         true,
-        StatusTypes.NO_DATA.code,
+        StatusTypes.Empty_Data.code,
         `User didn't play this test: '${test_id}'`
       );
     } catch (error) {}
