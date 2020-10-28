@@ -27,9 +27,14 @@
 
 <script>
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
+
   export let progress;
   export let needToPass;
   export let max;
+
+  // page loading content
+  let isReady = false;
 
   // export let testTitle;
   // export let testSubtitle;
@@ -45,36 +50,53 @@
 
   // Levels
   let levels = {
-    quite: "#12B95D", // 🥰
-    almost: "#1F87FF", // 🙂
-    weak: "#7CAEFF" // 😭
+    quite: "#12B95D", // 😎
+    almost: "#7CAEFF", // 🙂
+    weak: "#DC2528" // 😭
   };
+
+  let status;
 
   // Values
   let series;
 
   // Status with Levels
   if (variation < 0) {
+    status = "weak";
     series = [
       {
         perc: calculation,
         color: levels.weak
       },
       {
-        perc: variation * -1,
+        perc: needToPass,
         color: "#1F87FF"
       }
     ];
   } else if (variation > 0) {
-    series = {
-      perc: calculation,
-      color: levels.quite
-    };
+    status = "quite";
+    series = [
+      {
+        perc: calculation,
+        color: levels.quite
+      },
+      {
+        perc: needToPass,
+        color: "#1F87FF"
+      }
+    ];
   } else {
-    series = {
-      perc: calculation,
-      color: levels.almost
-    };
+    status = "almost";
+    series = [
+      {
+        perc: calculation,
+        color: levels.almost
+      },
+      {
+        perc: needToPass,
+        color: "#1F87FF"
+      }
+    ];
   }
 
   // Component
@@ -83,20 +105,81 @@
   onMount(async () => {
     const module = await import("@okrad/svelte-progressbar");
     ProgressBar = module.default;
+    isReady = true;
   });
 </script>
+
+<style>
+  .scorebox-quite {
+    background-color: #12b95d;
+  }
+  .scorebox-almost {
+    background-color: #7caeff;
+  }
+  .scorebox-weak {
+    background-color: #dc2528;
+  }
+  .needtopassbox {
+    background-color: #1f87ff;
+  }
+</style>
 
 <!-- Body -->
 <div
   class="container margin-top-md margin-bottom-lg justify-between@md
   max-width-xs">
-  <div class="text-component text-center margin-bottom-sm">
-    <svelte:component
-      this={ProgressBar}
-      textSize={50}
-      style="semicircle"
-      {series}
-      thickness={10}
-      width="500px" />
+  <div class="text-component text-center margin-bottom-md">
+    {#if isReady}
+      <!-- Chart Data -->
+      <svelte:component
+        this={ProgressBar}
+        valueLabel={' '}
+        textSize={50}
+        style="semicircle"
+        {series}
+        thickness={10}
+        width="100%"
+        stackSeries={false}
+        margin={2} />
+
+      <!-- Scores -->
+      <div class="text-component align-middle" transition:fade>
+        <span class="progress-cell scorebox-{status}" />
+        <span class="col-9 text-lg">Your score is {calculation}%</span>
+        <span class="progress-cell needtopassbox" />
+        <span class="col-9 text-lg">Need to pass is {needToPass}%</span>
+
+        <br />
+        <!-- Status -->
+        {#if status == 'quite'}
+          <span>You are legend! 😎</span>
+        {:else if status == 'almost'}
+          <span>Oh! In the middle! 🙂 Good luck in the next test!</span>
+        {:else}
+          <span>C'mon man! 😭 Replay the test!</span>
+        {/if}
+      </div>
+    {:else}
+    <!-- Loading ... -->
+      <div class="fill-loader fill-loader--v6" role="alert">
+        <p class="fill-loader__label">Content is loading...</p>
+        <div aria-hidden="true" class="fill-loader__grid">
+          <div class="fill-loader__bar">
+            <div class="fill-loader__base" />
+            <div class="fill-loader__fill fill-loader__fill--1st" />
+          </div>
+
+          <div class="fill-loader__bar">
+            <div class="fill-loader__base" />
+            <div class="fill-loader__fill fill-loader__fill--2nd" />
+          </div>
+
+          <div class="fill-loader__bar">
+            <div class="fill-loader__base" />
+            <div class="fill-loader__fill fill-loader__fill--3rd" />
+          </div>
+        </div>
+      </div>
+    {/if}
   </div>
 </div>
