@@ -15,6 +15,8 @@
       // No User or Anonymous?
       if (testData.status.code == StatusTypes.Login_Is_Required.code)
         return this.redirect(302, "/signup");
+      else if (testData.status.code == StatusTypes.NO_DATA.code)
+        return this.error(result.status, testData.status.message);
     }
 
     // No Completed Test = No Result baby 🍪!
@@ -160,7 +162,7 @@
         {/if}
       </div>
     {:else}
-    <!-- Loading ... -->
+      <!-- Loading ... -->
       <div class="fill-loader fill-loader--v6" role="alert">
         <p class="fill-loader__label">Content is loading...</p>
         <div aria-hidden="true" class="fill-loader__grid">
