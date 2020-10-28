@@ -101,22 +101,6 @@ api_v1_user_router
             break;
           }
         }
-
-        const snapshot = await fetch(
-          `${coreApi}/questions/test/${testData.id}`
-        );
-        const result = await snapshot.json();
-        if (result.status.isError)
-          return easyResponse(
-            res,
-            null,
-            true,
-            result.status.code,
-            result.status.message
-          );
-
-        const max = result.data.length;
-        testData.maxSteps = max;
         return easyResponse(res, testData);
       }
       // [option 2]: return data of all tests
@@ -136,24 +120,8 @@ api_v1_user_router
               break;
             }
           }
-
-          // finally add 'max steps' for the current test 😉
-          // this is useful to not increase question index more than it have (out of range) 👌
-          const snapshot = await fetch(`${coreApi}/questions/test/${doc.id}`);
-          const result = await snapshot.json();
-          if (result.status.isError)
-            return easyResponse(
-              res,
-              null,
-              true,
-              result.status.code,
-              result.status.message
-            );
-
-          doc.maxSteps = result.data.length;
           tests.push(doc);
         }
-
         // Promise.all is useful if you have a "async/await" inside the "map" function of your array
         //const tests = await Promise.all(_tests_);
         return easyResponse(res, tests);
@@ -513,6 +481,7 @@ api_v1_user_router
           needToPass: testData.needToPass,
           isCompleted,
           progress: counter,
+          max: testData.maxSteps,
         };
         // send data to client 🌻
         return easyResponse(res, data);

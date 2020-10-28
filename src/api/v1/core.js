@@ -32,9 +32,19 @@ api_v1_core_router
             `There is no test with this id ${req.params.id} !`
           );
         }
+        // finally add 'max steps' for the current test 😉
+        // this is useful to not increase question index more than it have (out of range) 👌I
+        const snapshot = await firestore
+          .collection("tests")
+          .doc(`${req.params.id}`)
+          .collection("questionsID")
+          .get();
+        const maxteps = snapshot.docs.length;
+
         // - generate data
         let data = testDoc.data();
         data.id = testDoc.id;
+        data.maxSteps = maxteps;
         // send data
         return easyResponse(res, data);
       }
@@ -55,11 +65,23 @@ api_v1_core_router
           );
         }
         // - generate data
-        let data = testCollection.docs.map((e) => {
+        let _tests_ = testCollection.docs.map(async (e) => {
           let t = e.data();
           t.id = e.id;
+          // finally add 'max steps' for the current test 😉
+          // this is useful to not increase question index more than it have (out of range) 👌
+          const snapshot = await firestore
+            .collection("tests")
+            .doc(`${t.id}`)
+            .collection("questionsID")
+            .get();
+          const maxteps = snapshot.docs.length;
+          t.maxSteps = maxteps;
           return t;
         });
+
+        // Promise.all is useful if you have a "async/await" inside the "map" function of your array
+        const data = await Promise.all(_tests_);
         // send data
         return easyResponse(res, data);
       }
