@@ -31,7 +31,8 @@ express()
   //   next();
   // })
   .use("/api/v1", api_v1_core_router)
-  .use("/api/v1", SessionAuthentication, api_v1_user_router)
+  .use(SessionAuthentication)
+  .use("/api/v1",  api_v1_user_router)
   // -- for easy use & to not show the "api/v1/user/logout" in the href attribute in the button
   .get("/logout", (req, res, next) => {
     res.redirect("api/v1/user/logout");
@@ -43,7 +44,7 @@ express()
     sirv("static", {
       dev,
     }),
-    SessionAuthentication,
+   // SessionAuthentication,
     sapper.middleware({
       session: (req, res) => ({
         user: req.user,
