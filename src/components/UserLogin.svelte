@@ -42,6 +42,9 @@
   let authentication;
   let csrfCookie;
 
+  // this is for (email & password) signup
+  let emailVerification = false;
+
   // This is important, becuase we can get the anonymous user with the firebase (client side) only!
   // The session or (jwt token) of this user is stored in firebase host, So we can't get it with our server-side!
   // So beacuse of that! We have to wait until firebase base return this anonymouse to us, By the 'onAuthStateChanged' function 😉
@@ -77,6 +80,9 @@
             await authentication.currentUser.updateProfile({
               displayName: `${firstName} ${lastName}`
             });
+            // send email verification
+            await authentication.currentUser.sendEmailVerification();
+            emailVerification = true;
           }
           // case 2: Singup! there is an anonymous user, so convert it into a real user!
           else if (AnonymousCurrentUser && isSingUp) {
@@ -91,6 +97,9 @@
             await authentication.currentUser.updateProfile({
               displayName: `${firstName} ${lastName}`
             });
+            // send email verification
+            await authentication.currentUser.sendEmailVerification();
+            emailVerification = true;
           }
           // case 3: Login!
           else {
@@ -145,6 +154,11 @@
             );
           }
           break;
+      }
+
+      // if the user signup with (email & password) he must verifiy his email and re-login, so redirct to (login) page
+      if (emailVerification == true) {
+        return window.location.assign("login?email_verification=true");
       }
 
       // Get the Firebase TokenID 👈
