@@ -70,7 +70,7 @@
             {message}
           </p>
         {:else}
-          <div class="fill-loader fill-loader--v1" role="alert">
+          <div class="fill-loader fill-loader--v4" role="alert">
             <p class="fill-loader__label">Content is loading...</p>
             <div aria-hidden="true">
               <div class="fill-loader__base" />
