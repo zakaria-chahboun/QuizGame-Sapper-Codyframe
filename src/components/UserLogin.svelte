@@ -81,6 +81,7 @@
               displayName: `${firstName} ${lastName}`
             });
             // send email verification
+            authentication.useDeviceLanguage();
             await authentication.currentUser.sendEmailVerification();
             emailVerification = true;
           }
@@ -98,6 +99,7 @@
               displayName: `${firstName} ${lastName}`
             });
             // send email verification
+            authentication.useDeviceLanguage();
             await authentication.currentUser.sendEmailVerification();
             emailVerification = true;
           }
