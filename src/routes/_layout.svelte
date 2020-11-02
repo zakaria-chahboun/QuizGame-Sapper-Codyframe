@@ -66,8 +66,10 @@
         </svg>
         <p class="text-component text-center">
           Your account is not verified yet! A verification link has been sent to
-          your email, Please check it!
+          your email
         </p>
+        <span class="margin-left-xs margin-right-xs badge badge--outline text-sm"> {$session.user.email}</span>
+        <p> Please check it!</p>
       </div>
     </div>
   </div>
