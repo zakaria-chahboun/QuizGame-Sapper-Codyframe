@@ -49,6 +49,12 @@ const StatusTypes = {
     message:
       "This credential is already associated with a different user account. Try to use another one! or just Login!",
   },
+  Already_Exist_With_Different_Credential: {
+    code: "auth/account-exists-with-different-credential",
+    number: StatusNumbers.BAD_REQUEST,
+    message:
+      "An account already exists with the same email address but different sign-in credentials. Log in using a provider associated with this email address.",
+  },
   Invalid_Email: {
     code: "auth/invalid-email",
     number: StatusNumbers.BAD_REQUEST,
