@@ -1,0 +1,78 @@
+/* -------------------------------- 
+
+File#: _1_badge
+Title: Badge
+Descr: A small label containing a text string
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+.badge {
+  @include reset; // reset button native style
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--color-contrast-low);
+  padding: var(--space-xxxxs) var(--space-xxs);
+  border-radius: var(--radius-md);
+  @include fontSmooth;
+}
+
+.badge--outline {
+  background-color: transparent;
+  box-shadow: inset 0 0 0 1px alpha(var(--color-contrast-higher), 0.25);
+}
+
+.badge--contrast-higher {
+  background-color: var(--color-contrast-higher);
+  color: var(--color-bg);
+}
+
+.badge--primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.badge--primary-light {
+  background-color: alpha(var(--color-primary), 0.2);
+  color: var(--color-contrast-higher);
+}
+
+.badge--accent {
+  background-color: var(--color-accent);
+  color: var(--color-white);
+}
+
+.badge--accent-light {
+  background-color: alpha(var(--color-accent), 0.2);
+  color: var(--color-contrast-higher);
+}
+
+.badge--error {
+  background-color: var(--color-error);
+  color: var(--color-white);
+}
+
+.badge--error-light {
+  background-color: alpha(var(--color-error), 0.2);
+  color: var(--color-contrast-higher);
+}
+
+.badge--success {
+  background-color: var(--color-success);
+  color: var(--color-white);
+}
+
+.badge--success-light {
+  background-color: alpha(var(--color-success), 0.2);
+  color: var(--color-contrast-higher);
+}
+
+.badge--warning {
+  background-color: var(--color-warning);
+  color: var(--color-white);
+}
+
+.badge--warning-light {
+  background-color: alpha(var(--color-warning), 0.2);
+  color: var(--color-contrast-higher);
+}
