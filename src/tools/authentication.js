@@ -56,6 +56,13 @@ export const SessionAuthentication = async (req, res, next) => {
     );
 
     const isAnonymous = decodedClaims.provider_id == "anonymous" || false;
+
+    // For Facebbok: email emailVerified must be always true 🤠 because of
+    // https://github.com/firebase/firebase-js-sdk/issues/340
+    const emailVerified =
+      decodedClaims.firebase.sign_in_provider == "facebook.com" ||
+      decodedClaims.email_verified;
+
     req.user = {
       uid: decodedClaims.uid,
       email: decodedClaims.email || "",
@@ -64,8 +71,9 @@ export const SessionAuthentication = async (req, res, next) => {
       phoneNumber: decodedClaims.phone_number || "",
       loginTime: Unix_timestamp(decodedClaims.auth_time),
       isAnonymous: isAnonymous,
-      emailVerified: decodedClaims.email_verified,
+      emailVerified: emailVerified,
     };
+    console.log(req.user);
     return next();
   } catch (error) {
     // Session cookie is unavailable or invalid. Force user to login.
