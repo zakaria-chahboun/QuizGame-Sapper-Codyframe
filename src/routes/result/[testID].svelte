@@ -54,7 +54,7 @@
   let levels = {
     quite: "#12B95D", // 😎
     almost: "#7CAEFF", // 🙂
-    weak: "#DC2528" // 😭
+    weak: "#DC2528", // 😭
   };
 
   let status;
@@ -68,36 +68,36 @@
     series = [
       {
         perc: calculation,
-        color: levels.weak
+        color: levels.weak,
       },
       {
         perc: needToPass,
-        color: "#1F87FF"
-      }
+        color: "#1F87FF",
+      },
     ];
   } else if (variation > 0) {
     status = "quite";
     series = [
       {
         perc: calculation,
-        color: levels.quite
+        color: levels.quite,
       },
       {
         perc: needToPass,
-        color: "#1F87FF"
-      }
+        color: "#1F87FF",
+      },
     ];
   } else {
     status = "almost";
     series = [
       {
         perc: calculation,
-        color: levels.almost
+        color: levels.almost,
       },
       {
         perc: needToPass,
-        color: "#1F87FF"
-      }
+        color: "#1F87FF",
+      },
     ];
   }
 
@@ -136,7 +136,6 @@
       <svelte:component
         this={ProgressBar}
         valueLabel={' '}
-        textSize={50}
         style="semicircle"
         {series}
         thickness={10}
@@ -157,9 +156,7 @@
           <span>You are legend! 😎</span>
         {:else if status == 'almost'}
           <span>Oh! In the middle! 🙂 Good luck in the next test!</span>
-        {:else}
-          <span>C'mon man! 😭 Replay the test!</span>
-        {/if}
+        {:else}<span>C'mon man! 😭 Replay the test!</span>{/if}
       </div>
     {:else}
       <!-- Loading ... -->

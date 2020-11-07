@@ -12,7 +12,7 @@
     "test": "run-p --race dev cy:run"
   },
   "dependencies": {
-    "@okrad/svelte-progressbar": "^1.9.1",
+    "@okrad/svelte-progressbar": "^1.9.3",
     "body-parser": "^1.19.0",
     "codyhouse-framework": "^2.7.3",
     "compression": "^1.7.1",
@@ -24,7 +24,8 @@
     "js-cookie": "^2.2.1",
     "node-fetch": "^2.6.1",
     "rollup": "^2.13.0",
-    "sirv": "^0.4.0"
+    "sirv": "^0.4.0",
+    "typescript": "^4.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
