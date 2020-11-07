@@ -1,5 +1,5 @@
 import config from "./private/firebase-config.json";
-import dUrl from "./private/firebase-databse-url.json";
+import dUrl from "./private/firebase-database-url.json";
 
 let firebase = require("firebase-admin");
 
