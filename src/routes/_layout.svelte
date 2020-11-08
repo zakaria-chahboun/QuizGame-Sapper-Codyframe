@@ -1,7 +1,7 @@
 <script>
   export let segment;
 
-  import { fade, fly } from "svelte/transition";
+  import { fly } from "svelte/transition";
   import Navbar from "../components/Navbar.svelte";
 
   import { onMount } from "svelte";

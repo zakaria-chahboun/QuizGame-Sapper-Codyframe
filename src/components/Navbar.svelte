@@ -1,5 +1,10 @@
 <script>
   export let segment;
+  import { stores } from "@sapper/app";
+  const { session } = stores();
+
+  $: avatar =
+    $session.user && $session.user.avatar ? $session.user.avatar : null;
 </script>
 
 <!-- Navbar -->
@@ -78,6 +83,39 @@
               href="logout">
               Logout
             </a>
+          </li>
+          <!-- Avatar Profile -->
+          <li class="f-header__item">
+            <div class="avatar avatar--lg">
+              <a href="profile">
+                <figure
+                  class="avatar__figure"
+                  role="img"
+                  aria-label="Emily Ewing">
+                  <svg
+                    class="avatar__placeholder"
+                    aria-hidden="true"
+                    viewBox="0 0 20 20"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"><circle
+                      cx="10"
+                      cy="6"
+                      r="2.5"
+                      stroke="currentColor" />
+                    <path
+                      d="M10,10.5a4.487,4.487,0,0,0-4.471,4.21L5.5,15.5h9l-.029-.79A4.487,4.487,0,0,0,10,10.5Z"
+                      stroke="currentColor" /></svg>
+                  <!-- Avatar Image -->
+                  {#if avatar != null}
+                    <img
+                      class="avatar__img"
+                      src={avatar}
+                      alt="Emily Ewing"
+                      title="Emily Ewing" />
+                  {/if}
+                </figure>
+              </a>
+            </div>
           </li>
         {/if}
       </ul>
