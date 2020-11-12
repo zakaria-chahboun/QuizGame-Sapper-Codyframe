@@ -3,7 +3,7 @@
 */
 
 import { auth } from "../firebase-admin.js";
-import { Unix_timestamp } from "./cool.js";
+import { Unix_timestamp, FirebaseProviders } from "./cool.js";
 
 // JWT: To extract authentication token from client request: this is a (polka or express) middleware 😉
 const getAuthToken = (req, res, next) => {
@@ -63,6 +63,27 @@ export const SessionAuthentication = async (req, res, next) => {
       decodedClaims.firebase.sign_in_provider == "facebook.com" ||
       decodedClaims.email_verified;
 
+    // Get the auth provider from list of providers
+    let provider;
+    if (
+      decodedClaims.firebase.sign_in_provider ==
+      FirebaseProviders.email_password
+    ) {
+      provider = FirebaseProviders.email_password;
+    } else if (
+      decodedClaims.firebase.sign_in_provider == FirebaseProviders.facebook
+    ) {
+      provider = FirebaseProviders.facebook;
+    } else if (
+      decodedClaims.firebase.sign_in_provider == FirebaseProviders.twitter
+    ) {
+      provider = FirebaseProviders.twitter;
+    } else if (
+      decodedClaims.firebase.sign_in_provider == FirebaseProviders.google
+    ) {
+      provider = FirebaseProviders.google;
+    }
+
     req.user = {
       uid: decodedClaims.uid,
       email: decodedClaims.email || "",
@@ -72,6 +93,7 @@ export const SessionAuthentication = async (req, res, next) => {
       loginTime: Unix_timestamp(decodedClaims.auth_time),
       isAnonymous: isAnonymous,
       emailVerified: emailVerified,
+      provider,
     };
     console.log(req.user);
     return next();
