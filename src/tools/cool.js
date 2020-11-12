@@ -25,3 +25,11 @@ export function Unix_timestamp(t) {
   var s = "0" + dt.getSeconds();
   return hr + ":" + m.substr(-2) + ":" + s.substr(-2);
 }
+
+// List of firebase auth providers
+export const FirebaseProviders = {
+  email_password: "password",
+  google: "google.com",
+  twitter: "twitter.com",
+  facebook: "facebook.com",
+};
