@@ -5,6 +5,9 @@
 
   $: avatar =
     $session.user && $session.user.avatar ? $session.user.avatar : null;
+
+  // Listener: don't show 'logout' to an Anonymous user 
+  $: noUserOrAnonymous = !$session.user || $session.user.isAnonymous;
 </script>
 
 <!-- Navbar -->
@@ -58,7 +61,7 @@
 
       <!-- Nav Right Side -->
       <ul class="f-header__list flex-grow flex-basis-0 justify-end@md">
-        {#if segment !== 'logout'}
+        {#if noUserOrAnonymous}
           <li class="f-header__item">
             <a
               class={segment === 'login' ? 'f-header__btn btn btn--primary' : segment === 'undefined' ? 'f-header__link' : 'f-header__link'}
@@ -85,38 +88,36 @@
             </a>
           </li>
           <!-- Avatar Profile -->
-          <li class="f-header__item">
-            <div class="avatar avatar--lg">
-              <a href="profile">
-                <figure
-                  class="avatar__figure"
-                  role="img"
-                  aria-label="Emily Ewing">
-                  <svg
-                    class="avatar__placeholder"
-                    aria-hidden="true"
-                    viewBox="0 0 20 20"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"><circle
-                      cx="10"
-                      cy="6"
-                      r="2.5"
-                      stroke="currentColor" />
-                    <path
-                      d="M10,10.5a4.487,4.487,0,0,0-4.471,4.21L5.5,15.5h9l-.029-.79A4.487,4.487,0,0,0,10,10.5Z"
-                      stroke="currentColor" /></svg>
-                  <!-- Avatar Image -->
-                  {#if avatar != null}
-                    <img
-                      class="avatar__img"
-                      src={avatar}
-                      alt="Emily Ewing"
-                      title="Emily Ewing" />
-                  {/if}
-                </figure>
-              </a>
-            </div>
-          </li>
+          {#if segment != 'profile'}
+            <li class="f-header__item">
+              <div class="avatar avatar--lg">
+                <a rel="external" href="profile">
+                  <figure
+                    class="avatar__figure"
+                    role="img"
+                    aria-label="Emily Ewing">
+                    <svg
+                      class="avatar__placeholder"
+                      aria-hidden="true"
+                      viewBox="0 0 20 20"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"><circle
+                        cx="10"
+                        cy="6"
+                        r="2.5"
+                        stroke="currentColor" />
+                      <path
+                        d="M10,10.5a4.487,4.487,0,0,0-4.471,4.21L5.5,15.5h9l-.029-.79A4.487,4.487,0,0,0,10,10.5Z"
+                        stroke="currentColor" /></svg>
+                    <!-- Avatar Image -->
+                    {#if avatar != null}
+                      <img class="avatar__img" src={avatar} alt="" title="" />
+                    {/if}
+                  </figure>
+                </a>
+              </div>
+            </li>
+          {/if}
         {/if}
       </ul>
     </div>

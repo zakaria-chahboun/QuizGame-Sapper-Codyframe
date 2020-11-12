@@ -8,9 +8,6 @@
   import { stores } from "@sapper/app";
   const { session } = stores();
 
-  // Listener: don't show 'logout' to anonymous user
-  $: segment = $session.user && !$session.user.isAnonymous ? "logout" : segment;
-
   // Is the page ready or not?
   let ready = false;
   // CodyHouse script
