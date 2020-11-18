@@ -1,0 +1,28 @@
+/* -------------------------------- 
+
+File#: _1_file-upload
+Title: File Upload
+Descr: Custom file input element used to select and upload a file
+Usage: codyhouse.co/license
+
+-------------------------------- */
+
+html:not(.js) .file-upload__label { // hide label element if JavaScript is disabled
+  display: none;
+}
+
+.js {
+  .file-upload__input {
+    // visually hide input file element
+    @include srHide; 
+    width: 1px;
+    height: 1px;
+  }
+
+  .file-upload__text--has-max-width { // set a max width to the label text
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
