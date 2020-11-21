@@ -42,7 +42,7 @@ export const JWTAuthentication = async (req, res, next) => {
     }
   });
 };
-
+let coo = 0;
 // SESSION: To verify the firebase seesion cookie 🤴
 export const SessionAuthentication = async (req, res, next) => {
   const sessionCookie = req.cookies.session || "";
@@ -95,7 +95,7 @@ export const SessionAuthentication = async (req, res, next) => {
       emailVerified: emailVerified,
       provider,
     };
-    console.log(req.user);
+    console.log(req.user,coo++);
     return next();
   } catch (error) {
     // Session cookie is unavailable or invalid. Force user to login.

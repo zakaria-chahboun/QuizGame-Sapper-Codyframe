@@ -1,10 +1,7 @@
 <script context="module">
-  import { StatusTypes } from "../tools/status.js";
-
   export async function preload(page, session) {
     let res = await this.fetch(`api/v1/user/tests`);
     let tests = await res.json();
-    const { user } = session;
 
     if (tests.status.isError)
       return this.redirect(302, `login?message=${tests.status.message}`);
@@ -15,8 +12,6 @@
 
 <script>
   import TestCard from "../components/TestCard.svelte";
-  import { onMount } from "svelte";
-  import { goto } from "@sapper/app";
 
   export let tests;
 </script>

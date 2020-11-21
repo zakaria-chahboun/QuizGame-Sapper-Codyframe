@@ -33,7 +33,7 @@
       }
     }
 
-    // -- Init Varaibales --
+    // -- Init Variabales --
     /*
      We did that here not on the api!
      the problem is: we can't check the chosen answers (user progress), because of the binding rules!
