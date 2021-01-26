@@ -1,11 +1,11 @@
 const firebaseConfig = {
-    apiKey: "AIzaSyCmEgGH3X-eKHVKU48tAJ2mWTIcFrbpjQE",
-    authDomain: "quiz-e9e49.firebaseapp.com",
-    databaseURL: "https://quiz-e9e49.firebaseio.com",
-    projectId: "quiz-e9e49",
-    storageBucket: "quiz-e9e49.appspot.com",
-    messagingSenderId: "374320758324",
-    appId: "1:374320758324:web:caa79e93fe37be198f9461"
+    apiKey: "AIzaSyBtCMQ7J1NYbV1aigdIASBuKnXBGltO5ko",
+    authDomain: "life-in-the-uk.firebaseapp.com",
+    databaseURL: "https://life-in-the-uk.firebaseio.com",
+    projectId: "life-in-the-uk",
+    storageBucket: "life-in-the-uk.appspot.com",
+    messagingSenderId: "422779075426",
+    appId: "1:422779075426:web:9a74464ec01c6f7cb40a3b"
 };
 
 export {
